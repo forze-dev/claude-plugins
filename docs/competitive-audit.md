@@ -1,115 +1,116 @@
-# Аудит конкурентів: лендинг під ключ через Claude Code
+# Competitive audit: turn-key landing pages with Claude Code
 
-Дата: 17.10.2026. Порівнюємо `landing@forze` (і шаблон, з якого він виріс) з
-трьома групами альтернатив: інші скіли/плагіни для Claude Code, AI-конструктори
-сайтів і готові Astro-шаблони.
+Date: 2026-10-17. `landing@forze` (and the template it grew from) compared with
+three groups of alternatives: other Claude Code skills/plugins, AI website
+builders, and ready-made Astro templates.
 
-> Цифри популярності й описи сторонніх продуктів — з їхніх сторінок і
-> каталогів-агрегаторів; вони не перевірялися незалежно. Перед публічним
-> порівнянням варто перевірити кожен пункт напряму.
+> Popularity numbers and descriptions of third-party products come from their
+> own pages and from directory aggregators; they were not independently
+> verified. Check each point directly before any public comparison.
 
-## 1. Скіли й плагіни Claude Code для лендингів
+## 1. Claude Code skills and plugins for landing pages
 
-| Продукт | Що робить | Вихід | SEO / schema | Форма й бекенд | Деплой |
+| Product | What it does | Output | SEO / schema | Form & back end | Deploy |
 | --- | --- | --- | --- | --- | --- |
-| **alirezarezvani `landing`** (плагін, `/cs:landing`) | 4 питання (продукт, аудиторія, кольори, тон) → один HTML-файл з GSAP-анімаціями | один `.html`, інлайн CSS/JS, Google Fonts і GSAP з CDN | не заявлено | немає | немає |
-| **alirezarezvani `landing-page-generator`** | лендинг «на конверсію» | Next.js + Tailwind | не заявлено | немає | немає |
-| **kuse-ai `landing-page-creator`** | генерація лендингу, бренд-консистентний дизайн | HTML/CSS у проєкті | не заявлено | немає | немає |
-| **wshobson/agents `brand-landingpage`** | лендинг у стилі бренду, частина великого набору агентів | не описано | не заявлено | не описано | не описано |
-| **Felo Landing Page** | генерує сторінку з промпту й хостить її | сторінка на домені Felo | не заявлено | — | хостинг Felo, потрібен API-ключ |
+| **alirezarezvani `landing`** (plugin, `/cs:landing`) | 4 questions (product, audience, colors, tone) → one HTML file with GSAP animations | single `.html`, inline CSS/JS, Google Fonts and GSAP from CDN | not stated | none | none |
+| **alirezarezvani `landing-page-generator`** | conversion-focused landing | Next.js + Tailwind | not stated | none | none |
+| **kuse-ai `landing-page-creator`** | landing generation, brand-consistent design | HTML/CSS in the project | not stated | none | none |
+| **wshobson/agents `brand-landingpage`** | brand-styled landing, part of a large agent suite | not described | not stated | not described | not described |
+| **Felo Landing Page** | generates a page from a prompt and hosts it | page on Felo's domain | not stated | — | Felo hosting, needs an API key |
 
-**Спільне в усіх:** генерують *верстку* — гарну, швидко, з одного промпту. Ніхто
-не закриває решту шляху до живого сайту клієнта: бриф із реальних матеріалів,
-перевірка фактів, форма, яка реально доставляє заявки, структуровані дані,
-юридична сторінка, деплой на звичайний хостинг, передзапускова перевірка.
+**Common to all:** they generate *markup* — fast and good-looking, from a
+single prompt. None covers the rest of the path to a live client site: a brief
+built from real materials, fact checking, a form that actually delivers
+leads, structured data, a legal page, deployment to ordinary hosting, and a
+pre-launch check.
 
-## 2. AI-конструктори сайтів
+## 2. AI website builders
 
-| Продукт | Сильне | Слабке для нашого сценарію |
+| Product | Strong | Weak for our use case |
 | --- | --- | --- |
-| **Framer AI** | найкращий візуальний результат «з коробки» | хостинг Framer, пропрієтарна розмітка, експорт статики не є основним сценарієм, підписка |
-| **Lovable** | фронт + бекенд + БД разом, React/Tailwind | SPA: без пререндеру пошуковик бачить порожню сторінку; керовані сервіси не експортуються як код |
-| **v0 (Vercel)** | чисті React/Tailwind-компоненти | лише фронт; бекенд, форма, деплой — на розробнику; прив'язка до екосистеми Vercel |
-| **Bolt** | більше контролю для технічних користувачів | React/Next у WebContainer; статичний експорт не підтверджено |
-| **Durable** | сайт за ~30 секунд | мінімалістична розмітка без семантичної глибини; власний хостинг |
+| **Framer AI** | best visual result out of the box | Framer hosting, proprietary markup, static export is not the main path, subscription |
+| **Lovable** | front end + back end + database together, React/Tailwind | SPA: without prerendering crawlers see an empty page; managed services don't export as code |
+| **v0 (Vercel)** | clean React/Tailwind components | front end only; back end, form and deploy are on the developer; tied to the Vercel ecosystem |
+| **Bolt** | more control for technical users | React/Next in WebContainer; static export not confirmed |
+| **Durable** | a site in ~30 seconds | minimal markup without semantic depth; own hosting |
 
-**Спільне:** швидкість і візуал. Платять за це хостингом-заручником, SPA або
-слабкою семантикою, і жоден не дає архів, який залив на cPanel за 50 грн/міс і
-забув.
+**Common to all:** speed and visuals, paid for with hosting lock-in, an SPA or
+weak semantics. None produces an archive you upload to a cheap cPanel plan and
+forget.
 
-## 3. Готові Astro-шаблони
+## 3. Ready-made Astro templates
 
-| Продукт | Що є | Чого немає |
+| Product | Has | Lacks |
 | --- | --- | --- |
-| **Stone** (premium) | 15+ секцій, темна тема, View Transitions | бекенд форми, schema, процес |
-| **SaaSify** (Colorlib, ціна різниться між джерелами) | SaaS-лендинг | бекенд форми, локальний бізнес |
-| **Studiova** (WrapPixel, комерційний) | бізнес/агенція, «SEO-friendly» | бекенд форми, деплой на PHP |
-| **Astrolize** (free) | Astro + Tailwind, лендинг і блог | форма через сторонній сервіс (FabForm) |
-| Туторіали Astro + Telegram (Rodney Lab, mpz.im) | форма → Telegram | лише serverless (Netlify), не PHP/cPanel; без schema |
+| **Stone** (premium) | 15+ sections, dark mode, View Transitions | form back end, schema, process |
+| **SaaSify** (Colorlib; price differs between sources) | SaaS landing | form back end, local business |
+| **Studiova** (WrapPixel, commercial) | business/agency, "SEO-friendly" | form back end, PHP deploy |
+| **Astrolize** (free) | Astro + Tailwind, landing and blog | form via a third-party service (FabForm) |
+| Astro + Telegram tutorials (Rodney Lab, mpz.im) | form → Telegram | serverless only (Netlify), not PHP/cPanel; no schema |
 
-**Спільне:** шаблон — це верстка. Хтось усе одно має зібрати бриф, наповнити,
-налаштувати форму, перевірити й задеплоїти. Під PHP/cPanel із Telegram і
-структурованими даними в обох форматах готового рішення не знайшлося.
+**Common to all:** a template is markup. Someone still has to collect the
+brief, fill it in, wire the form, check it and deploy it. No ready solution
+for PHP/cPanel with Telegram and structured data in both formats was found.
 
-## 4. Наш шаблон (до плагіна) — чесно
+## 4. Our template (before the plugin) — honestly
 
-Сильне:
+Strong:
 
-- один конфіг на весь сайт, перевірено: зміна контактів переписує 100% виводу;
-- детермінованість, яку реально перевірено (дві збірки — ідентичний `dist/`);
-- власна передзапускова перевірка `check.mjs`, що падає на заглушках;
-- форма з продуманим антиспамом (honeypot, тривалість, сигнатури файлів);
-- JSON-LD + мікророзмітка, зв'язані через `itemid`;
-- процес для агентів: задачі по етапах, ченжлог, правила.
+- one config for the whole site, verified: changing contacts rewrites 100% of the output;
+- determinism that is actually checked (two builds → identical `dist/`);
+- its own pre-launch check `check.mjs` that fails on placeholders;
+- a form with careful anti-spam (honeypot, fill time, file signatures);
+- JSON-LD + microdata linked through `itemid`;
+- an agent process: staged tasks, changelog, rules.
 
-Слабке (з аудиту 17.10.2026, у плагіні виправлено):
+Weak (audit of 2026-10-17, fixed in the plugin):
 
-| Проблема | У плагіні |
+| Problem | In the plugin |
 | --- | --- |
-| Vercel-функція обмежена 4.5 МБ, а форма обіцяла 20 МБ | лише PHP/cPanel — обмеження немає |
-| `npm audit`: 3 high, документація каже «чисто» | lock оновлено патчами транзитивних, audit чистий |
-| `/add-page` вчив `graph(...)` — невалідний граф | виправлено, пояснено чому |
-| сторінка подяки: біла картка на білому | виправлено |
-| `.htaccess` без HTTP→HTTPS | один редірект на https + без www |
-| «20 MB» вписано вручну в 6 місцях | `{size}`/`{types}` з `SITE.form`, `.htaccess` генерується |
-| мікророзмітка розходилась із JSON-LD (адреса, опис, телефони) | один вузол у футері, значення збігаються |
-| англійські рядки по компонентах | `SITE.ui` + `messages` |
-| `/start` не знав про `temp/`, правила вимагали git | скіл читає матеріали першим; правило 3 працює з git і без |
-| rate limit до перевірки файла блокував повторну спробу | rate limit після файла |
-| клієнт показував однакову помилку на 429 | окреме повідомлення |
+| Vercel function capped at 4.5 MB while the form promised 20 MB | PHP/cPanel only — no such cap |
+| `npm audit`: 3 high, docs said "clean" | lock updated with transitive patches, audit clean |
+| `/add-page` taught `graph(...)` — an invalid graph | fixed, with the reason explained |
+| thank-you page: white card on white | fixed |
+| `.htaccess` without HTTP→HTTPS | one redirect to https + non-www |
+| "20 MB" hard-coded in 6 places | `{size}`/`{types}` from `SITE.form`, `.htaccess` generated |
+| microdata diverged from JSON-LD (address, description, phones) | one node in the footer, values match |
+| English strings scattered across components | `SITE.ui` + `messages` |
+| `/start` ignored `temp/`, rules required git | the skill reads materials first; rule 3 works with or without git |
+| rate limit before file validation blocked a retry | rate limit after the file |
+| client showed the same error for 429 | separate message |
 
-## 5. Позиціювання `landing@forze`
+## 5. Positioning of `landing@forze`
 
-Ніша, яку ніхто з перелічених не закриває: **«сайт для малого бізнесу від
-сирих матеріалів до архіву на cPanel» для людини, яка не є розробником.**
+The niche none of the above covers: **"a small-business site from raw
+materials to a cPanel archive" for someone who is not a developer.**
 
-| Можливість | Скіли CC | AI-конструктори | Astro-шаблони | **landing@forze** |
+| Capability | CC skills | AI builders | Astro templates | **landing@forze** |
 | --- | --- | --- | --- | --- |
-| Бриф із реальних матеріалів клієнта, без вигадок | — | частково | — | **так** |
-| Статичний HTML, видимий пошуковикам | так | залежить | так | **так** |
-| Форма, що доставляє заявки (Telegram), з антиспамом | — | частково | — | **так** |
-| Звичайний PHP-хостинг (cPanel) | — | — | вручну | **так, архів** |
-| JSON-LD + мікророзмітка, синхронні | — | — | — | **так** |
-| Передзапускова перевірка, що блокує заглушки | — | — | — | **так** |
-| Детермінована збірка й архів | — | — | — | **так** |
-| Проєкт живе далі без інструмента | так | ні | так | **так** |
-| Візуальний «вау» з одного промпту | **так** | **так** | так | середньо |
+| Brief from real client materials, nothing invented | — | partly | — | **yes** |
+| Static HTML visible to search engines | yes | depends | yes | **yes** |
+| Form that delivers leads (Telegram), with anti-spam | — | partly | — | **yes** |
+| Ordinary PHP hosting (cPanel) | — | — | manual | **yes, zip** |
+| JSON-LD + microdata, in sync | — | — | — | **yes** |
+| Pre-launch check that blocks placeholders | — | — | — | **yes** |
+| Deterministic build and archive | — | — | — | **yes** |
+| Project lives on without the tool | yes | no | yes | **yes** |
+| Visual "wow" from one prompt | **yes** | **yes** | yes | moderate |
 
-### Чесні слабкі місця й що з ними робити
+### Honest weak spots and what to do about them
 
-1. **Візуал скромніший за Framer і анімаційні скіли.** Шаблон — чистий,
-   стриманий, без анімацій. Напрям: 2–3 теми оформлення (токени) і
-   опціональна секція з анімацією, що не ламає Core Web Vitals.
-2. **Бар'єр входу — Claude Code на ПК.** Людина має його встановити й
-   оплатити. Плагін прибирає знання про Node/npm/git, але не саму установку.
-3. **Немає локальної перевірки форми без PHP.** Скіл пропонує встановити PHP;
-   без нього форма перевіряється вже на хостингу.
-4. **Один приймач з коробки (Telegram).** Email/CRM — за документацією, що
-   надає людина. Напрям: вбудований SMTP-приймач як другий варіант.
-5. **Лише один тип сайту.** Свідомо. Наступні плагіни в маркетплейсі `forze` —
-   окремими продуктами (`blog@forze`, `shop@forze`), а не розширенням цього.
+1. **Visuals are plainer than Framer and the animation skills.** The scaffold
+   is clean and restrained, no animations. Direction: 2–3 design themes
+   (tokens) and an optional animated section that doesn't hurt Core Web Vitals.
+2. **Entry barrier — Claude Code on a PC.** The user has to install and pay for
+   it. The plugin removes the need to know Node/npm/git, not the install itself.
+3. **No local form check without PHP.** The skill offers to install PHP;
+   without it the form is verified on the hosting.
+4. **One receiver out of the box (Telegram).** Email/CRM follow documentation
+   the user provides. Direction: a built-in SMTP receiver as a second option.
+5. **One site type only.** On purpose. Next plugins in the `forze` marketplace
+   are separate products (`blog@forze`, `shop@forze`), not extensions of this one.
 
-## Джерела
+## Sources
 
 - [alirezarezvani `landing` — Claude Plugin Hub](https://www.claudepluginhub.com/plugins/alirezarezvani-landing-marketing-landing)
 - [Landing Page Generator — Claude Code Marketplaces](https://claudemarketplaces.com/skills/alirezarezvani/claude-skills/landing-page-generator)

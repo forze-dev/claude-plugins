@@ -1,13 +1,14 @@
 ---
 /**
- * Футер сайту — єдине місце із залитим акцентним тлом.
+ * The site footer — the only place with a filled accent background.
  *
- * Це ЄДИНИЙ вузол мікророзмітки бізнесу на сторінці. Секція контактів на
- * лендингу показує ті самі дані, але без itemprop: два часткові описи однієї
- * сутності на одній сторінці — зайвий ризик розбіжності, а один повний — ні.
+ * This is the ONLY business microdata node on the page. The landing's contacts
+ * section shows the same data, but without itemprop: two partial descriptions
+ * of one entity on one page are a needless divergence risk; one full one isn't.
  *
- * Кожна властивість тут має пару в `business()` з src/lib/schema.js, і навпаки.
- * `itemid` — той самий URI, що й `@id` у JSON-LD. Значення — лише з конфіга.
+ * Every property here has a twin in `business()` from src/lib/schema.js, and
+ * vice versa. `itemid` is the same URI as `@id` in the JSON-LD. Values come
+ * from the config only.
  */
 import { SITE, isPlace } from '../site.config.js';
 import { ids } from '../lib/schema.js';
@@ -99,7 +100,7 @@ const addressText = address
 					{contacts.phones.map((phone) => (
 						<li class="footer__contact-item">
 							<img src="/assets/icons/phone.svg" alt="" width="20" height="20" aria-hidden="true" />
-							{/* E.164 у meta, а не видимий текст: так значення збігається з JSON-LD. */}
+							{/* E.164 in a meta, not the visible text: that way the value matches the JSON-LD. */}
 							<meta itemprop="telephone" content={phone.href} />
 							<a href={`tel:${phone.href}`}>{phone.display}</a>
 						</li>

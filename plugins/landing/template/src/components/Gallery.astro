@@ -1,13 +1,13 @@
 ---
 /**
- * Галерея на scroll-snap. Без JavaScript і без слайдер-бібліотек — інерцію,
- * клавіатуру й дотик бере на себе власна прокрутка браузера.
+ * A scroll-snap gallery. No JavaScript and no slider library — the browser's
+ * own scrolling handles inertia, keyboard and touch.
  *
- * Несе мікророзмітку ImageGallery. Пари в JSON-LD у неї немає навмисно: галерея
- * не дає rich results, тож другий опис був би шумом без сигналу.
+ * Carries ImageGallery microdata. It has no JSON-LD twin on purpose: a gallery
+ * gives no rich results, so a second description would be noise without signal.
  *
- * `items`: { src, alt, caption?, width, height }. Розміри — справжні розміри
- * файла: від них залежить, чи не стрибатиме сторінка під час завантаження.
+ * `items`: { src, alt, caption?, width, height }. The sizes are the file's real
+ * dimensions: they decide whether the page jumps while loading.
  */
 const { items, label = 'Gallery', hint } = Astro.props;
 ---

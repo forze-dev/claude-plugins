@@ -1,20 +1,20 @@
 /**
- * Стилі всього сайту, імпортуються layout-ами один раз.
+ * Site-wide styles, imported once by the layouts.
  *
- * Під час збірки Vite вбудовує ці імпорти в один бандл із хешем. Стилі
- * секцій лендингу імпортує сам компонент секції (src/components/sections/),
- * тож у збірку йде CSS лише тих секцій, які сторінка справді використовує.
- * Стилі окремої сторінки імпортує сама сторінка.
+ * At build time Vite inlines these imports into one hashed bundle. Landing
+ * section styles are imported by the section component itself
+ * (src/components/sections/), so only the CSS of sections the page actually
+ * uses is built. A page's own styles are imported by the page.
  */
 
-/* База. Шрифт — першим: @font-face має бути оголошений до використання. */
+/* Base. The font first: @font-face must be declared before use. */
 @import url('./base/fonts.css');
 @import url('./base/variables.css');
 @import url('./base/reset.css');
 @import url('./base/typography.css');
 @import url('./base/utilities.css');
 
-/* Компоненти, що є на кожній сторінці або можуть бути на будь-якій */
+/* Components present on every page or usable on any */
 @import url('./components/button.css');
 @import url('./components/header.css');
 @import url('./components/footer.css');

@@ -1,8 +1,8 @@
 /**
- * Модалка заявки. Розмітка — RequestModal.astro, поведінка — scripts/modal.js.
+ * The request modal. Markup — RequestModal.astro, behaviour — scripts/modal.js.
  *
- * Один із небагатьох справді піднятих шарів у шаблоні, тож йому дозволена
- * справжня тінь.
+ * One of the few truly raised layers in the scaffold, so it is allowed a real
+ * shadow.
  */
 
 .modal-overlay {

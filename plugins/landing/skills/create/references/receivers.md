@@ -1,41 +1,44 @@
-# Куди йдуть заявки
+# Where requests go
 
-## Telegram — вбудовано
+## Telegram — built in
 
-Каркас уже вміє: `server/form.php` надсилає заявку повідомленням, а з файлом —
-документом. Потрібні два значення в `.env`: `TELEGRAM_BOT_TOKEN` і `CHAT_ID`.
+The scaffold already handles it: `server/form.php` sends a request as a
+message, and with a file — as a document. Two values are needed in `.env`:
+`TELEGRAM_BOT_TOKEN` and `CHAT_ID`.
 
-Інструкція для людини (вона робить це сама, значення в чат не пише):
+Instructions for the person (they do this themselves and never paste the
+values into the chat):
 
-1. У Telegram відкрити **@BotFather** → `/newbot` → назва → ім'я на `…bot`.
-   BotFather надішле токен виду `123456789:AA…`.
-2. Створити групу для заявок (або взяти наявну) і додати туди бота.
-3. Написати в групі будь-яке повідомлення.
-4. Відкрити в браузері `https://api.telegram.org/bot<ТОКЕН>/getUpdates` і
-   знайти `"chat":{"id":-100…` — це chat id (групи починаються з `-100`).
-5. Вписати обидва значення в `.env`:
-   - локально — у корені проєкту (скопіювати `.env.example` → `.env`);
-   - на хостингу — у файл `.env` **на рівень вище** за `public_html`.
+1. In Telegram open **@BotFather** → `/newbot` → a name → a username ending in
+   `…bot`. BotFather sends a token like `123456789:AA…`.
+2. Create a group for requests (or use an existing one) and add the bot.
+3. Post any message in the group.
+4. Open `https://api.telegram.org/bot<TOKEN>/getUpdates` in a browser and find
+   `"chat":{"id":-100…` — that's the chat id (groups start with `-100`).
+5. Put both values into `.env`:
+   - locally — in the project root (copy `.env.example` → `.env`);
+   - on the hosting — in a `.env` file **one level above** `public_html`.
 
-Не вийшло знайти chat id (порожній `getUpdates`) — бот не бачить повідомлень
-групи: у BotFather `/setprivacy` → Disable, або надіслати повідомлення з
-командою `/start@ім'я_бота`.
+Can't find the chat id (empty `getUpdates`) — the bot can't see group
+messages: in BotFather `/setprivacy` → Disable, or send a message with the
+command `/start@bot_username`.
 
-## Інші приймачі (email, CRM, Google Sheets, вебхук)
+## Other receivers (email, CRM, Google Sheets, webhook)
 
-**Не пиши інтеграцію з пам'яті.** API змінюються, а помилка тут — це заявки,
-які мовчки губляться.
+**Don't write the integration from memory.** APIs change, and a mistake here
+means requests that are silently lost.
 
-1. Попроси людину дати **актуальну документацію** (посилання) або **приклад
-   робочого запиту** (curl, Postman), і де взяти ключ.
-2. Запиши інтеграцію окремим етапом у файл задачі, з чеклістом перевірки.
-3. Реалізуй у `server/form.php` **після** всіх антиспам-перевірок, на місці
-   надсилання в Telegram (або поруч, якщо потрібні обидва). Ключі — лише з
-   `.env`, як `TELEGRAM_BOT_TOKEN`.
-4. Відповідь сервера лишається тією самою: `200 Sent.` при успіху, `502` при
-   невдачі доставки — від цього залежить поведінка форми в браузері.
-5. Онови розділ 4 політики конфіденційності: хто ще отримує дані.
+1. Ask the person for **current documentation** (a link) or **an example of a
+   working request** (curl, Postman), and where to get the key.
+2. Record the integration as a separate stage in the task file, with a
+   verification checklist.
+3. Implement it in `server/form.php` **after** all the anti-spam checks, where
+   the Telegram delivery happens (or next to it, if both are needed). Keys
+   come only from `.env`, like `TELEGRAM_BOT_TOKEN`.
+4. The server response stays the same: `200 Sent.` on success, `502` when
+   delivery fails — the form's behaviour in the browser depends on it.
+5. Update section 4 of the privacy policy: who else receives the data.
 
-Email через PHP `mail()` на шаред-хостингу часто потрапляє в спам або
-блокується — якщо людина хоче email, пропонуй SMTP її поштового сервісу і
-проси його налаштування.
+Email via PHP `mail()` on shared hosting often lands in spam or is blocked —
+if the person wants email, propose the SMTP of their mail service and ask for
+its settings.

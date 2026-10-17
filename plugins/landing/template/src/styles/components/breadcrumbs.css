@@ -1,6 +1,6 @@
 /**
- * Хлібні крихти. Є на кожній внутрішній сторінці; дублюються мікророзміткою
- * BreadcrumbList і JSON-LD у тому ж документі.
+ * Breadcrumbs. On every inner page; mirrored by BreadcrumbList microdata and
+ * JSON-LD in the same document.
  */
 
 .breadcrumbs {

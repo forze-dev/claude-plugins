@@ -1,8 +1,8 @@
 /**
- * Хедер сайту.
+ * The site header.
  *
- * Один вигляд на всіх сторінках: світлий, закріплений, з волосяною лінією
- * знизу. Ніяких станів прокрутки й варіантів під сторінку.
+ * One look on every page: light, fixed, with a hairline at the bottom. No
+ * scroll states and no per-page variants.
  */
 
 .header {
@@ -10,9 +10,9 @@
 	inset: 0 0 auto 0;
 	z-index: var(--z-header);
 	/**
-	 * Непрозорий навмисно. backdrop-filter тут створив би containing block для
-	 * мобільного меню з position: fixed усередині, і меню схлопнулося б до
-	 * висоти хедера.
+	 * Opaque on purpose. backdrop-filter here would create a containing block for
+	 * the position: fixed mobile menu inside it, and the menu would collapse to
+	 * the header's height.
 	 */
 	background: var(--bg);
 	border-bottom: 1px solid var(--border);
@@ -102,7 +102,7 @@
 	width: 44px;
 	height: 44px;
 	padding: 0 9px;
-	/* Підтягуємо смужки врівень із краєм контейнера. */
+	/* Pull the bars flush with the container edge. */
 	margin-right: -9px;
 	border-radius: var(--radius-sm);
 }
@@ -118,7 +118,7 @@
 
 .header__burger span:nth-child(2) {
 	width: 70%;
-	/* Коротка смужка вирівняна по тому ж правому краю, що й інші дві. */
+	/* The short bar is aligned to the same right edge as the other two. */
 	margin-left: auto;
 }
 
@@ -141,8 +141,8 @@
 		display: flex;
 	}
 
-	/* Навігація виходить із потоку, тож вільний простір забирають кнопки —
-	   і бургер опиняється притиснутим до правого краю. */
+	/* The nav leaves the flow here, so the buttons take the free space —
+	   and the burger ends up pushed to the right edge. */
 	.header__actions {
 		margin-left: auto;
 	}
@@ -152,7 +152,7 @@
 		inset: var(--header-height) 0 0 0;
 		margin-left: 0;
 		padding: var(--space-6) var(--gutter) var(--space-9);
-		/* На тон темніше за сторінку — рівно щоб читалося як окремий шар. */
+		/* One shade darker than the page — just enough to read as a separate layer. */
 		background: var(--surface);
 		overflow-y: auto;
 		opacity: 0;
@@ -205,7 +205,7 @@
 }
 
 @media (min-width: 901px) {
-	/* Ряд месенджерів у меню існує лише на мобільних. */
+	/* The messenger row in the menu exists on mobile only. */
 	.header__nav-footer {
 		display: none;
 	}

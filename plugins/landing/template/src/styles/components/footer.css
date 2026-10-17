@@ -1,8 +1,8 @@
 /**
- * Футер.
+ * Footer.
  *
- * Єдина велика площа брендового кольору на сайті — вона закриває композицію,
- * яку відкриває hero.
+ * The only large area of brand color on the site — it closes the composition
+ * the hero opens.
  */
 
 .footer {
@@ -71,7 +71,7 @@
 	text-decoration: underline;
 }
 
-/* --- Блок контактів ----------------------------------------------------- */
+/* --- Contacts block ------------------------------------------------------ */
 
 .footer__contact {
 	display: flex;
@@ -94,7 +94,7 @@
 	height: 20px;
 	margin-top: 2px;
 	opacity: 0.6;
-	/* Набір іконок іде в currentColor; для темного футера інвертуємо. */
+	/* The icon set uses currentColor; invert it for the dark footer. */
 	filter: brightness(0) invert(1);
 }
 
@@ -114,7 +114,7 @@
 	margin-top: var(--space-5);
 }
 
-/* --- Нижній рядок ------------------------------------------------------- */
+/* --- Bottom row ---------------------------------------------------------- */
 
 .footer__bottom {
 	display: flex;

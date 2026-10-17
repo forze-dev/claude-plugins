@@ -1,11 +1,12 @@
 ---
 /**
- * Секція контактів: прямі способи звʼязку ліворуч, форма заявки праворуч.
- * Меню веде сюди якорем `#contacts`, і сюди ж ведуть кнопки «залишити заявку»,
- * коли JavaScript недоступний.
+ * The contacts section: direct ways to get in touch on the left, the request
+ * form on the right. The menu leads here via the `#contacts` anchor, and so do
+ * the "leave a request" buttons when JavaScript is unavailable.
  *
- * Мікророзмітки тут немає свідомо: повний опис бізнесу несе футер (один вузол
- * з itemid на сторінку). Дані ті самі — з site.config.js.
+ * No microdata here on purpose: the footer carries the full business
+ * description (one node with itemid per page). The data is the same — from
+ * site.config.js.
  */
 import { SITE, isPlace } from '../../site.config.js';
 import RequestForm from '../RequestForm.astro';

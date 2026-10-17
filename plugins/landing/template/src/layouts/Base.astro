@@ -1,7 +1,7 @@
 ---
 /**
- * Каркас сторінки: head, хедер, футер, модалка й клієнтські скрипти. Сторінки
- * передають свої SEO-пропси, масив власних вузлів `schema` і наповнюють слот.
+ * The page shell: head, header, footer, modal and client scripts. Pages pass
+ * their SEO props and an array of their own `schema` nodes, and fill the slot.
  */
 import { SITE } from '../site.config.js';
 import Seo from '../components/Seo.astro';
@@ -16,12 +16,13 @@ import '../styles/main.css';
 const { schema, noindex = false, ...seo } = Astro.props;
 
 /**
- * Бізнес і `WebSite` — у графі КОЖНОЇ сторінки, і додає їх layout, а не
- * сторінка: так `webPage()` ніколи не посилається на `#organization`, якого
- * в графі немає. Сторінка передає лише свої власні вузли.
+ * The business and `WebSite` are in the graph of EVERY page, and the layout
+ * adds them, not the page: that way `webPage()` never points to an
+ * `#organization` missing from the graph. A page passes only its own nodes.
  *
- * Виняток — `noindex`: закриту від індексації сторінку пошуковик не читає, тож
- * описувати їй бізнес нема кому, а розмітка все одно їде у відповідь.
+ * Exception — `noindex`: search engines don't read a page closed to indexing,
+ * so there's no one to describe the business to, while the markup would still
+ * ship in the response.
  */
 const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].flat());
 ---
@@ -35,15 +36,15 @@ const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].f
 		<Seo {...seo} noindex={noindex} />
 
 		{/*
-			Основне накреслення — preload, бо його потребує кожен екран і воно
-			впливає на LCP. Решта підтягується за unicode-range тільки якщо в
-			тексті справді зустрілися ці символи. Шрифт самохостений.
+			The main face is preloaded because every screen needs it and it affects
+			LCP. The rest loads by unicode-range only if those characters actually
+			appear in the text. The font is self-hosted.
 		*/}
 		<link rel="preload" href="/fonts/instrument-sans-latin-normal.woff2" as="font" type="font/woff2" crossorigin />
 
 		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd, null, '\t')} />}
 
-		{/* Теги head для конкретної сторінки. */}
+		{/* Page-specific head tags. */}
 		<slot name="head" />
 		<Analytics position="head" />
 	</head>
@@ -62,7 +63,7 @@ const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].f
 		<RequestModal />
 
 		<script>
-			// Збирається Astro: один запит, імʼя з хешем, довгий кеш.
+			// Bundled by Astro: one request, a hashed name, long caching.
 			import { initHeader } from '../scripts/header.js';
 			import { initFloatingBar } from '../scripts/floating-bar.js';
 			import { initModal } from '../scripts/modal.js';
@@ -71,8 +72,8 @@ const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].f
 			initHeader();
 			initFloatingBar();
 			initModal();
-			// Вбудовані форми (секція контактів). Форму в модалці initModal
-			// підключає сам при першому відкритті; повторно вона не ініціалізується.
+			// Embedded forms (the contacts section). initModal wires the modal's form
+			// itself on first open; it is never initialized twice.
 			initForms(document.querySelector('main') ?? document);
 		</script>
 	</body>

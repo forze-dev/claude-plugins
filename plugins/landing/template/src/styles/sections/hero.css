@@ -1,6 +1,6 @@
 /**
- * Перший екран лендингу. Світлий: єдина велика площа брендового кольору на
- * сайті — футер.
+ * The landing's first screen. Light: the only large area of brand color on the
+ * site is the footer.
  */
 
 .hero {
@@ -32,8 +32,8 @@
 }
 
 /**
- * Факти, а не плитки зі статистикою: короткі твердження в один ряд, відділені
- * волосяною лінією. Лише перевірювані факти — без вигаданих чисел.
+ * Facts, not stat tiles: short statements in a row, separated by a hairline.
+ * Verifiable facts only — no invented numbers.
  */
 .hero__facts {
 	display: flex;
@@ -104,7 +104,7 @@
 		width: 100%;
 	}
 
-	/* На малих екранах цей ряд дублює плаваюча панель месенджерів. */
+	/* On small screens the floating messenger bar duplicates this row. */
 	.hero__messengers {
 		display: none;
 	}

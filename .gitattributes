@@ -1,5 +1,5 @@
-# Однакові кінці рядків на всіх машинах: плагін ставлять і на Windows, і на macOS/Linux,
-# а скрипти з CRLF на Unix ламаються.
+# Same line endings on every machine: the plugin is installed on Windows, macOS
+# and Linux, and scripts with CRLF break on Unix.
 * text=auto eol=lf
 
 *.png binary

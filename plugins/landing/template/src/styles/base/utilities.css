@@ -1,8 +1,8 @@
 /**
- * Примітиви розкладки й дуже короткий набір утиліт.
+ * Layout primitives and a very short set of utilities.
  *
- * Свідомо маленький: це шаблон, а не utility-фреймворк. Потрібен третій варіант
- * чогось — дай йому справжній клас у components/.
+ * Deliberately small: this is a scaffold, not a utility framework. Need a third
+ * variant of something — give it a real class in components/.
  */
 
 .container {
@@ -16,7 +16,7 @@
 	max-width: var(--container-wide);
 }
 
-/** Стандартний вертикальний ритм між секціями. */
+/** The standard vertical rhythm between sections. */
 .section {
 	padding-block: var(--section-gap);
 }
@@ -25,14 +25,14 @@
 	padding-block: var(--space-9);
 }
 
-/** Тінтована смуга, що відділяє секцію від сусідніх. */
+/** A tinted band separating a section from its neighbours. */
 .section--surface {
 	background: var(--surface);
 }
 
 /**
- * Панель — плаский контейнер шаблону. Глибина створюється тінтом і волосяною
- * рамкою, а не тінню.
+ * A panel — the scaffold's flat container. Depth comes from a tint and a
+ * hairline border, not a shadow.
  */
 .panel {
 	background: var(--bg);
@@ -76,7 +76,7 @@
 	}
 }
 
-/** Видно лише зчитувачам екрана. */
+/** Visible to screen readers only. */
 .visually-hidden {
 	position: absolute;
 	width: 1px;
@@ -89,7 +89,7 @@
 	border: 0;
 }
 
-/** Клавіатурний користувач потрапляє сюди першим; до фокуса посилання приховане. */
+/** A keyboard user lands here first; the link is hidden until focused. */
 .skip-link {
 	position: absolute;
 	top: var(--space-3);

@@ -1,17 +1,18 @@
 /**
- * Дизайн-токени — єдиний файл, який треба відкрити, щоб перефарбувати шаблон.
+ * Design tokens — the one file to open to recolor the scaffold.
  *
- * Усе нижче за течією (компоненти, сторінки, модалка й плаваюча панель) читає
- * ці кастомні властивості. Зміни акцентну шкалу тут — і весь сайт піде слідом.
+ * Everything downstream (components, pages, the modal and the floating bar)
+ * reads these custom properties. Change the accent ramp here and the whole
+ * site follows.
  */
 
 :root {
 	/* ---------------------------------------------------------------
-	 * Колір
+	 * Color
 	 *
-	 * Акцент — структурний колір, а не лише заливка кнопки: ним залито футер і
-	 * бігучий рядок, тож бренд володіє великими площами сторінки, а не кількома
-	 * дрібними елементами.
+	 * The accent is a structural color, not just a button fill: the footer is
+	 * filled with it, so the brand owns large areas of the page rather than a
+	 * few small elements.
 	 * --------------------------------------------------------------- */
 	--accent: #14532d;
 	--accent-hover: #1a6b3a;
@@ -20,22 +21,22 @@
 	--accent-tint-strong: #d3e5d8;
 	--on-accent: #ffffff;
 
-	/* Текст. Ink лежить у тій самій зеленій родині, що й акцент, тож сторінка
-	   читається як одна палітра, а не як «чорний текст плюс зелена кнопка». */
+	/* Text. Ink sits in the same green family as the accent, so the page reads
+	   as one palette rather than "black text plus a green button". */
 	--ink: #111813;
 	--ink-muted: #4a5a50;
 	--ink-subtle: #6b7d72;
 	--on-dark: #eef3ee;
 	--on-dark-muted: #b8c9bd;
 
-	/* Поверхні. Холодні камʼяно-зелені тінти, свідомо не кремові. */
+	/* Surfaces. Cool stone-green tints, deliberately not cream. */
 	--bg: #ffffff;
 	--surface: #f2f4f1;
 	--surface-strong: #e6eae4;
 	--border: #dfe4de;
 	--border-strong: #c6cfc6;
 
-	/* Статуси */
+	/* Statuses */
 	--danger: #b3261e;
 	--danger-bg: #fdecea;
 	--warning: #8a5a00;
@@ -44,8 +45,8 @@
 	--success-bg: #e8f1ea;
 
 	/* ---------------------------------------------------------------
-	 * Типографіка — одна гарнітура, модульна шкала 1.25.
-	 * Якщо проєкту потрібен окремий шрифт заголовків — міняй лише
+	 * Typography — one typeface, a 1.25 modular scale.
+	 * If the project needs a separate heading font — change only
 	 * --font-display.
 	 * --------------------------------------------------------------- */
 	--font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -67,16 +68,16 @@
 	--lh-normal: 1.6;
 	--lh-relaxed: 1.75;
 
-	/* Заголовки набираються щільно, основний текст — ні. */
+	/* Headings are set tight, body text is not. */
 	--tracking-display: -0.025em;
 	--tracking-normal: 0;
 
-	/** Комфортна міра рядка — тримай текст до ~68 символів. */
+	/** A comfortable measure — keep text to ~68 characters. */
 	--measure: 68ch;
 	--measure-narrow: 54ch;
 
 	/* ---------------------------------------------------------------
-	 * Відступи — база 4px, і для padding, і для проміжків у сітці.
+	 * Spacing — a 4px base, for both padding and grid gaps.
 	 * --------------------------------------------------------------- */
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
@@ -90,12 +91,12 @@
 	--space-10: 5rem;
 	--space-11: 7rem;
 
-	/** Вертикальний ритм між секціями сторінки. */
+	/** Vertical rhythm between page sections. */
 	--section-gap: var(--space-11);
 
 	/* ---------------------------------------------------------------
-	 * Радіуси — осмислена шкала. Контроли, панелі та hero-блок мають читатися
-	 * як різні типи обʼєктів, тому й радіуси в них різні.
+	 * Radii — a deliberate scale. Controls, panels and the hero block should
+	 * read as different kinds of objects, so their radii differ.
 	 * --------------------------------------------------------------- */
 	--radius-sm: 8px;
 	--radius-md: 14px;
@@ -103,25 +104,25 @@
 	--radius-pill: 999px;
 
 	/* ---------------------------------------------------------------
-	 * Тіні — лише для шарів, які справді висять над сторінкою. Плаский контент
-	 * натомість отримує тінтовану поверхню й волосяну рамку.
+	 * Shadows — only for layers that really float above the page. Flat content
+	 * gets a tinted surface and a hairline border instead.
 	 * --------------------------------------------------------------- */
 	--shadow-raised: 0 4px 16px rgba(17, 24, 19, 0.08);
 	--shadow-overlay: 0 24px 60px rgba(17, 24, 19, 0.22);
 
-	/* Розкладка */
+	/* Layout */
 	--container: 1200px;
 	--container-wide: 1360px;
 	--gutter: var(--space-4);
 	--header-height: 72px;
 
-	/* Анімація */
+	/* Motion */
 	--ease: cubic-bezier(0.32, 0.72, 0, 1);
 	--duration-fast: 140ms;
 	--duration: 240ms;
 	--duration-slow: 420ms;
 
-	/* Порядок шарів, оголошений один раз, щоб вони не вгадували один одного. */
+	/* Layer order, declared once so layers don't have to guess each other. */
 	--z-header: 100;
 	--z-dropdown: 200;
 	--z-floating-bar: 900;

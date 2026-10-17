@@ -1,8 +1,8 @@
 ---
 /**
- * Усі мета-теги, потрібні сторінці, виведені з site.config.js і з пропсів самої
- * сторінки. Canonical будується з Astro.url, тож не може вказати на чужу
- * сторінку, а домен підтягується з `site` в astro.config.mjs.
+ * Every meta tag a page needs, derived from site.config.js and the page's own
+ * props. The canonical is built from Astro.url, so it can't point to another
+ * page, and the domain comes from `site` in astro.config.mjs.
  */
 import { SITE } from '../site.config.js';
 import { cleanPath } from '../lib/path.js';
@@ -10,7 +10,7 @@ import { cleanPath } from '../lib/path.js';
 const {
 	title,
 	description = SITE.description,
-	/** Шлях усередині /assets/seo/ або повна адреса. */
+	/** A path inside /assets/seo/ or a full URL. */
 	ogImage = '/assets/seo/og.jpg',
 	ogImageAlt = SITE.name,
 	keywords,
@@ -51,7 +51,7 @@ const fullTitle = title.includes(SITE.shortName) || title.includes(SITE.name) ? 
 <meta name="author" content={SITE.author} />
 <meta name="theme-color" content={SITE.themeColor} />
 
-<!-- Фавікони — згенеровані Abect Favicon Generator -->
+<!-- Favicons — replace the files in public/, keep the names -->
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />

@@ -1,8 +1,8 @@
 /**
- * Кнопки.
+ * Buttons.
  *
- * Один базовий клас, три призначення. Жодних стрілок у підписах — підпис сам
- * каже, що станеться.
+ * One base class, three purposes. No arrows in labels — the label itself
+ * says what will happen.
  */
 
 .btn {
@@ -32,7 +32,7 @@
 	pointer-events: none;
 }
 
-/** Головна — та єдина дія, якої ми справді хочемо на сторінці. */
+/** Primary — the one action we really want on the page. */
 .btn--primary {
 	background: var(--accent);
 	color: var(--on-accent);
@@ -46,7 +46,7 @@
 	background: var(--accent-active);
 }
 
-/** Другорядна — рішення тієї ж ваги, але тихіша присутність. */
+/** Secondary — a decision of the same weight, but a quieter presence. */
 .btn--secondary {
 	background: transparent;
 	border-color: var(--border-strong);
@@ -58,7 +58,7 @@
 	color: var(--accent);
 }
 
-/** Для футера — єдиного місця з акцентним тлом. */
+/** For the footer — the only place with an accent background. */
 .btn--inverse {
 	background: var(--on-accent);
 	color: var(--accent);
@@ -73,8 +73,8 @@
 }
 
 /**
- * Текстове посилання, що поводиться як дія.
- * Підкреслення — це підказка, тому воно є й у спокої.
+ * A text link that behaves like an action.
+ * The underline is a cue, so it is there at rest too.
  */
 .link {
 	color: var(--accent);
@@ -86,7 +86,7 @@
 	color: var(--accent-hover);
 }
 
-/** Кругла кнопка лише з іконкою: месенджери й закриття модалки. */
+/** A round icon-only button: messengers and the modal close button. */
 .icon-btn {
 	display: inline-flex;
 	align-items: center;

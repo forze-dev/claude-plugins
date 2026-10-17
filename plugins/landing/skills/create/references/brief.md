@@ -1,69 +1,69 @@
-# Бриф: що має бути відомо до файлу задачі
+# Brief: what must be known before the task file
 
-Кожен пункт — або з матеріалів клієнта (із джерелом), або з відповіді людини.
-Позначка **[обов.]** — без цього сайт не зібрати чесно; решта має розумний
-дефолт, який людина лише підтверджує.
+Every item comes either from the client's materials (with its source) or from
+the person's answer. **[req.]** — without it the site can't honestly be built;
+the rest has a sensible default the person only confirms.
 
-## Ідентичність
+## Identity
 
-| Що | Куди в конфізі | Примітка |
+| What | Config key | Note |
 | --- | --- | --- |
-| Назва бізнесу **[обов.]** | `name` | як клієнт хоче бачити в пошуку |
-| Коротка назва | `shortName` | ≤ 14 символів, для хедера й домашнього екрана |
-| Домен **[обов.]** | `url` | без слеша в кінці; без домену немає canonical і sitemap |
-| Опис одним-двома реченнями **[обов.]** | `description` | 120–160 символів; іде в пошук і футер |
-| Мова сайту | `lang`, `locale`, `messages`, `ui` | за замовчуванням — мова матеріалів |
-| Тип бізнесу | `businessType` | є адреса для відвідувачів → `LocalBusiness` чи підтип (`Dentist`, `Restaurant`, `BeautySalon`, `AutoRepair`…); лише онлайн → `Organization` |
+| Business name **[req.]** | `name` | as the client wants to appear in search |
+| Short name | `shortName` | ≤ 14 characters, for the header and the home screen |
+| Domain **[req.]** | `url` | no trailing slash; without a domain there is no canonical and no sitemap |
+| One- or two-sentence description **[req.]** | `description` | 120–160 characters; goes into search and the footer |
+| Site language | `lang`, `locale`, `messages`, `ui` | default — the language of the materials |
+| Business type | `businessType` | has an address visitors come to → `LocalBusiness` or a subtype (`Dentist`, `Restaurant`, `BeautySalon`, `AutoRepair`…); online only → `Organization` |
 
-## Контакти
+## Contacts
 
-| Що | Куди | Примітка |
+| What | Where | Note |
 | --- | --- | --- |
-| Телефон(и) **[обов.]** | `PHONES` | у форматі E.164: `+380671234567` |
-| Формат номера країни **[обов.]** | `PHONE_FORMAT` | `countryCode`, `digits` (цифр після коду), `groups`. Україна: `+380`, `9`, `[2, 3, 2, 2]` → `+380 (67) 123-45-67`. США: `+1`, `10`, `[3, 3, 4]` |
-| Email **[обов.]** | `contacts.email` | |
-| Адреса | `contacts.address` | вулиця, місто, область, індекс, код країни ISO; немає → `null` |
-| Координати | `contacts.geo` | з Google Maps; немає → `null` |
-| Години роботи | `contacts.hours` | дні англійською (`Monday`…) для schema.org + `label` мовою сайту |
-| Месенджери | `messengers` | лише ті, що дав клієнт; Telegram — посилання `t.me/…`, WhatsApp — з номера |
-| Соцмережі | `social` | повні URL |
+| Phone(s) **[req.]** | `PHONES` | in E.164: `+380671234567` |
+| Country number format **[req.]** | `PHONE_FORMAT` | `countryCode`, `digits` (after the country code), `groups`. Ukraine: `+380`, `9`, `[2, 3, 2, 2]` → `+380 (67) 123-45-67`. USA: `+1`, `10`, `[3, 3, 4]` |
+| Email **[req.]** | `contacts.email` | |
+| Address | `contacts.address` | street, city, region, postal code, ISO country code; none → `null` |
+| Coordinates | `contacts.geo` | from Google Maps; none → `null` |
+| Opening hours | `contacts.hours` | days in English (`Monday`…) for schema.org + a `label` in the site language |
+| Messengers | `messengers` | only those the client gave; Telegram — a `t.me/…` link, WhatsApp — from the number |
+| Social profiles | `social` | full URLs |
 
-## Дизайн
+## Design
 
-| Що | Примітка |
+| What | Note |
 | --- | --- |
-| Джерело дизайну | Figma / чинний сайт / скріншоти / «на розсуд» (тоді — вигляд шаблону) |
-| Брендовий колір | hex; з логотипа або макета. Немає — запропонуй 3 варіанти, людина обирає |
-| Логотип | SVG або PNG з прозорим тлом; немає — текстовий знак із шаблону |
-| Фото | реальні фото бізнесу; без них hero йде без зображення — це нормально |
+| Design source | Figma / current site / screenshots / "up to you" (then — the scaffold's look) |
+| Brand color | hex; from the logo or the mockup. None — offer 3 options, the person picks |
+| Logo | SVG or PNG with a transparent background; none — the scaffold's text mark |
+| Photos | real photos of the business; without them the hero has no image — that's fine |
 
-## Зміст лендингу
+## Landing content
 
-| Що | Примітка |
+| What | Note |
 | --- | --- |
-| Що продає і кому **[обов.]** | основа hero |
-| Послуги / товари | назви, короткі описи; **ціни — лише якщо клієнт дав** |
-| Переваги | лише перевірювані («виїзд у день звернення»), не «найкращі в місті» |
-| Етапи роботи | якщо процес важливий для рішення клієнта |
-| Питання й відповіді | з переписки з клієнтами, якщо є |
-| Відгуки | **лише справжні**, з дозволом на ім'я |
-| Фото робіт | для галереї |
+| What they sell and to whom **[req.]** | the basis of the hero |
+| Services / products | names, short descriptions; **prices only if the client gave them** |
+| Advantages | only verifiable ones ("same-day visit"), not "best in town" |
+| Work steps | if the process matters to the client's decision |
+| Questions and answers | from conversations with customers, if available |
+| Reviews | **real ones only**, with permission to show the name |
+| Work photos | for the gallery |
 
-## Технічне
+## Technical
 
-| Що | Примітка |
+| What | Note |
 | --- | --- |
-| Хостинг | cPanel / інший Apache з PHP 8.1+. Інший тип хостингу — поза обсягом цього скіла |
-| Приймач заявок | Telegram (вбудовано). Інше — див. `receivers.md` |
-| Є бот і chat id? | Якщо ні — дай інструкцію з `receivers.md`; самі значення людина впише в `.env` |
-| Аналітика | id GTM (`GTM-…`) або GA4 (`G-…`) або нічого |
-| Ліміт файла у формі | за замовчуванням 20 МБ; на дешевих хостингах може знадобитися менше |
+| Hosting | cPanel / another Apache with PHP 8.1+. Any other hosting type is outside this skill's scope |
+| Lead receiver | Telegram (built in). Anything else — see `receivers.md` |
+| Bot and chat id ready? | If not — give the instructions from `receivers.md`; the person enters the values in `.env` |
+| Analytics | GTM id (`GTM-…`) or GA4 (`G-…`) or nothing |
+| File size limit in the form | default 20 MB; cheap hosting may need less |
 
-## Як питати
+## How to ask
 
-- Групуй: ідентичність разом, контакти разом, дизайн разом.
-- Давай варіанти з дефолтом першим: «Мова сайту: українська (як у брифі) /
-  англійська / обидві — двомовність поза обсягом».
-- Суперечність показуй обома значеннями й джерелами: «У брифі +380 67…, на
-  макеті +380 50… — який правильний?»
-- Не питай того, що вже знайдено в матеріалах, — лише підтверди списком.
+- Group: identity together, contacts together, design together.
+- Offer options with the default first: "Site language: Ukrainian (as in the
+  brief) / English / both — bilingual is out of scope".
+- Show a conflict with both values and their sources: "The brief has
+  +380 67…, the mockup has +380 50… — which is right?"
+- Don't ask about what was already found in the materials — just confirm it as a list.

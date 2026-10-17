@@ -1,21 +1,21 @@
 /**
- * Instrument Sans — самохост.
+ * Instrument Sans — self-hosted.
  *
- * Шрифт лежить у `public/fonts/`, ліцензія OFL 1.1 — поруч, у `OFL.txt`.
- * Google Fonts свідомо НЕ використовується: зовнішній `<link>` блокує рендер і
- * передає IP кожного відвідувача третій стороні, а в ЄС це задокументований
- * юридичний ризик. Самохост знімає обидва.
+ * The font lives in `public/fonts/`, its OFL 1.1 license next to it in
+ * `OFL.txt`. Google Fonts is deliberately NOT used: an external `<link>` blocks
+ * rendering and hands every visitor's IP to a third party, which in the EU is a
+ * documented legal risk. Self-hosting removes both.
  *
- * Чотири файли — це два накреслення (звичайне й курсив) × два діапазони
- * (`latin`, `latin-ext`). Разом ~84 КБ, але браузер тягне лише те, що реально
- * зустрілося в тексті: розбиття за `unicode-range` збережено з оригіналу
- * Google Fonts. Сайту латиницею дістанеться один файл на 30 КБ.
+ * Four files are two faces (normal and italic) × two ranges (`latin`,
+ * `latin-ext`). About 84 KB in total, but the browser only fetches what
+ * actually appears in the text: the `unicode-range` split is kept from the
+ * original Google Fonts. A Latin-script site gets one 30 KB file.
  *
- * `font-weight: 400 700` — це variable-шрифт: одна вага на весь діапазон,
- * окремих файлів на bold не потрібно.
+ * `font-weight: 400 700` — it is a variable font: one face covers the whole
+ * range, no separate bold files needed.
  *
- * Оновлення шрифту — руками, з коміченням файлів: мережевих запитів під час
- * збірки правило 4 не дозволяє.
+ * Updating the font is manual, with the files committed: rule 4 allows no
+ * network requests during the build.
  */
 
 /* latin-ext */
@@ -40,7 +40,7 @@
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* latin-ext, курсив */
+/* latin-ext, italic */
 @font-face {
 	font-family: 'Instrument Sans';
 	font-style: italic;
@@ -51,7 +51,7 @@
 	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* latin, курсив */
+/* latin, italic */
 @font-face {
 	font-family: 'Instrument Sans';
 	font-style: italic;

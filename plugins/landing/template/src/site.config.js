@@ -1,34 +1,36 @@
 /**
- * Єдине джерело правди для всього сайту.
+ * The single source of truth for the whole site.
  *
- * Усе нижче рендериться ПІД ЧАС ЗБІРКИ — хедер, футер, кожен блок JSON-LD,
- * мікророзмітка, robots.txt, веб-маніфест, sitemap, модалка заявки, PHP-бекенд
- * і .htaccess читають звідси. Зміни телефон у цьому файлі — і він зміниться
- * всюди, включно зі статичним HTML, який бачать пошуковики.
+ * Everything below is rendered AT BUILD TIME — the header, footer, every
+ * JSON-LD block, the microdata, robots.txt, the web manifest, the sitemap, the
+ * request modal, the PHP back end and .htaccess read from here. Change a phone
+ * number in this file and it changes everywhere, including the static HTML
+ * search engines see.
  *
- * Починаєш новий проєкт? Цей файл і `src/styles/base/variables.css` — зазвичай
- * єдині два, які треба відкрити до того, як писати контент лендингу.
+ * Starting a new project? This file and `src/styles/base/variables.css` are
+ * usually the only two to open before writing the landing copy.
  */
 
 /**
- * Формат національного номера. Живить маску у формі (`src/scripts/form.js`),
- * плейсхолдер і видимий текст номерів — тож зміна країни переписує все одразу.
+ * National number format. Drives the form mask (`src/scripts/form.js`), the
+ * placeholder and the visible phone text — so changing the country rewrites
+ * everything at once.
  */
 const PHONE_FORMAT = {
 	countryCode: '+1',
-	/** Кількість цифр після коду країни. */
+	/** Number of digits after the country code. */
 	digits: 10,
-	/** Розміри груп, напр. [3, 3, 4] → (555) 010-2030 */
+	/** Group sizes, e.g. [3, 3, 4] → (555) 010-2030 */
 	groups: [3, 3, 4],
 };
 
-/** E.164 → лише цифри: посилання wa.me не приймає плюса. */
+/** E.164 → digits only: wa.me links don't accept a plus sign. */
 const digitsOf = (e164) => e164.replace(/[^0-9]/g, '');
 
 /**
- * Національні цифри → видимий текст за маскою: `+1 (555) 010-2030`. Цю саму
- * функцію використовує маска у формі (`src/scripts/form.js`), тож формат один
- * на весь сайт, а не два, які можуть розійтися.
+ * National digits → visible text by the mask: `+1 (555) 010-2030`. The form
+ * mask (`src/scripts/form.js`) uses this same function, so the site has one
+ * format, not two that can drift apart.
  */
 export const formatNational = (national) => {
 	let cursor = 0;
@@ -43,102 +45,103 @@ export const formatNational = (national) => {
 const displayPhone = (e164) => formatNational(digitsOf(e164).slice(digitsOf(PHONE_FORMAT.countryCode).length));
 
 /**
- * ЄДИНЕ місце в проєкті, де номер телефону існує літералом. E.164, без пробілів.
- * Звідси виводяться посилання `tel:`, видимий текст, `wa.me` і `telephone` у
- * структурованих даних. Перший номер — головний.
+ * The ONLY place in the project where a phone number exists as a literal.
+ * E.164, no spaces. `tel:` links, the visible text, `wa.me` and `telephone`
+ * in the structured data are all derived from it. The first number is the main one.
  */
 const PHONES = ['+15550102030'];
 
-/** Ліміт файла в мегабайтах — з нього виводяться байти, тексти й .htaccess. */
+/** File size limit in megabytes — bytes, messages and .htaccess are derived from it. */
 const MAX_FILE_MB = 20;
 
 export const SITE = {
-	/** Канонічний домен, без слеша в кінці. Він же — `site` в astro.config.mjs. */
+	/** Canonical domain, no trailing slash. It is also `site` in astro.config.mjs. */
 	url: 'https://example.com',
 
 	name: 'Forze Landing Demo',
-	/** Показується в хедері й на домашньому екрані телефона; до ~14 символів. */
+	/** Shown in the header and on the phone home screen; up to ~14 characters. */
 	shortName: 'Forze Demo',
-	/** Опис бізнесу: meta description головної, футер і `description` у JSON-LD. */
+	/** Business description: the home page meta description, the footer and `description` in JSON-LD. */
 	description:
 		'A one-page website for a small business: what we do, how we work, answers to common questions and a request form that lands in Telegram.',
 
 	/**
-	 * Тип сутності бізнесу — керує і JSON-LD, і мікророзміткою одразу.
+	 * Business entity type — drives both JSON-LD and microdata at once.
 	 *
-	 * `LocalBusiness` або будь-який його підтип (`Restaurant`, `Dentist`,
-	 * `HomeAndConstructionBusiness`…) — коли в клієнта є фізична адреса.
-	 * `Organization` — коли бізнес існує лише онлайн: тоді гео й години роботи
-	 * зникають з розмітки, бо schema.org не дозволяє їх поза `Place`.
+	 * `LocalBusiness` or any subtype (`Restaurant`, `Dentist`,
+	 * `HomeAndConstructionBusiness`…) — when the client has a physical address.
+	 * `Organization` — when the business exists only online: then geo and
+	 * opening hours disappear from the markup, because schema.org doesn't allow
+	 * them outside `Place`.
 	 */
 	businessType: 'LocalBusiness',
 
-	/** Діапазон цін для LocalBusiness, напр. '$$'. `null` — не виводити. */
+	/** Price range for LocalBusiness, e.g. '$$'. `null` — not output. */
 	priceRange: null,
 
 	lang: 'en',
 	locale: 'en_US',
 	themeColor: '#14532d',
 	author: 'Forze',
-	/** Посилання в рядку «Зроблено» у футері. `null` — рядок не виводиться. */
+	/** Link in the footer's "Made by" line. `null` — the line is not output. */
 	authorUrl: null,
 
 	/**
-	 * Куди постить форма. PHP-бекенд (`server/form.php`) потрапляє в
-	 * `dist/scripts/form.php` під час `npm run build`. Значення фіксоване:
-	 * лендинг збирається під Apache / cPanel.
+	 * Where the form posts. The PHP back end (`server/form.php`) is placed into
+	 * `dist/scripts/form.php` by `npm run build`. The value is fixed: the
+	 * landing is built for Apache / cPanel.
 	 */
 	formEndpoint: '/scripts/form.php',
 
 	contacts: {
 		email: 'hello@example.com',
 		/**
-		 * `href` — E.164 для посилань tel: і для структурованих даних, `display` —
-		 * те, що читає людина. Обидва виводяться з `PHONES`, тож розійтися не можуть.
+		 * `href` — E.164 for tel: links and structured data, `display` — what a
+		 * person reads. Both derive from `PHONES`, so they can't drift apart.
 		 */
 		phones: PHONES.map((href) => ({ display: displayPhone(href), href })),
-		/** `null`, якщо фізичної адреси немає (тоді й businessType: 'Organization'). */
+		/** `null` if there is no physical address (then also businessType: 'Organization'). */
 		address: {
 			street: '350 Fifth Avenue',
 			locality: 'New York',
 			region: 'NY',
 			postalCode: '10118',
-			/** ISO 3166-1 alpha-2 — це йде в структуровані дані. */
+			/** ISO 3166-1 alpha-2 — this goes into the structured data. */
 			country: 'US',
-			/** Назва країни словами: її читає людина в секції контактів. */
+			/** Country name in words: a person reads it in the contacts section. */
 			countryName: 'United States',
 		},
-		/** `null`, якщо координат немає. */
+		/** `null` if there are no coordinates. */
 		geo: { latitude: 40.74844, longitude: -73.985664 },
-		/** Порожній масив — блок годин не виводиться. */
+		/** An empty array — the hours block is not output. */
 		hours: [
 			{ days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00', label: 'Mon – Fri: 9:00 – 18:00' },
 		],
 	},
 
-	/** Рендериться в мобільному меню, у hero, у футері та в плаваючій панелі. */
+	/** Rendered in the mobile menu, the hero, the footer and the floating bar. */
 	messengers: [
 		{ id: 'telegram', name: 'Telegram', href: 'https://t.me/example', icon: '/assets/icons/telegram.svg', brand: '#229ED9' },
 		{ id: 'whatsapp', name: 'WhatsApp', href: `https://wa.me/${digitsOf(PHONES[0])}`, icon: '/assets/icons/whatsapp.svg', brand: '#25D366' },
 	],
 
 	/**
-	 * Сторонні скрипти. За замовчуванням порожньо — шаблон не містить жодних
-	 * трекерів. Вкажи id, і сніпет підставиться ЛИШЕ В PRODUCTION-ЗБІРЦІ.
-	 * Використовуй щось одне: Tag Manager уже містить GA4 всередині.
+	 * Third-party scripts. Empty by default — the scaffold ships no trackers.
+	 * Set an id and the snippet is injected ONLY IN THE PRODUCTION BUILD.
+	 * Use one: Tag Manager already contains GA4.
 	 */
 	analytics: {
 		gtmId: null, // 'GTM-XXXXXXX'
 		gaId: null, //  'G-XXXXXXXXXX'
 	},
 
-	/** Дублюється в `sameAs` і в JSON-LD, і в мікророзмітці бізнесу. */
+	/** Repeated as `sameAs` in both the JSON-LD and the business microdata. */
 	social: ['https://instagram.com/example'],
 
 	/**
-	 * Меню. Лендинг — одна сторінка, тож пункти ведуть на якорі секцій.
-	 * Адреса завжди починається з `/`, щоб меню працювало й зі сторінки
-	 * політики конфіденційності. Якір має збігатися з `id` секції в index.astro.
+	 * Menu. The landing is one page, so items point to section anchors. The
+	 * address always starts with `/` so the menu also works from the privacy
+	 * policy page. The anchor must match a section `id` in index.astro.
 	 */
 	nav: [
 		{ label: 'Services', href: '/#services' },
@@ -148,10 +151,10 @@ export const SITE = {
 	],
 
 	/**
-	 * Обмеження форми. ОДНЕ джерело правди на всіх споживачів: браузер
-	 * (`src/scripts/form.js`), PHP-бекенд (`server/form.php` читає
-	 * `form.limits.json`, який генерує збірка саме звідси) і `.htaccess`
-	 * (ліміти завантаження PHP теж підставляє збірка).
+	 * Form limits. The ONE source of truth for every consumer: the browser
+	 * (`src/scripts/form.js`), the PHP back end (`server/form.php` reads
+	 * `form.limits.json`, generated from here by the build) and `.htaccess`
+	 * (the PHP upload limits are substituted by the build too).
 	 */
 	form: {
 		maxFileMb: MAX_FILE_MB,
@@ -159,11 +162,12 @@ export const SITE = {
 		allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
 
 		/**
-		 * Сигнатури (magic bytes) у hex — чим файл є НАСПРАВДІ.
+		 * Signatures (magic bytes) in hex — what a file REALLY is.
 		 *
-		 * MIME-тип від браузера не перевіряється взагалі: він приходить від
-		 * клієнта, тож нічого не доводить. Бекенд звіряє перші байти файла з цією
-		 * таблицею за розширенням. `docx` — це zip, тож сигнатура спільна з zip.
+		 * The MIME type from the browser is not checked at all: it comes from
+		 * the client, so it proves nothing. The back end compares the file's first
+		 * bytes with this table, by extension. `docx` is a zip, so it shares the
+		 * zip signature.
 		 */
 		signatures: {
 			pdf: ['25504446'],
@@ -174,28 +178,28 @@ export const SITE = {
 			docx: ['504b0304', '504b0506', '504b0708'],
 		},
 
-		/** Найкоротший правдоподібний час заповнення, секунди. Менше — бот. */
+		/** The shortest plausible time to fill the form, in seconds. Less — a bot. */
 		minFillSeconds: 3,
-		/** Мінімальний проміжок між заявками з однієї IP, секунди. */
+		/** Minimum interval between requests from one IP, in seconds. */
 		rateLimitSeconds: 20,
-		/** Обрізання одного текстового поля, символів. */
+		/** Truncation of a single text field, in characters. */
 		maxFieldLength: 2000,
-		/** Ліміти Telegram: sendMessage — 4096, caption у sendDocument — 1024. */
+		/** Telegram limits: sendMessage — 4096, the caption in sendDocument — 1024. */
 		telegramTextLimit: 4096,
 		telegramCaptionLimit: 1024,
-		/** Маска телефону. Формат живе в `PHONE_FORMAT` на початку файлу. */
+		/** Phone mask. The format lives in `PHONE_FORMAT` at the top of the file. */
 		phone: {
 			...PHONE_FORMAT,
-			/** Необовʼязково. За замовчуванням — перший номер із contacts.phones. */
+			/** Optional. Defaults to the first number in contacts.phones. */
 			placeholder: null,
 		},
 		successUrl: '/thank-you',
 	},
 
 	/**
-	 * Рядки форми, які бачить користувач. `{size}` і `{types}` підставляються з
-	 * `form` вище (див. `fillMessage`), тож зміна ліміту не лишає в тексті
-	 * старої цифри.
+	 * Form strings the user sees. `{size}` and `{types}` are substituted from
+	 * `form` above (see `fillMessage`), so changing the limit never leaves a
+	 * stale number in the text.
 	 */
 	messages: {
 		nameRequired: 'Please enter your name.',
@@ -210,9 +214,9 @@ export const SITE = {
 	},
 
 	/**
-	 * Службові рядки обрамлення: хедер, футер, модалка, форма, aria-підписи.
-	 * Текст самих секцій — це контент, він живе в index.astro. Для іншої мови
-	 * сайту перекладаються `messages`, `ui` і контент сторінок.
+	 * Interface strings of the site chrome: header, footer, modal, form, aria
+	 * labels. Section copy is content and lives in index.astro. For another site
+	 * language, translate `messages`, `ui` and the page content.
 	 */
 	ui: {
 		skipLink: 'Skip to content',
@@ -248,7 +252,7 @@ export const SITE = {
 	},
 };
 
-/** Підставляє `{size}` і `{types}` у рядок із `messages`. */
+/** Substitutes `{size}` and `{types}` in a string from `messages`. */
 export const fillMessage = (text) =>
 	text
 		.replaceAll('{size}', String(SITE.form.maxFileMb))
@@ -258,10 +262,10 @@ export const fillMessage = (text) =>
 		);
 
 /**
- * Гео й години роботи schema.org дозволяє лише на `Place`. `LocalBusiness` —
- * це одночасно `Organization` і `Place`, а чистий `Organization` — ні. Прапорець
- * рахується тут один раз і читається і JSON-LD, і мікророзміткою — тож формати
- * розійтися не можуть.
+ * schema.org allows geo and opening hours only on `Place`. `LocalBusiness` is
+ * both an `Organization` and a `Place`; a plain `Organization` is not. The flag
+ * is computed here once and read by both JSON-LD and microdata — so the
+ * formats can't diverge.
  */
 export const isPlace = SITE.businessType !== 'Organization';
 

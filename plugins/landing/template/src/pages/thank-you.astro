@@ -1,7 +1,7 @@
 ---
 /**
- * Сторінка подяки. Автономний екран без хедера й футера — layout `Bare`.
- * noindex: сторінка має сенс лише одразу після надсилання заявки.
+ * The thank-you page. A standalone screen without header and footer — the
+ * `Bare` layout. noindex: the page only makes sense right after a request is sent.
  */
 import Bare from '../layouts/Bare.astro';
 import Logo from '../components/Logo.astro';
@@ -66,9 +66,8 @@ const phone = SITE.contacts.phones[0];
 
 	<script>
 		/**
-		 * Сторінка має сенс лише одразу після надсилання заявки, тож вона
-		 * перевіряє мітку, яку form.js кладе в адресу, а решту відправляє на
-		 * головну.
+		 * The page only makes sense right after a request is sent, so it checks the
+		 * marker form.js puts into the URL and sends everyone else to the home page.
 		 */
 		const MAX_AGE_MINUTES = 10;
 		const params = new URLSearchParams(window.location.search);

@@ -1,27 +1,27 @@
 <?php
 /**
- * Бекенд форми заявки для Apache / cPanel — єдиний бекенд лендингу.
+ * Request form back end for Apache / cPanel — the landing's only back end.
  *
- * Лежить ПОЗА `public/` навмисно: у `dist/scripts/` його кладе
- * `npm run build` разом із `form.limits.json`. Під час `npm run dev` його
- * віддає вбудований сервер PHP (`php -S`), до якого проксує dev-сервер Astro
- * — тож локально перевіряється той самий файл, що поїде на хостинг.
+ * It lives OUTSIDE `public/` on purpose: `npm run build` puts it into
+ * `dist/scripts/` together with `form.limits.json`. During `npm run dev` it is
+ * served by PHP's built-in server (`php -S`), which Astro's dev server proxies
+ * to — so locally you test the same file that ships to the hosting.
  *
- * Ліміти НЕ переписані тут руками — вони читаються з `form.limits.json`, який
- * генерується з src/site.config.js (tools/limits.mjs) і лягає поруч із цим
- * файлом.
+ * Limits are NOT retyped here — they are read from `form.limits.json`,
+ * generated from src/site.config.js (tools/limits.mjs) and placed next to this
+ * file.
  *
- * Доступи беруться з файлу .env, який має лежати ПОЗА коренем сайту:
+ * Credentials come from a .env file that must live OUTSIDE the site root:
  *
- *   /home/user/.env          ← файл
- *   /home/user/public_html/  ← корінь сайту
+ *   /home/user/.env          ← the file
+ *   /home/user/public_html/  ← the site root
  */
 
 declare(strict_types=1);
 
 header('Content-Type: text/plain; charset=utf-8');
 
-/* ---------------------------------------------------------------- допоміжне */
+/* ----------------------------------------------------------------- helpers */
 
 function fail(int $status, string $message): never
 {
@@ -31,10 +31,10 @@ function fail(int $status, string $message): never
 }
 
 /**
- * Ліміти — з того самого джерела, що й у браузера (SITE.form).
+ * Limits — from the same source the browser uses (SITE.form).
  *
- * Якщо файла немає, працювати не можна: мовчазні дефолти означали б, що
- * сервер і браузер розійшлися, а це саме те, від чого цей файл рятує.
+ * Without the file we can't work: silent defaults would mean the server and
+ * the browser have drifted apart, which is exactly what this file prevents.
  */
 function load_limits(): array
 {
@@ -55,8 +55,8 @@ function load_limits(): array
 $LIMITS = load_limits();
 
 /**
- * Мінімальний читач .env. Спершу дивиться на рівень вище кореня сайту, потім
- * відкочується до кореня проєкту — для локальної розробки.
+ * A minimal .env reader. First looks one level above the site root, then
+ * falls back to the project root — for local development.
  */
 function load_env(array $candidates): array
 {
@@ -90,11 +90,11 @@ function field(string $name, int $maxLength, string $fallback = ''): string
 }
 
 /**
- * Обрізання по одиницях UTF-16 — саме їх рахує Telegram.
+ * Truncation by UTF-16 code units — what Telegram counts.
  *
- * `mb_substr` рахує символи, а не одиниці UTF-16, тож на емодзі повідомлення
- * виходило б довшим за ліміт Telegram і відхилялося. Тут рахуємо одиниці UTF-16
- * і не розрізаємо сурогатну пару.
+ * `mb_substr` counts characters, not UTF-16 units, so with emoji the message
+ * would exceed Telegram's limit and be rejected. Here we count UTF-16 units
+ * and never split a surrogate pair.
  */
 function utf16_truncate(string $text, int $limit): string
 {
@@ -115,11 +115,11 @@ function utf16_truncate(string $text, int $limit): string
 }
 
 /**
- * Чи прийшов запит з нашого ж сайту.
+ * Whether the request came from our own site.
  *
- * Відсікає чужі сайти, які постили б у цю форму з браузера відвідувача.
- * Від скрипта поза браузером це НЕ захищає: заголовок Origin він підробляє
- * без зусиль. Основну роботу роблять honeypot, тривалість заповнення й частота.
+ * Stops other sites posting to this form from a visitor's browser. It does NOT
+ * protect against a script outside a browser: that fakes the Origin header
+ * effortlessly. The honeypot, fill duration and rate limit do the real work.
  */
 function origin_allowed(string $siteUrl): bool
 {
@@ -143,14 +143,15 @@ function origin_allowed(string $siteUrl): bool
 }
 
 /**
- * Один запис на IP у системній теці tmp; база даних не потрібна.
+ * One marker per IP in the system temp folder; no database needed.
  *
- * Помилки НЕ глушаться: раніше тут стояв `@touch`, і на хості з `open_basedir`
- * обмеження частоти мовчки вимикалося — сайт виглядав захищеним, не будучи ним.
+ * Errors are NOT suppressed: there used to be an `@touch` here, and on a host
+ * with `open_basedir` the rate limit silently switched off — the site looked
+ * protected without being so.
  *
- * Прибирання застарілих маркерів — тут же: інакше /tmp обростав би файлами
- * довічно. Це «лежачий поліцейський», а не стіна: між паралельними запитами
- * немає блокування, тож два одночасні пройдуть обидва.
+ * Stale markers are cleaned up here too: otherwise /tmp would accumulate files
+ * forever. This is a speed bump, not a wall: there is no locking between
+ * parallel requests, so two simultaneous ones both get through.
  */
 function enforce_rate_limit(int $seconds): void
 {
@@ -171,7 +172,7 @@ function enforce_rate_limit(int $seconds): void
         fail(500, 'The form cannot enforce its rate limit: the marker file could not be written.');
     }
 
-    // Прибираємо чужі протухлі маркери, доки ми тут.
+    // Clean up other people's stale markers while we're here.
     foreach (glob($dir . '/form-*.txt') ?: [] as $stale) {
         if ((time() - (int) @filemtime($stale)) > $seconds * 60) {
             @unlink($stale);
@@ -180,12 +181,12 @@ function enforce_rate_limit(int $seconds): void
 }
 
 /**
- * Чим файл є насправді.
+ * What the file really is.
  *
- * `$_FILES['type']` не перевіряється взагалі — його надсилає браузер, тож він
- * нічого не доводить: PE-файл під іменем `evil.pdf` інакше пройшов би.
- * Перевіряються перші байти файла проти таблиці сигнатур із конфіга, і саме за
- * тим розширенням, яке файл заявляє.
+ * `$_FILES['type']` is not checked at all — the browser sends it, so it proves
+ * nothing: a PE file named `evil.pdf` would otherwise pass. The first bytes of
+ * the file are checked against the config's signature table, for exactly the
+ * extension the file claims.
  */
 function matches_signature(string $path, string $extension, array $signatures): bool
 {
@@ -209,7 +210,7 @@ function matches_signature(string $path, string $extension, array $signatures): 
     return false;
 }
 
-/* ------------------------------------------------------------------ захист */
+/* ---------------------------------------------------------------- defences */
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
@@ -217,10 +218,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 }
 
 /**
- * Тіло, більше за `post_max_size`, PHP відкидає ще до нас: $_POST і $_FILES
- * порожні, а Content-Length — ні. Без цієї перевірки honeypot бачив порожнє
- * поле (пройшов), тривалість була відсутня — і в Telegram летіла заявка з усіма
- * «Not provided» і статусом 200.
+ * PHP drops a body larger than `post_max_size` before we see it: $_POST and
+ * $_FILES are empty while Content-Length is not. Without this check the
+ * honeypot saw an empty field (passed), the duration was missing — and a
+ * request full of "Not provided" went to Telegram with status 200.
  */
 $contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
 if ($contentLength > 0 && $_POST === [] && $_FILES === []) {
@@ -230,15 +231,15 @@ if ($contentLength > 0 && $_POST === [] && $_FILES === []) {
 $maxFieldLength = (int) ($LIMITS['maxFieldLength'] ?? 2000);
 $maxFileSize = (int) ($LIMITS['maxFileSize'] ?? 20971520);
 
-// 1. Honeypot: поле винесене за екран, тож заповнити його може лише бот.
+// 1. Honeypot: the field is moved off-screen, so only a bot fills it in.
 if (field('company', $maxFieldLength) !== '') {
     fail(400, 'Rejected.');
 }
 
-// 2. Тривалість заповнення. Поле зобовʼязане бути присутнім і числовим:
-//    раніше перевірка стояла під `if ($value > 0)`, тож бот пропускав її,
-//    просто не надіславши поле. Це ТРИВАЛІСТЬ із performance.now() клієнта, а
-//    не мітка часу: порівнювати чужий годинник зі своїм не можна.
+// 2. Fill duration. The field must be present and numeric: the check used to
+//    sit under `if ($value > 0)`, so a bot skipped it simply by not sending the
+//    field. This is a DURATION from the client's performance.now(), not a
+//    timestamp: someone else's clock can't be compared with ours.
 $elapsedRaw = $_POST['elapsedMs'] ?? '';
 if (!is_string($elapsedRaw) || !is_numeric($elapsedRaw)) {
     fail(400, 'Rejected.');
@@ -247,21 +248,21 @@ if ((float) $elapsedRaw < ((float) ($LIMITS['minFillSeconds'] ?? 3)) * 1000) {
     fail(400, 'Rejected.');
 }
 
-// 3. Запит має приходити з нашого ж сайту.
+// 3. The request must come from our own site.
 if (!origin_allowed((string) ($LIMITS['siteUrl'] ?? ''))) {
     fail(400, 'Rejected.');
 }
 
-/* ------------------------------------------------------------- 4. файл */
+/* ------------------------------------------------------------------ 4. file */
 
 $upload = $_FILES['drawing'] ?? null;
 $uploadError = is_array($upload) ? (int) ($upload['error'] ?? UPLOAD_ERR_NO_FILE) : UPLOAD_ERR_NO_FILE;
 
 /**
- * Раніше все, крім UPLOAD_ERR_OK, трактувалося як «файлу немає» — і заявка
- * йшла без вкладення зі статусом 200. На шаред-хостингу `upload_max_filesize`
- * типово 2M або 8M, тож креслення на 15 МБ зникало мовчки, а користувач бачив
- * «Sent.».
+ * Everything except UPLOAD_ERR_OK used to be treated as "no file" — and the
+ * request went out without the attachment, with status 200. On shared hosting
+ * `upload_max_filesize` is typically 2M or 8M, so a 15 MB drawing silently
+ * vanished while the user saw "Sent.".
  */
 if ($uploadError !== UPLOAD_ERR_OK && $uploadError !== UPLOAD_ERR_NO_FILE) {
     if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
@@ -299,13 +300,13 @@ if ($hasFile) {
 }
 
 /**
- * 5. Частота — ПІСЛЯ перевірки файла. Інакше людина, яка прикріпила файл не
- * того типу, отримувала б відмову, виправлялася — і впиралася в «зачекайте
- * 20 секунд» за заявку, яка нікуди не пішла.
+ * 5. Rate limit — AFTER the file check. Otherwise someone who attached the
+ * wrong file type would be rejected, fix it — and hit "wait 20 seconds" for a
+ * request that never went anywhere.
  */
 enforce_rate_limit((int) ($LIMITS['rateLimitSeconds'] ?? 20));
 
-/* ------------------------------------------------------------ креденшили */
+/* ------------------------------------------------------------ credentials */
 
 $env = load_env([
     dirname($_SERVER['DOCUMENT_ROOT'] ?? __DIR__) . '/.env',
@@ -319,7 +320,7 @@ if ($botToken === '' || $chatId === '') {
     fail(500, 'The form is not configured yet: TELEGRAM_BOT_TOKEN and CHAT_ID are missing. Copy .env.example to .env and fill them in.');
 }
 
-/* --------------------------------------------------------------- повідомлення */
+/* ----------------------------------------------------------------- message */
 
 $text = "New request from the website\n\n"
     . 'Name: ' . field('username', $maxFieldLength, 'Not provided') . "\n"
@@ -331,7 +332,7 @@ if ($hasFile) {
     $text .= "\n\nA file is attached.";
 }
 
-/* --------------------------------------------------------------- надсилання */
+/* ---------------------------------------------------------------- delivery */
 
 function telegram_request(string $token, string $method, array $payload): int
 {
@@ -363,8 +364,8 @@ if ($hasFile) {
 } else {
     $status = telegram_request($botToken, 'sendMessage', [
         'chat_id' => $chatId,
-        // Без обрізання чотири поля по 2000 символів давали ~8000 — удвічі
-        // більше за ліміт sendMessage, і Telegram відхиляв справну заявку.
+        // Without truncation four fields of 2000 characters gave ~8000 — twice
+        // the sendMessage limit, and Telegram rejected a perfectly valid request.
         'text' => utf16_truncate($text, (int) ($LIMITS['telegramTextLimit'] ?? 4096)),
     ]);
 }

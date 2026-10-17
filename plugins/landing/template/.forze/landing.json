@@ -1,5 +1,5 @@
 {
 	"plugin": "landing@forze",
-	"template": "0.1.0",
-	"note": "Маркер проєкту, створеного плагіном landing@forze. За ним хуки плагіна відрізняють цей проєкт від усіх інших і вмикають захист dist/. Видалення файлу лише вимикає захист — на роботу сайту він не впливає."
+	"template": "0.2.0",
+	"note": "Marker of a project created by the landing@forze plugin. The plugin's hooks use it to tell this project apart from all others and enable the dist/ guard. Deleting the file only disables the guard — it has no effect on the site."
 }

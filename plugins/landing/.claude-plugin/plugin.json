@@ -1,7 +1,7 @@
 {
 	"name": "landing",
 	"displayName": "Landing (forze)",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Turn-key one-page landing for small businesses: brief from client materials, Astro static site with Telegram request form, PHP back end for cPanel, both structured-data formats, and a ready-to-upload zip.",
 	"author": {
 		"name": "forze"

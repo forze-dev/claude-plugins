@@ -1,12 +1,12 @@
 ---
 /**
- * Мінімальний каркас для автономних екранів без обрамлення сайту: сторінка
- * подяки й 404. Існує окремим layout тому, що Astro піднімає теги <script>
- * глобально: умова всередині Base усе одно віддала б цим сторінкам код хедера,
- * модалки й плаваючої панелі, яких у них немає.
+ * A minimal shell for standalone screens without the site chrome: the
+ * thank-you page and the 404. It is a separate layout because Astro hoists
+ * <script> tags globally: a condition inside Base would still ship these pages
+ * the code for the header, modal and floating bar they don't have.
  *
- * Обидві сторінки `noindex`, тому структурованих даних на них немає взагалі —
- * ні JSON-LD, ні мікророзмітки бізнесу.
+ * Both pages are `noindex`, so they carry no structured data at all — neither
+ * JSON-LD nor business microdata.
  */
 import { SITE } from '../site.config.js';
 import Seo from '../components/Seo.astro';
@@ -17,7 +17,7 @@ import '../styles/main.css';
 
 const { schema, noindex = false, ...seo } = Astro.props;
 
-/** Той самий базовий граф, що й у `Base`, якщо колись тут зʼявиться індексована сторінка. */
+/** The same base graph as in `Base`, should an indexed page ever appear here. */
 const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].flat());
 ---
 

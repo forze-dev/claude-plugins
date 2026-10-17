@@ -1,32 +1,32 @@
 ---
-description: Додати або змінити секцію лендингу (переваги, послуги, етапи, відгуки, галерея тощо).
+description: Add or change a landing section (advantages, services, steps, reviews, gallery, etc.).
 ---
 
-Додай секцію на лендинг (`src/pages/index.astro`). Якщо розробник не сказав,
-що саме має бути в секції і де вона стоїть — спитай.
+Add a section to the landing (`src/pages/index.astro`). If the developer
+hasn't said what the section should contain and where it goes — ask.
 
-Спершу перевір, чи не підходить наявна секція з `src/components/sections/`
-(таблиця в `CLAUDE.md`, розділ «Лендинг і секції»). `Cards` покриває переваги,
-послуги й «для кого це»; `Section` + будь-який компонент — усе інше. Нова
-секція — лише коли наявні справді не підходять.
+First check whether an existing section in `src/components/sections/` fits
+(the table in `CLAUDE.md`, "Landing and sections"). `Cards` covers advantages,
+services and "who it's for"; `Section` + any component covers the rest. A new
+section only when the existing ones really don't fit.
 
-Вимоги:
+Requirements:
 
-1. **Дані секції — масив у frontmatter `index.astro`**, а не текст, вписаний у
-   компонент. Компонент лише рендерить.
-2. **Факти — лише з брифу або конфіга** (правило 4). Ціни, цифри, відгуки,
-   сертифікати, роки на ринку — питаються. Відгуки — лише справжні, з дозволом
-   клієнта показати ім'я.
-3. **Якір.** Якщо секції місце в меню, її `id` і пункт `SITE.nav`
-   (`/#<id>`) додаються разом.
-4. **Нова секція-компонент** — `src/components/sections/<Name>.astro`, що
-   обгортає вміст у `Section.astro`, і `src/styles/sections/<name>.css`, який
-   компонент імпортує сам. Лише токени з `variables.css`.
-5. **Структуровані дані.** FAQ — `faqPage(faq)` у масиві `schema` сторінки з
-   тим самим масивом, що рендерить `<Faq>`. Інші секції зазвичай їх не мають —
-   якщо додаєш, то в обох форматах (правило 7).
-6. **Ритм.** Чергуй `surface` між сусідніми секціями.
+1. **Section data is an array in the frontmatter of `index.astro`**, not text
+   typed into the component. The component only renders.
+2. **Facts only from the brief or the config** (rule 4). Prices, figures,
+   reviews, certificates, years in business — ask. Reviews — real ones only,
+   with the client's permission to show the name.
+3. **Anchor.** If the section belongs in the menu, its `id` and the
+   `SITE.nav` item (`/#<id>`) are added together.
+4. **A new section component** — `src/components/sections/<Name>.astro` that
+   wraps its content in `Section.astro`, and `src/styles/sections/<name>.css`
+   that the component imports itself. Tokens from `variables.css` only.
+5. **Structured data.** FAQ — `faqPage(faq)` in the page's `schema` array with
+   the same array that renders `<Faq>`. Other sections usually have none — if
+   you add some, then in both formats (rule 7).
+6. **Rhythm.** Alternate `surface` between neighbouring sections.
 
-Наприкінці: `npm run build`, `npm run check`, перегляд у `npm run preview` на
-ширині телефона й десктопа. Потім — ченжлог і коміт, якщо є `.git`
-(правило 3).
+At the end: `npm run build`, `npm run check`, a look in `npm run preview` at
+phone and desktop widths. Then — the changelog and a commit if there is `.git`
+(rule 3).

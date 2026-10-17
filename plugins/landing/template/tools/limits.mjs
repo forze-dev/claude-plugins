@@ -1,8 +1,8 @@
 /**
- * Ліміти форми для PHP-бекенда — одна функція на двох споживачів: збірку
- * (`tools/build.mjs` кладе файл у dist/scripts/) і dev-сервер (`astro.config.mjs`
- * кладе його поруч із server/form.php). Так PHP у dev і в проді читає рівно
- * те саме, що й браузер, — з `SITE.form`.
+ * Form limits for the PHP back end — one function for two consumers: the build
+ * (`tools/build.mjs` writes the file into dist/scripts/) and the dev server
+ * (`astro.config.mjs` writes it next to server/form.php). So PHP in dev and in
+ * production reads exactly what the browser reads — from `SITE.form`.
  */
 
 import { writeFileSync } from 'node:fs';
@@ -11,9 +11,9 @@ import { join } from 'node:path';
 import { SITE } from '../src/site.config.js';
 
 /**
- * Рівно ті поля, які читає `server/form.php`. Навмисно не весь `SITE.form`:
- * маска телефону й successUrl бекенду не потрібні, а зайві дані в теці, що
- * лежить під вебсервером, — зайві.
+ * Exactly the fields `server/form.php` reads. Deliberately not the whole
+ * `SITE.form`: the back end needs neither the phone mask nor successUrl, and
+ * extra data in a folder under the web server is just extra.
  */
 export function formLimits() {
 	return {
@@ -29,7 +29,7 @@ export function formLimits() {
 	};
 }
 
-/** Пише `form.limits.json` у вказану теку. Формат стабільний — збірка детермінована. */
+/** Writes `form.limits.json` into the given folder. Stable format — the build is deterministic. */
 export function writeFormLimits(dir) {
 	const file = join(dir, 'form.limits.json');
 	writeFileSync(file, JSON.stringify(formLimits(), null, '\t') + '\n');

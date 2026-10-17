@@ -1,10 +1,10 @@
 ---
 /**
- * Список питань на <details> — працює без JavaScript.
+ * A question list on <details> — works without JavaScript.
  *
- * Той самий масив `entries` сторінка передає у `faqPage()` для JSON-LD, а тут
- * він рендериться як мікророзмітка FAQPage. Відповідь може містити простий
- * HTML (<a>, <strong>); у JSON-LD хелпер прибирає теги сам.
+ * The page passes the same `entries` array to `faqPage()` for JSON-LD, and here
+ * it is rendered as FAQPage microdata. An answer may contain simple HTML
+ * (<a>, <strong>); the JSON-LD helper strips the tags itself.
  */
 const { entries } = Astro.props;
 ---

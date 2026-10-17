@@ -1,11 +1,11 @@
 ---
 /**
- * Сторінка 404.
+ * The 404 page.
  *
- * Astro збирає її в `dist/404.html`, а Apache віддає зі статусом 404 через
- * `ErrorDocument 404 /404.html` у .htaccess. Без хедера й футера — тупикова
- * сторінка має вести лише назад, тому layout `Bare`. Структурованих даних
- * немає: сторінка noindex і не описує жодної сутності.
+ * Astro builds it into `dist/404.html`, and Apache serves it with a 404 status
+ * through `ErrorDocument 404 /404.html` in .htaccess. No header or footer — a
+ * dead end should only lead back, hence the `Bare` layout. No structured data:
+ * the page is noindex and describes no entity.
  */
 import Bare from '../layouts/Bare.astro';
 import Logo from '../components/Logo.astro';

@@ -1,7 +1,7 @@
 /**
- * Політика конфіденційності — сторінка для довгого читання.
+ * Privacy policy — a page for long reading.
  *
- * Вузька міра рядка, нумеровані розділи з волосяними лініями. Нічого більше.
+ * A narrow measure, numbered sections with hairlines. Nothing more.
  */
 
 .privacy {
@@ -38,8 +38,8 @@
 }
 
 /**
- * Колонка тексту вужча за контейнер сайту, тож хлібні крихти над нею мають
- * збігатися — інакше сторінка матиме два різні ліві краї.
+ * The text column is narrower than the site container, so the breadcrumbs
+ * above it must match — otherwise the page has two different left edges.
  */
 .breadcrumbs {
 	max-width: 760px;

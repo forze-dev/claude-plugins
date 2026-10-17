@@ -1,16 +1,16 @@
 /**
- * Архів для заливання на хостинг: `npm run pack`.
+ * The archive to upload to the hosting: `npm run pack`.
  *
- * Пакує ВМІСТ `dist/` (не саму теку) у `release/<домен>.zip` — його
- * розпаковують прямо в public_html. Запускається ПІСЛЯ `npm run build` і
- * `npm run check`.
+ * Packs the CONTENTS of `dist/` (not the folder itself) into
+ * `release/<domain>.zip` — it is extracted straight into public_html. Run it
+ * AFTER `npm run build` and `npm run check`.
  *
- * Без залежностей: zip збирається вручну через node:zlib. Архів детермінований —
- * однаковий dist/ дає байт-у-байт однаковий zip: файли йдуть у відсортованому
- * порядку, а дата всередині архіву фіксована. Інакше два архіви тієї самої
- * збірки відрізнялися б і порівнювати їх було б неможливо (правило 4).
+ * No dependencies: the zip is assembled by hand with node:zlib. The archive is
+ * deterministic — the same dist/ gives a byte-identical zip: files go in sorted
+ * order and the date inside the archive is fixed. Otherwise two archives of the
+ * same build would differ and couldn't be compared (rule 4).
  *
- * `.env` у архів не потрапляє ніколи — навіть якщо хтось поклав його в dist/.
+ * `.env` never goes into the archive — even if someone put it in dist/.
  */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -22,12 +22,12 @@ import { SITE } from '../src/site.config.js';
 const DIST = 'dist';
 const OUT_DIR = 'release';
 
-/** 1 січня 2020, 00:00 у форматі DOS: час і дата в архіві фіксовані. */
+/** 1 January 2020, 00:00 in DOS format: the time and date inside the archive are fixed. */
 const DOS_TIME = 0;
 const DOS_DATE = ((2020 - 1980) << 9) | (1 << 5) | 1;
 
 if (!existsSync(DIST)) {
-	console.error('Теки dist/ немає. Спершу `npm run build`, потім `npm run check`, потім `npm run pack`.');
+	console.error('There is no dist/ folder. Run `npm run build`, then `npm run check`, then `npm run pack`.');
 	process.exit(1);
 }
 
@@ -57,8 +57,8 @@ for (const path of files) {
 
 	const local = Buffer.alloc(30);
 	local.writeUInt32LE(0x04034b50, 0);
-	local.writeUInt16LE(20, 4); // версія для розпакування
-	local.writeUInt16LE(0x0800, 6); // імена в UTF-8
+	local.writeUInt16LE(20, 4); // version needed to extract
+	local.writeUInt16LE(0x0800, 6); // UTF-8 file names
 	local.writeUInt16LE(8, 8); // deflate
 	local.writeUInt16LE(DOS_TIME, 10);
 	local.writeUInt16LE(DOS_DATE, 12);
@@ -100,6 +100,6 @@ mkdirSync(OUT_DIR, { recursive: true });
 const target = join(OUT_DIR, `${host}.zip`);
 writeFileSync(target, Buffer.concat([...locals, ...centrals, end]));
 
-console.log(`\nАрхів готовий: ${target} (${files.length} файлів)`);
-console.log(`  Розпакуй його ВМІСТ у public_html — без проміжної теки.`);
-console.log(`  .env у архіві немає і бути не повинно: поклади його на рівень вище за public_html.`);
+console.log(`\nArchive ready: ${target} (${files.length} files)`);
+console.log(`  Extract its CONTENTS into public_html — without an intermediate folder.`);
+console.log(`  .env is not in the archive and must not be: put it one level above public_html.`);

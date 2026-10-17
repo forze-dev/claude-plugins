@@ -1,9 +1,9 @@
 /**
- * Модалка заявки.
+ * The request modal.
  *
- * Розмітка живе в RequestModal.astro; цей скрипт лише відкриває й закриває її.
- * Тригером є будь-який елемент із [data-modal-open] — жодних id, тож на
- * сторінці їх може бути скільки завгодно.
+ * The markup lives in RequestModal.astro; this script only opens and closes it.
+ * Any element with [data-modal-open] is a trigger — no ids, so a page can have
+ * as many as it likes.
  */
 
 import { initForm } from './form.js';
@@ -33,7 +33,7 @@ export function initModal() {
 	const overlay = document.querySelector('[data-modal]');
 	if (!overlay) return;
 
-	// Форма всередині модалки ініціалізується один раз, при першому відкритті.
+	// The form inside the modal is initialized once, on first open.
 	let formReady = false;
 
 	const close = () => {
@@ -41,7 +41,7 @@ export function initModal() {
 		document.body.classList.remove('is-scroll-locked');
 
 		const hide = () => { overlay.hidden = true; };
-		// transitionend може не спрацювати (reduced motion, прихована вкладка) — тому ще й таймер.
+		// transitionend may not fire (reduced motion, a hidden tab) — hence the timer too.
 		const fallback = setTimeout(hide, 400);
 		overlay.addEventListener('transitionend', () => { clearTimeout(fallback); hide(); }, { once: true });
 
@@ -53,9 +53,9 @@ export function initModal() {
 		if (!overlay.hidden) return;
 		lastTrigger = trigger;
 
-		// Компенсації смуги прокрутки тут свідомо немає: `scrollbar-gutter: stable`
-		// у base/reset.css тримає місце зарезервованим, тож блокування сторінки
-		// нічого не зсуває — зокрема й фіксований хедер.
+		// No scrollbar compensation here on purpose: `scrollbar-gutter: stable` in
+		// base/reset.css keeps the space reserved, so locking the page shifts
+		// nothing — including the fixed header.
 		overlay.hidden = false;
 		document.body.classList.add('is-scroll-locked');
 

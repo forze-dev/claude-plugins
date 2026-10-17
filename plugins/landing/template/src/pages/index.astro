@@ -1,17 +1,18 @@
 ---
 /**
- * Лендинг — головна й єдина контентна сторінка сайту.
+ * The landing — the home page and the site's only content page.
  *
- * Сторінка складається з секцій із src/components/sections/. Порядок секцій —
- * порядок у цьому файлі; якір кожної (`id`) має збігатися з пунктом меню в
- * `SITE.nav`. Непотрібну секцію прибирають разом з її даними й пунктом меню.
+ * The page is made of sections from src/components/sections/. The section order
+ * is the order in this file; each section's anchor (`id`) must match a menu
+ * item in `SITE.nav`. An unneeded section is removed together with its data
+ * and its menu item.
  *
- * Текст секцій — це контент, і його місце тут. Контакти, телефони, назва
- * бізнесу — НЕ контент: вони беруться з site.config.js.
+ * Section copy is content, and it belongs here. Contacts, phones and the
+ * business name are NOT content: they come from site.config.js.
  *
- * Атрибут `data-demo-content` позначає демо-текст шаблону. `npm run check`
- * не пропустить збірку, доки він лишається, — прибери його, коли текст
- * замінено справжнім.
+ * The `data-demo-content` attribute marks scaffold demo copy. `npm run check`
+ * won't pass the build while it remains — remove it once the copy is replaced
+ * with the real thing.
  */
 import Base from '../layouts/Base.astro';
 import Hero from '../components/sections/Hero.astro';
@@ -40,14 +41,14 @@ const steps = [
 	{ title: 'You get the result', body: 'We hand over the work and stay in touch for any questions.' },
 ];
 
-/** Один масив — і для видимого списку з мікророзміткою, і для FAQPage у JSON-LD. */
+/** One array — for the visible list with microdata and for FAQPage in JSON-LD. */
 const faq = [
 	{ question: 'How quickly do you reply?', answer: 'On the same working day. Requests sent in the evening are answered the next morning.' },
 	{ question: 'Is the first consultation free?', answer: 'Yes. The first call is free and does not oblige you to anything.' },
 	{ question: 'Can I attach a file to the request?', answer: 'Yes. The form accepts documents and images — attach them if they help explain the task.' },
 ];
 
-// Бізнес і WebSite додає Base.astro — сторінка описує лише себе.
+// The business and WebSite are added by Base.astro — the page describes only itself.
 const schema = [webPage('/', { name: title, description }), faqPage(faq)];
 ---
 

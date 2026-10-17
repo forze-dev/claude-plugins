@@ -1,9 +1,9 @@
 /**
- * Типографіка.
+ * Typography.
  *
- * Заголовки набрані щільно й вирівняні ліворуч; основний текст тримає комфортну
- * міру рядка. Розмір береться зі шкали у variables.css — ніколи не вписуй
- * font-size у стилі сторінки руками.
+ * Headings are set tight and left-aligned; body text keeps a comfortable
+ * measure. Sizes come from the scale in variables.css — never type a
+ * font-size into page styles by hand.
  */
 
 h1,
@@ -42,7 +42,7 @@ p {
 	text-wrap: pretty;
 }
 
-/** Вступний абзац під заголовком. */
+/** The intro paragraph under a heading. */
 .lead {
 	font-size: var(--fz-md);
 	line-height: var(--lh-relaxed);
@@ -59,8 +59,8 @@ p {
 }
 
 /**
- * Блок заголовка секції: заголовок плюс необовʼязковий рядок під ним.
- * Без надзаголовка — роботу робить сам заголовок.
+ * A section heading block: the heading plus an optional line under it.
+ * No eyebrow — the heading does the work itself.
  */
 .section-head {
 	max-width: var(--measure);
@@ -74,7 +74,7 @@ p {
 	color: var(--ink-muted);
 }
 
-/** Довгий текст, напр. політика конфіденційності. */
+/** Long text, e.g. the privacy policy. */
 .prose h2 {
 	font-size: var(--fz-xl);
 	margin-bottom: var(--space-3);
@@ -109,7 +109,7 @@ p {
 	color: var(--accent-hover);
 }
 
-/** Код у рядку. Використовується в текстах на «Про нас» і в політиці. */
+/** Inline code. */
 code {
 	padding: 0.15em 0.4em;
 	background: var(--accent-tint);

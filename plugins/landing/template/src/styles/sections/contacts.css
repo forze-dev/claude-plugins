@@ -1,6 +1,7 @@
 /**
- * Секція контактів. Дві колонки: способи звʼязку ліворуч, форма праворуч.
- * Форма — єдина панель у секції, тож вага лягає на неї.
+ * The contacts section. Two columns: ways to get in touch on the left, the
+ * form on the right. The form is the only panel in the section, so the weight
+ * lands on it.
  */
 
 .contacts-layout {
@@ -70,7 +71,7 @@
 	list-style: none;
 }
 
-/* Подвійний клас: CSS секції може опинитися в бандлі раніше за .panel із main.css. */
+/* Double class: section CSS may land in the bundle before .panel from main.css. */
 .panel.contacts-form {
 	padding: var(--space-7);
 	border-radius: var(--radius-lg);

@@ -1,9 +1,9 @@
 /**
- * Панель месенджерів, лише для мобільних.
+ * The messenger bar, mobile only.
  *
- * Рендериться з SITE.messengers, тож додати канал — це зміна в конфізі.
- * Виїжджає після початку прокрутки й не заважає вгорі, де й так є кнопка
- * заявки в hero.
+ * Rendered from SITE.messengers, so adding a channel is a config change. It
+ * slides in once scrolling starts and stays out of the way at the top, where
+ * the hero already has a request button.
  */
 
 import { SITE } from '../site.config.js';
@@ -22,7 +22,7 @@ export function initFloatingBar() {
 	bar.innerHTML = SITE.messengers
 		.map((messenger) => {
 			const color = messenger.brand || 'var(--accent)';
-			// Посилання viber:// не можна відкривати в target=_blank — це ламає передачу в застосунок.
+			// viber:// links must not open with target=_blank — that breaks the hand-off to the app.
 			const isWebLink = messenger.href.startsWith('http');
 			const linkAttrs = isWebLink ? ' target="_blank" rel="noopener nofollow"' : '';
 

@@ -1,229 +1,253 @@
 ---
 name: create
-description: Створити односторінковий лендинг під ключ для малого бізнесу — від сирих матеріалів клієнта до zip-архіву для cPanel. Збирає бриф із файлів і питань, розгортає Astro-каркас із формою заявки в Telegram (PHP-бекенд), наповнює секції, перевіряє й пакує. Використовуй, коли просять зробити лендинг, односторінковий сайт, сайт-візитку чи посадкову сторінку для клієнта.
-argument-hint: "[назва проєкту]"
+description: Build a turn-key one-page landing site for a small business — from raw client materials to a zip ready for cPanel. Collects the brief from files and questions, scaffolds an Astro site with a Telegram request form (PHP back end), fills the sections, verifies and packages it. Use when asked to make a landing page, a one-page site, a business-card site or a lead page for a client.
+argument-hint: "[project name]"
 ---
 
-# Лендинг під ключ — `/landing:create`
+# Turn-key landing — `/landing:create`
 
-Ти ведеш людину від «у мене є клієнт і купа матеріалів» до архіву з готовим
-сайтом, який вона заливає на cPanel. Людина може нічого не знати про
-веб-розробку: говори простою мовою, пояснюй, що робиш і навіщо, а технічні
-деталі лишай у файлах проєкту.
+You take a person from "I have a client and a pile of materials" to an archive
+with a finished site they upload to cPanel. The person may know nothing about
+web development: speak plainly, explain what you do and why, and keep
+technical detail in the project files.
 
-Результат — проєкт, який далі живе **без плагіна**: у ньому є `CLAUDE.md` з
-правилами, `docs/` з задачею й ченжлогом, команди `/add-section` і `/add-page`.
+The result is a project that lives on **without this plugin**: it has
+`CLAUDE.md` with rules, `docs/` with the task and changelog, and the
+`/add-section` and `/add-page` commands.
 
-Обсяг — **лендинг + політика конфіденційності + сторінка подяки + 404**. Інших
-сторінок цей скіл не робить; якщо людина просить «ще сторінку послуг» — запиши
-це у файл задачі як наступну окрему задачу й скажи, що її робить `/add-page`
-уже в готовому проєкті.
+Scope — **landing + privacy policy + thank-you page + 404**. This skill makes
+no other pages. If the person asks for "a services page too", record it in the
+task file as separate follow-up work and say that `/add-page` does it in the
+finished project.
 
-Каркас: `${CLAUDE_PLUGIN_ROOT}/template`. Довідники цього скіла:
+Scaffold: `${CLAUDE_PLUGIN_ROOT}/template`. References for this skill:
 
-- `references/brief.md` — що зібрати і які питання ставити;
-- `references/sections.md` — каталог секцій і як з брифу скласти сторінку;
-- `references/environment.md` — встановлення Node, PHP, git на Windows/Mac/Linux;
-- `references/receivers.md` — Telegram і що робити з іншими приймачами заявок;
-- `references/deploy-cpanel.md` — інструкція для людини: як залити сайт.
+- `references/brief.md` — what to collect and which questions to ask;
+- `references/sections.md` — the section catalog and how to build the page from the brief;
+- `references/environment.md` — installing Node, PHP, git on Windows/macOS/Linux;
+- `references/receivers.md` — Telegram, and what to do about other lead receivers;
+- `references/deploy-cpanel.md` — instructions for the person: how to upload the site.
 
-## Незмінні правила
+## Language
 
-1. **Нічого не вигадувати.** Телефон, адреса, ціна, години, відгук, цифра
-   «10 років на ринку» — лише з матеріалів або з відповіді людини. Немає даних —
-   питай або прибирай блок. Правдоподібна вигадка — найгірший можливий дефект.
-2. **Секрети не торкаються файлів проєкту й чату.** Токен бота й chat id людина
-   вписує в `.env` сама. Ти лише пояснюєш, куди. Ніколи не проси вставити токен
-   у чат і не пиши його у файли.
-3. **Перед установкою програм — список і підтвердження.** Встановлення може
-   вимагати прав адміністратора; мовчки цього не робиш.
-4. **Одна контрольна точка перед великою роботою** — погодження файлу задачі
-   (етап 6). До нього — лише підготовка; після — виконання без зайвих питань.
-5. **Не кажи «все працює», якщо не перевірив.** Форму без справжніх доступів
-   наскрізь не перевірити — так і кажеш.
-6. **Правила `CLAUDE.md` проєкту діють з моменту розгортання.** Після етапу 2
-   прочитай його й дотримуйся: ченжлог після кожного етапу, детермінованість,
-   обидва формати структурованих даних.
+Three separate languages — never mix them up:
 
-## Етапи
+1. **Conversation language** — what you speak with the person in. Asked at
+   stage 0. Use it for every message from then on, and for the project's task
+   files and changelog.
+2. **Documentation language of the scaffold** — English. `CLAUDE.md`, `docs/`
+   templates and code comments stay English; you do **not** translate them.
+   The conversation language is written into rule 1 of the project's
+   `CLAUDE.md` by `scaffold.mjs --lang`, so later sessions behave the same.
+3. **Site language** — what visitors read. Asked in the brief (stage 5).
+   Drives `SITE.lang`, `SITE.locale`, `messages`, `ui` and the page content.
 
-Позначай людині, на якому ти етапі: «Етап 3 з 9 — перевірка залежностей».
+Until the person answers at stage 0, reply in the language they wrote to you in.
 
-### Етап 0. Знайомство
+## Invariant rules
 
-Одне повідомлення:
+1. **Invent nothing.** Phone, address, price, hours, a review, "10 years on the
+   market" — only from the materials or from the person's answer. No data —
+   ask or drop the block. A plausible invention is the worst possible defect.
+2. **Secrets never touch project files or the chat.** The person puts the bot
+   token and chat id into `.env` themselves. You only explain where. Never ask
+   them to paste a token into the chat, never write one into files.
+3. **List and confirm before installing software.** Installs may need admin
+   rights; never do it silently.
+4. **One checkpoint before the big work** — approval of the task file
+   (stage 6). Before it — only preparation; after it — execution without
+   needless questions.
+5. **Never say "everything works" without checking.** The form cannot be
+   tested end to end without real credentials — say exactly that.
+6. **The project's `CLAUDE.md` applies from the moment it exists.** After stage 2
+   read it and follow it: changelog after every stage, determinism, both
+   structured-data formats.
 
-- коротко — що буде: питання → файли клієнта → план на погодження → сайт →
-  правки → архів;
-- що знадобиться від людини: матеріали клієнта, відповіді, пізніше —
-  токен Telegram-бота (його вона впише сама);
-- що скіл встановлюватиме програми й запускатиме команди — і що на кожну
-  установку спитає дозволу.
+## Stages
 
-Спитай **назву проєкту** і **де створити теку** (за замовчуванням — поточна
-тека, підтека з назвою проєкту латиницею, напр. `kyiv-dental`). Якщо аргумент
-команди вже містить назву — бери її й лише підтверди теку.
+Tell the person which stage you are on: "Stage 3 of 9 — dependency check".
 
-Окремо спитай **мову спілкування й документації** (за замовчуванням українська)
-— правило 1 у `CLAUDE.md` проєкту. Мову самого сайту з'ясуєш у брифі.
+### Stage 0. Introduction
 
-### Етап 1. Середовище
+One message:
+
+- briefly — what will happen: questions → client files → a plan to approve →
+  the site → revisions → the archive;
+- what you'll need from them: the client's materials, answers, and later a
+  Telegram bot token (which they enter themselves);
+- that the skill will install software and run commands — and will ask before
+  every install.
+
+Ask:
+
+- **the conversation language** (default: the language they wrote in);
+- **the project name** and **where to create the folder** (default: a
+  subfolder of the current folder named after the project in Latin letters,
+  e.g. `kyiv-dental`). If the command argument already holds a name, use it and
+  only confirm the folder.
+
+### Stage 1. Environment
 
 ```bash
 node "${CLAUDE_PLUGIN_ROOT}/skills/create/scripts/doctor.mjs"
 ```
 
-Скрипт нічого не змінює й друкує, що є. Якщо Node немає взагалі, скрипт не
-запуститься — тоді перевір `node -v` напряму.
+The script changes nothing and prints what is installed. If Node is missing
+entirely the script won't start — check `node -v` directly.
 
-- **Node 22.12+ і npm** — обов'язкові. Без них далі не йдемо.
-- **PHP 8.1+** — бажаний: без нього форму не перевірити локально (сайт
-  збереться й без PHP; на хостингу PHP є).
-- **git** — бажаний: без нього проєкт ведеться без комітів.
+- **Node 22.12+ and npm** — required. No further progress without them.
+- **PHP 8.1+** — recommended: without it the form can't be tested locally
+  (the site still builds; the hosting has PHP).
+- **git** — recommended: without it the project is kept without commits.
 
-Для відсутнього склади список команд установки з `references/environment.md`
-під цю ОС, покажи людині й **чекай підтвердження**. Відмовилась від PHP —
-працюємо далі й наприкінці прямо кажемо, що форму локально не перевірено.
-Відмовилась від git — так само; правило 3 у `CLAUDE.md` проєкту вже
-передбачає роботу без git.
+For whatever is missing, take the install commands for this OS from
+`references/environment.md`, show them to the person and **wait for
+confirmation**. Declined PHP — continue, and at the end say plainly that the
+form was not tested locally. Declined git — same; rule 3 in the project's
+`CLAUDE.md` already covers working without git.
 
-Після встановлення — `doctor.mjs` ще раз. Нова програма може бути не видна в
-поточній сесії терміналу: тоді попроси людину перезапустити Claude Code в тій
-самій теці й викликати `/landing:create` знову — скіл продовжить з етапу 1.
+After installing — run `doctor.mjs` again. A newly installed program may not be
+visible in the current terminal session: then ask the person to restart Claude
+Code in the same folder and run `/landing:create` again — the skill resumes
+from stage 1.
 
-### Етап 2. Розгортання каркаса
+### Stage 2. Scaffold
 
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/skills/create/scripts/scaffold.mjs" --template "${CLAUDE_PLUGIN_ROOT}/template" --target "<тека проєкту>"
+node "${CLAUDE_PLUGIN_ROOT}/skills/create/scripts/scaffold.mjs" --template "${CLAUDE_PLUGIN_ROOT}/template" --target "<project folder>" --lang "<conversation language, in English, e.g. Ukrainian>"
 ```
 
-Скрипт відмовиться, якщо тека не порожня, — тоді спитай іншу. Далі в теці
-проєкту:
+The script refuses if the folder is not empty — then ask for another one. It
+writes the conversation language into rule 1 of the new project's `CLAUDE.md`.
+Then, in the project folder:
 
 ```bash
 npm ci
 ```
 
-Якщо git є: `git init`, `git add -A`, коміт `chore: scaffold landing from landing@forze`.
+If git is available: `git init`, `git add -A`, commit
+`chore: scaffold landing from landing@forze`.
 
-Якщо обрано не українську мову — переклади `CLAUDE.md`, `docs/README.md`,
-`docs/tasks/_TEMPLATE.md`, `temp/README.md` і правило 1 перепиши під цю мову.
+Read the project's `CLAUDE.md`. From this point it is binding.
 
-Прочитай `CLAUDE.md` проєкту. Від цього моменту він обов'язковий.
-
-### Етап 3. Аудит залежностей
+### Stage 3. Dependency audit
 
 ```bash
 npm audit
 ```
 
-- **Чисто** — запишеш одним рядком у ченжлог на етапі 6.
-- **Є знахідки** — прочитай кожну advisory й оціни досяжність у статичній
-  збірці (правило 6). `npm audit fix` без `--force` прийнятний, якщо міняє лише
-  транзитивні патч/мінор-версії: після нього `npm ci`, `npm run build` і
-  перевір, що прямі версії в `package.json` не змінились. `--force` — ніколи
-  без розмови з людиною (хук плагіна його й так заблокує).
-- **Вектор реальний і без мажорного оновлення не закривається** — зупинись і
-  поясни людині простими словами, що це означає і що ти пропонуєш.
+- **Clean** — one line in the changelog at stage 6.
+- **Findings** — read every advisory and assess reachability in a static
+  build (rule 6). `npm audit fix` without `--force` is acceptable if it only
+  changes transitive patch/minor versions: after it run `npm ci` and
+  `npm run build`, and confirm the direct versions in `package.json` did not
+  change. `--force` — never without talking to the person (the plugin's hook
+  blocks it anyway).
+- **A real vector that can't be closed without a major upgrade** — stop and
+  explain to the person in plain words what it means and what you propose.
 
-### Етап 4. Матеріали клієнта
+### Stage 4. Client materials
 
-1. Попроси скинути **все, що є**, у будь-якій формі: файли в чат, шлях до
-   теки, посилання на Figma чи чинний сайт, текст брифу, фото, логотип,
-   скріншоти переписки з клієнтом.
-2. Після кожної порції: «Прийняв: … Це все чи є ще щось?» Повторюй, поки
-   людина не скаже, що все.
-3. Файли, які людина вказала шляхом, скопіюй у `temp/` проєкту (оригінали не
-   чіпай). Посилання на Figma відкривай, якщо є доступ; немає — попроси
-   скріншоти.
-4. **Проаналізуй** усе й покажи зведення:
-   - **відомо точно** — факт і звідки (`бриф.pdf, с. 2`);
-   - **суперечить** — різні телефони в брифі й на макеті тощо;
-   - **бракує** — за списком із `references/brief.md`;
-   - **схоже на здогадку** — те, що звучить як факт, але джерела немає.
-5. Медіа для сайту: стисни, назви осмислено латиницею
-   (`IMG_2041.jpg` → `clinic-reception.webp`), поклади в `public/assets/images/`;
-   фавікони — у `public/`; OG 1200×630 — у `public/assets/seo/og.jpg`.
-   Інструментів стиснення немає — спитай, чи можна встановити (`sharp-cli`
-   через `npx`), або перенеси як є й познач це в задачі.
+1. Ask them to drop in **everything they have**, in any form: files in the
+   chat, a folder path, a Figma link or the current site, brief text, photos,
+   a logo, screenshots of the client conversation.
+2. After each batch: "Received: … Is that everything, or is there more?"
+   Repeat until they say that's all.
+3. Copy files given by path into the project's `temp/` (leave the originals
+   alone). Open Figma links if you have access; if not, ask for screenshots.
+4. **Analyse** everything and show a summary:
+   - **known for certain** — the fact and its source (`brief.pdf, p. 2`);
+   - **conflicts** — different phones in the brief and on the mockup, etc.;
+   - **missing** — per the list in `references/brief.md`;
+   - **looks like a guess** — something stated as fact without a source.
+5. Media for the site: compress, give meaningful Latin names
+   (`IMG_2041.jpg` → `clinic-reception.webp`), put in `public/assets/images/`;
+   favicons — in `public/`; OG 1200×630 — `public/assets/seo/og.jpg`.
+   No compression tool available — ask whether you may use one (`sharp-cli`
+   via `npx`), or move files as they are and note it in the task.
 
-### Етап 5. Бриф — лише прогалини
+### Stage 5. Brief — gaps only
 
-Питай **тільки** про те, що на етапі 4 потрапило в «бракує», «суперечить» або
-«здогадка». Через `AskUserQuestion`, групами, з розумними варіантами за
-замовчуванням. Повний перелік того, що має бути відомо до етапу 6, — у
-`references/brief.md`. Не домислюй жодного пункту.
+Ask **only** about what stage 4 put under "missing", "conflicts" or "looks
+like a guess". Use `AskUserQuestion`, grouped, with sensible defaults. The
+full list of what must be known before stage 6 is in `references/brief.md`.
+Assume nothing.
 
-### Етап 6. Файл задачі — контрольна точка
+### Stage 6. Task file — the checkpoint
 
-Напиши `docs/tasks/<slug>.md` за `docs/tasks/_TEMPLATE.md`:
+Write `docs/tasks/<slug>.md` from `docs/tasks/_TEMPLATE.md`, in the
+conversation language:
 
-- **Контекст** — хто клієнт, що продає, кому; джерела (файли з `temp/`).
-- **Вирішено** — усі дані брифу: контакти, формат телефону, домен, мова,
-  палітра, приймач заявок, аналітика.
-- **Структура лендингу** — список секцій у порядку, з якорями, і для кожної —
-  звідки текст (`references/sections.md`).
-- **Не входить** — інші сторінки, CRM-інтеграції, блог тощо.
-- **Етапи** — за схемою нижче, кожен із чеклістом і промптом.
+- **Context** — who the client is, what they sell, to whom; sources (files in `temp/`).
+- **Decided** — all brief data: contacts, phone format, domain, site language,
+  palette, lead receiver, analytics.
+- **Landing structure** — the sections in order, with anchors, and for each —
+  where the text comes from (`references/sections.md`).
+- **Out of scope** — other pages, CRM integrations, a blog, etc.
+- **Stages** — per the scheme below, each with a checklist and a prompt.
 
-Схема етапів (одна сторінка — лендинг — плюс службові):
+Stage scheme (one page — the landing — plus the service pages):
 
-1. Конфіг і токени: `site.config.js`, `variables.css`, медіа.
-2. Лендинг: секції й тексти `index.astro`.
-3. Політика конфіденційності, сторінка подяки, 404 — тексти під клієнта й мову.
-4. Перевірка, правки, здача.
+1. Config and tokens: `site.config.js`, `variables.css`, media.
+2. Landing: sections and copy in `index.astro`.
+3. Privacy policy, thank-you page, 404 — copy for the client and the site language.
+4. Verification, revisions, delivery.
 
-Покажи людині **коротко** (структура сторінки, ключові дані, що лишається на
-ній) і спитай: «Погоджуєте? Можна правити будь-який пункт». Після «так» —
-перший запис у `docs/changelog/ДД.ММ.РРРР.md` (бриф, аудит, рішення) і рядок у
-`changelog.md`; коміт, якщо є git.
+Show it to the person **briefly** (page structure, key data, what stays on
+them) and ask: "Do you approve? Any item can be changed." After "yes" — the
+first entry in `docs/changelog/DD.MM.YYYY.md` (brief, audit, decisions) and a
+line in `changelog.md`; commit if git is available.
 
-### Етап 7. Виконання
+### Stage 7. Execution
 
-Етапи задачі по черзі, **послідовно**. Після кожного:
+Task stages one by one, **sequentially**. After each:
 
-1. `npm run build`; `npm run check` — допустимі лише помилки, які етап явно
-   лишає на потім;
-2. перевірка агентом **`landing:verifier`** — передай йому шлях до проєкту,
-   файл задачі й номер етапу; він нічого не змінює, лише звітує. Його `FAIL`
-   виправляєш до переходу далі. Звіряй виправлення з файлами, а не з власною
-   розповіддю;
-3. запис у ченжлог (правило 3), коміт, якщо є git.
+1. `npm run build`; `npm run check` — only errors the stage explicitly leaves
+   for later are acceptable;
+2. a check by the **`landing:verifier`** agent — give it the project path,
+   the task file and the stage number; it changes nothing, it only reports.
+   Fix its `FAIL`s before moving on. Verify fixes against the files, not
+   against your own account of them;
+3. a changelog entry (rule 3), a commit if git is available.
 
-Суть етапів:
+What each stage is about:
 
-- **Конфіг.** Усі дані з брифу в `src/site.config.js`: `url`, `name`,
-  `shortName`, `description`, `businessType` (адреса є → `LocalBusiness` або
-  підтип; лише онлайн → `Organization`, `address: null`), `PHONES`,
-  `PHONE_FORMAT`, контакти, години, месенджери (лише ті, що дав клієнт),
-  `social`, `nav` (якорі секцій), `analytics`, `lang`, `locale`, `messages` і
-  `ui` мовою сайту. Палітра — у `variables.css`: акцентна шкала від брендового
-  кольору (`--accent`, `-hover` світліший, `-active` темніший, `-tint` ~8%,
-  `-tint-strong` ~16% на білому), `themeColor` = `--accent`. Перевір контраст
-  `--on-accent` на `--accent` ≥ 4.5:1.
-- **Лендинг.** Склади `index.astro` із секцій за `references/sections.md`.
-  Тексти — з матеріалів клієнта, відредаговані для вебу; чого немає — не пиши.
-  Прибери `data-demo-content`. `title` до ~60 символів, `description` 120–160.
-- **Службові сторінки.** Політика: реквізити, приймач (Telegram), аналітика —
-  з брифу; прибери `data-demo-content`; людині прямо скажи, що текст має
-  вичитати юрист. Сторінка подяки й 404 — мовою сайту.
+- **Config.** All brief data into `src/site.config.js`: `url`, `name`,
+  `shortName`, `description`, `businessType` (has an address → `LocalBusiness`
+  or a subtype; online only → `Organization`, `address: null`), `PHONES`,
+  `PHONE_FORMAT`, contacts, hours, messengers (only those the client gave),
+  `social`, `nav` (section anchors), `analytics`, `lang`, `locale`, and
+  `messages` and `ui` in the site language. Palette — in `variables.css`: an
+  accent ramp from the brand color (`--accent`, `-hover` lighter, `-active`
+  darker, `-tint` ~8%, `-tint-strong` ~16% on white), `themeColor` = `--accent`.
+  Check the contrast of `--on-accent` on `--accent` ≥ 4.5:1.
+- **Landing.** Build `index.astro` from sections per `references/sections.md`.
+  Copy comes from the client's materials, edited for the web; what isn't
+  there isn't written. Remove `data-demo-content`. `title` up to ~60
+  characters, `description` 120–160.
+- **Service pages.** Privacy policy: company details, receiver (Telegram),
+  analytics — from the brief; remove `data-demo-content`; tell the person
+  plainly that a lawyer must review the text. Thank-you page and 404 — in the
+  site language.
 
-### Етап 8. Огляд і правки
+### Stage 8. Review and revisions
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Дай людині адресу (`http://localhost:4321`) і попроси подивитися з телефона й
-комп'ютера. Попередь: у preview форма не працює (немає PHP); якщо PHP є —
-форму можна спробувати через `npm run dev` із заповненим `.env`.
+Give the person the address (`http://localhost:4321`) and ask them to look on
+a phone and a computer. Warn them: the form doesn't work in preview (no PHP);
+if PHP is installed, the form can be tried via `npm run dev` with a filled
+`.env`.
 
-Людина пише правки — вносиш, `build` + `check`, коротко звітуєш, що змінив.
-Цикл, доки вона не скаже «готово». Правки, що виходять за обсяг (нова
-сторінка, CRM), — записуєш у задачу як наступну роботу, а не робиш мовчки.
+They write revisions — you apply them, `build` + `check`, and briefly report
+what changed. Loop until they say "done". Revisions outside the scope (a new
+page, a CRM) — record in the task as follow-up work instead of doing them
+silently.
 
-### Етап 9. Здача
+### Stage 9. Delivery
 
 ```bash
 npm audit
@@ -232,24 +256,27 @@ npm run check
 npm run pack
 ```
 
-`check` має бути зеленим. Якщо OG-зображення чи фавіконів клієнт не надав —
-`check` упаде на OG; не обходь це підміною на випадкову картинку: скажи
-людині, що потрібно, і запропонуй варіант (зробити просту OG з логотипом і
-назвою — лише за її згодою).
+`check` must be green. If the client provided no OG image or favicons,
+`check` fails on the OG image; don't work around it with a random picture:
+tell the person what's needed and offer an option (a simple OG image with the
+logo and name — only with their consent).
 
-Перевір детермінованість: збережи копію `release/<домен>.zip`, ще раз
-`npm run build` і `npm run pack`, порівняй — архіви мають бути ідентичні.
+Verify determinism: keep a copy of `release/<domain>.zip`, run
+`npm run build` and `npm run pack` again, compare — the archives must be
+identical.
 
-Фінальне повідомлення людині:
+Final message to the person:
 
-1. де архів (`release/<домен>.zip`) і **покрокова інструкція заливання** з
-   `references/deploy-cpanel.md` — своїми словами, під її хостинг;
-2. що **лишається на ній** — чеклістом: `.env` з токеном і chat id на сервері,
-   вичитка політики юристом, OG/фавікони (якщо не надані), тестова заявка
-   після заливання;
-3. що **не перевірено** і чому (форма наскрізь без доступів; локально без PHP);
-4. що проєкт далі живе без плагіна: `/add-section`, `/add-page`, правила в
-   `CLAUDE.md`.
+1. where the archive is (`release/<domain>.zip`) and **step-by-step upload
+   instructions** from `references/deploy-cpanel.md` — in your own words, for
+   their hosting;
+2. what **remains on them** — as a checklist: `.env` with the token and chat id
+   on the server, legal review of the privacy policy, OG/favicons (if not
+   provided), a test request after upload;
+3. what is **not verified** and why (the form end to end without credentials;
+   locally without PHP);
+4. that the project lives on without the plugin: `/add-section`, `/add-page`,
+   rules in `CLAUDE.md`.
 
-Задачу перенеси в `docs/archive/` з приміткою «закрито ДД.ММ.РРРР: лендинг
-здано», фінальний запис у ченжлог, коміт.
+Move the task to `docs/archive/` with a note "closed DD.MM.YYYY: landing
+delivered", a final changelog entry, a commit.

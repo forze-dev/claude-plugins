@@ -1,60 +1,60 @@
-# Секції лендингу: каталог і як скласти сторінку
+# Landing sections: catalog and how to build the page
 
-Усі секції — у `src/components/sections/` каркаса. Дані секцій — масиви у
-frontmatter `src/pages/index.astro`; компоненти лише рендерять.
+All sections live in the scaffold's `src/components/sections/`. Section data
+are arrays in the frontmatter of `src/pages/index.astro`; components only render.
 
-## Каталог
+## Catalog
 
-| Секція | Коли ставити | Пропси |
+| Section | When to use | Props |
 | --- | --- | --- |
-| `Hero` | завжди, першою | `title` (h1), `lead`, `facts[]`, `primary?`, `secondary?: {label, href}`, `image?: {src, alt, width, height}` |
-| `Cards` | послуги, переваги, «для кого» | `id`, `title`, `lead`, `items: {title, body, price?, icon?}[]`, `columns` 2/3, `surface` |
-| `Steps` | процес важливий для рішення | `id`, `title`, `lead`, `items: {title, body}[]`, `surface` |
-| `Section` + `Gallery` | є фото робіт / приміщення | `items: {src, alt, caption?, width, height}[]`, `label`, `hint` |
-| `Testimonials` | **є справжні відгуки** | `id`, `title`, `items: {quote, author, role?}[]` |
-| `Section` + `Faq` | є питання клієнтів | масив `{question, answer}`; той самий у `faqPage(faq)` |
-| `Cta` | між блоками, коли сторінка довга | `title`, `text`, `label?` |
-| `Contacts` | завжди, останньою, `id="contacts"` | `title`, `lead`, `formTitle`, `formNote` |
+| `Hero` | always, first | `title` (h1), `lead`, `facts[]`, `primary?`, `secondary?: {label, href}`, `image?: {src, alt, width, height}` |
+| `Cards` | services, advantages, "who it's for" | `id`, `title`, `lead`, `items: {title, body, price?, icon?}[]`, `columns` 2/3, `surface` |
+| `Steps` | the process matters to the decision | `id`, `title`, `lead`, `items: {title, body}[]`, `surface` |
+| `Section` + `Gallery` | there are photos of work / premises | `items: {src, alt, caption?, width, height}[]`, `label`, `hint` |
+| `Testimonials` | **there are real reviews** | `id`, `title`, `items: {quote, author, role?}[]` |
+| `Section` + `Faq` | there are customer questions | an array of `{question, answer}`; the same one goes into `faqPage(faq)` |
+| `Cta` | between blocks when the page is long | `title`, `text`, `label?` |
+| `Contacts` | always, last, `id="contacts"` | `title`, `lead`, `formTitle`, `formNote` |
 
-## Типовий порядок
+## Typical order
 
-1. `Hero` — що, кому, головна дія.
-2. `Cards` (послуги) — `id="services"`, `surface`.
-3. `Cards` (переваги) або `Steps` — чому ви / як працюємо.
-4. `Gallery` — якщо є фото.
-5. `Testimonials` — якщо є відгуки.
+1. `Hero` — what, for whom, the main action.
+2. `Cards` (services) — `id="services"`, `surface`.
+3. `Cards` (advantages) or `Steps` — why you / how you work.
+4. `Gallery` — if there are photos.
+5. `Testimonials` — if there are reviews.
 6. `Cta`.
 7. `Faq` — `id="faq"`, `surface`.
 8. `Contacts` — `id="contacts"`.
 
-Чергуй `surface` між сусідами. Секцію без даних не ставиш — порожня секція
-гірша за відсутню. Кожен пункт меню (`SITE.nav`) = `/#<id>` існуючої секції;
-4–5 пунктів максимум.
+Alternate `surface` between neighbours. Don't add a section without data — an
+empty section is worse than none. Every menu item (`SITE.nav`) = `/#<id>` of an
+existing section; 4–5 items at most.
 
-## Тексти
+## Copy
 
-- **Hero `title`** — обіцянка одним реченням мовою клієнта: що отримає
-  відвідувач. Не назва компанії (вона вже в логотипі й `<title>`).
-- **`lead`** — 2–3 речення: для кого, яку проблему знімає, що робити далі.
-- **`facts`** — 2–4 перевірювані твердження з брифу. Немає — не ставиш.
-- **Послуги** — назва + 1–2 речення користі. Ціна — лише з брифу, у форматі
-  клієнта («від 1 500 грн»).
-- **FAQ** — реальні питання; відповідь 1–3 речення. Відповіді можуть містити
-  `<a>` і `<strong>`.
-- Редагуй тексти клієнта для вебу (коротше, конкретніше), але не додавай
-  фактів, яких у них немає.
+- **Hero `title`** — a one-sentence promise in the customer's words: what the
+  visitor gets. Not the company name (it's already in the logo and `<title>`).
+- **`lead`** — 2–3 sentences: for whom, which problem it removes, what to do next.
+- **`facts`** — 2–4 verifiable statements from the brief. None — leave it out.
+- **Services** — a name + 1–2 sentences of benefit. Price only from the brief,
+  in the client's format ("from 1,500 UAH").
+- **FAQ** — real questions; answers of 1–3 sentences. Answers may contain
+  `<a>` and `<strong>`.
+- Edit the client's copy for the web (shorter, more concrete), but never add
+  facts that aren't in it.
 
-## SEO сторінки
+## Page SEO
 
-- `title` сторінки ≤ 60 символів: `<що> у <місто> — <назва>` для локального
-  бізнесу.
-- `description` 120–160 символів, з містом і головною послугою.
-- Один h1 (у `Hero`), далі h2 у секціях — це вже забезпечує `Section`.
-- `alt` у кожного фото — що на ньому, а не «фото 1».
-- `width` і `height` — справжні розміри файла.
+- Page `title` ≤ 60 characters: `<what> in <city> — <name>` for a local business.
+- `description` 120–160 characters, with the city and the main service.
+- One h1 (in `Hero`), then h2 in the sections — `Section` already ensures this.
+- Every photo gets an `alt` — what is on it, not "photo 1".
+- `width` and `height` — the file's real dimensions.
 
-## Нова секція, якої немає в каталозі
+## A new section not in the catalog
 
-Компонент у `sections/`, що обгортає вміст у `Section.astro`, + CSS у
-`src/styles/sections/`, який компонент імпортує сам. Лише токени з
-`variables.css`. Опиши її в таблиці «Лендинг і секції» в `CLAUDE.md` проєкту.
+A component in `sections/` that wraps its content in `Section.astro`, plus CSS
+in `src/styles/sections/` that the component imports itself. Tokens from
+`variables.css` only. Describe it in the "Landing and sections" table of the
+project's `CLAUDE.md`.

@@ -1,8 +1,8 @@
 /**
- * Панель месенджерів для мобільних, рендерить scripts/floating-bar.js.
+ * The mobile messenger bar, rendered by scripts/floating-bar.js.
  *
- * Кожне посилання несе власний колір --brand, щоб канали лишалися впізнаваними;
- * це єдине місце в шаблоні, яке виходить за межі палітри.
+ * Each link carries its own --brand color so channels stay recognizable;
+ * this is the only place in the scaffold that steps outside the palette.
  */
 
 .floating-bar {
@@ -45,7 +45,7 @@
 	width: 24px;
 	height: 24px;
 	flex-shrink: 0;
-	/* Іконки йдуть у currentColor; на брендовій заливці робимо їх білими. */
+	/* The icons use currentColor; on a brand fill we make them white. */
 	filter: brightness(0) invert(1);
 }
 
@@ -69,7 +69,7 @@
 	text-overflow: ellipsis;
 }
 
-/* На десктопі є кнопка в хедері й футер — панель була б тільки шумом. */
+/* On desktop there's the header button and the footer — the bar would be just noise. */
 @media (min-width: 901px) {
 	.floating-bar {
 		display: none;

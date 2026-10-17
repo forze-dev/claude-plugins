@@ -1,64 +1,65 @@
-# Конфігурація Apache для зібраного сайту.
+# Apache configuration for the built site.
 #
-# Цей файл генерує `npm run build` із server/htaccess.template — правити треба
-# шаблон, а не dist/.htaccess. Ліміти завантаження підставляються з
-# SITE.form.maxFileMb у src/site.config.js.
+# `npm run build` generates this file from server/htaccess.template — edit the
+# template, not dist/.htaccess. Upload limits are substituted from
+# SITE.form.maxFileMb in src/site.config.js.
 #
-# Заливай ВМІСТ теки dist/ у public_html; цей файл їде разом із ним.
+# Upload the CONTENTS of dist/ into public_html; this file goes along with it.
 
 RewriteEngine On
 
-# --- HTTPS і канонічний хост --------------------------------------------------
-# Один редірект на https://домен-без-www для обох випадків: запит по HTTP і
-# запит на www. Домен захоплюється, а не вписується.
+# --- HTTPS and the canonical host ---------------------------------------------
+# One redirect to https://domain-without-www for both cases: an HTTP request and
+# a www request. The domain is captured, not hard-coded.
 #
-# ПОТРІБЕН SSL-сертифікат на домені (на cPanel — AutoSSL, зазвичай увімкнений).
-# Без нього сайт почне переадресовувати на https, якого немає. Якщо сайт стоїть
-# за Cloudflare у режимі «Flexible», заміни умову HTTPS на
-# `RewriteCond %{HTTP:X-Forwarded-Proto} !https`, інакше буде нескінченний редірект.
+# REQUIRES an SSL certificate on the domain (on cPanel — AutoSSL, usually on).
+# Without it the site would redirect to an https that doesn't exist. If the site
+# is behind Cloudflare in "Flexible" mode, replace the HTTPS condition with
+# `RewriteCond %{HTTP:X-Forwarded-Proto} !https`, or you get an endless redirect.
 RewriteCond %{HTTPS} off [OR]
 RewriteCond %{HTTP_HOST} ^www\. [NC]
 RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
 RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
 
-# --- Канонічні адреси --------------------------------------------------------
-# /index.html -> /   і   /privacy-policy.html -> /privacy-policy
+# --- Canonical addresses -----------------------------------------------------
+# /index.html -> /   and   /privacy-policy.html -> /privacy-policy
 RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
 RewriteRule ^ / [R=301,L]
 
 RewriteCond %{THE_REQUEST} \s/+([^.\s?]+)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
 
-# --- Чиста адреса -> файл за нею ---------------------------------------------
-# Генеричне правило для будь-якої сторінки, яку колись додадуть. Умова -f
-# гарантує, що неіснуюча адреса чесно віддасть 404.
+# --- Clean address -> the file behind it --------------------------------------
+# A generic rule for any page added later. The -f condition guarantees a
+# non-existent address honestly returns 404.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{DOCUMENT_ROOT}/$1.html -f
 RewriteRule ^(.+?)/?$ $1.html [L]
 
-# --- Захист доступів ---------------------------------------------------------
-# Синтаксис `Require` — Apache 2.4. Хостингів на 2.2 у 2026 році практично не
-# лишилося; якщо трапиться — заміни на `Order allow,deny` + `Deny from all`.
+# --- Protecting credentials --------------------------------------------------
+# `Require` is Apache 2.4 syntax. Hosts on 2.2 practically no longer exist in
+# 2026; if you meet one, replace it with `Order allow,deny` + `Deny from all`.
 #
-# .env має лежати на рівень ВИЩЕ за public_html. Це страховка на випадок, якщо
-# він усе ж опиниться всередині.
+# .env must sit ONE LEVEL ABOVE public_html. This is a safety net in case it
+# ends up inside anyway.
 <FilesMatch "^\.(env|env\..*)$">
 	Require all denied
 </FilesMatch>
 
-# Ліміти PHP-бекенда читаються з диска, а не по HTTP.
+# The PHP back end reads its limits from disk, not over HTTP.
 <Files "form.limits.json">
 	Require all denied
 </Files>
 
-# --- Розміри завантаження для PHP-бекенда -------------------------------------
-# Типові значення на шаред-хостингу — 2M або 8M. Без цього великий файл
-# відкидає сам PHP, ще до form.php.
+# --- Upload sizes for the PHP back end ----------------------------------------
+# Typical shared-hosting values are 2M or 8M. Without this, PHP itself rejects
+# a large file before form.php ever runs.
 #
-# На частині хостингів php_value в .htaccess ІГНОРУЄТЬСЯ (PHP-FPM, CGI) — там це
-# міняється лише в панелі: cPanel → MultiPHP INI Editor. Блоки обгорнуті в
-# IfModule, бо на PHP-FPM невідома директива поклала б увесь сайт у 500.
+# On some hosts php_value in .htaccess is IGNORED (PHP-FPM, CGI) — there it can
+# only be changed in the panel: cPanel → MultiPHP INI Editor. The blocks are
+# wrapped in IfModule because on PHP-FPM an unknown directive would take the
+# whole site down with a 500.
 <IfModule mod_php.c>
 	php_value upload_max_filesize __UPLOAD_MAX__
 	php_value post_max_size __POST_MAX__
@@ -73,7 +74,7 @@ RewriteRule ^(.+?)/?$ $1.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-	# Покриває і /thank-you, і /thank-you.html — збіг іде по файлу, який віддається.
+	# Covers both /thank-you and /thank-you.html — the match is on the served file.
 	<FilesMatch "^thank-you\.html$">
 		Header set X-Robots-Tag "noindex, nofollow"
 	</FilesMatch>
@@ -82,20 +83,20 @@ RewriteRule ^(.+?)/?$ $1.html [L]
 	Header set Referrer-Policy "strict-origin-when-cross-origin"
 	Header set X-Frame-Options "SAMEORIGIN"
 
-	# HSTS: рік. `includeSubDomains` СВІДОМО немає: на шаред-хостингу часто є
-	# піддомен без сертифіката (cpanel., webmail., mail.), і директива поклала б
-	# його намертво в усіх браузерах. `preload` — тим більше: він практично
-	# невідкатний.
+	# HSTS: one year. `includeSubDomains` is deliberately absent: shared hosting
+	# often has a subdomain without a certificate (cpanel., webmail., mail.), and
+	# the directive would lock it out for good in every browser. `preload` even
+	# more so: it is practically irreversible.
 	Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
 
 	Header set Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
 </IfModule>
 
-# --- Нічого не листувати -----------------------------------------------------
+# --- No directory listings ---------------------------------------------------
 Options -Indexes
 
-# --- Кешування ---------------------------------------------------------------
-# Astro додає хеш до всього в /_astro/, тож це можна кешувати надовго.
+# --- Caching -----------------------------------------------------------------
+# Astro hashes everything in /_astro/, so it can be cached for a long time.
 <IfModule mod_expires.c>
 	ExpiresActive On
 	ExpiresByType text/css "access plus 1 year"
@@ -104,7 +105,7 @@ Options -Indexes
 	ExpiresByType image/png "access plus 1 month"
 	ExpiresByType image/jpeg "access plus 1 month"
 	ExpiresByType image/webp "access plus 1 month"
-	# Шрифти самохостені. Імена БЕЗ хеша, тож при заміні файлу міняй і імʼя.
+	# Fonts are self-hosted. Their names have NO hash, so rename a file when you replace it.
 	ExpiresByType font/woff2 "access plus 1 year"
 	ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
@@ -113,5 +114,5 @@ Options -Indexes
 	AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript image/svg+xml application/json application/manifest+json
 </IfModule>
 
-# Справжня сторінка 404 зі статусом 404.
+# A real 404 page with a 404 status.
 ErrorDocument 404 /404.html

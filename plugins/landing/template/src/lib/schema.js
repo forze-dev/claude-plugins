@@ -1,12 +1,12 @@
 /**
- * Будівельники JSON-LD.
+ * JSON-LD builders.
  *
- * Кожен блок структурованих даних на сайті генерується з site.config.js, тож
- * контакти у видачі не можуть розійтися з тими, що у футері. Рендериться під
- * час збірки — пошукові роботи бачать це у статичному HTML.
+ * Every structured-data block on the site is generated from site.config.js,
+ * so the contacts in search results can't drift from those in the footer.
+ * Rendered at build time — crawlers see it in the static HTML.
  *
- * `ids` — спільна мапа ідентифікаторів: мікророзмітка ставить той самий URI
- * в `itemid`, і два описи читаються як одна сутність, а не як дві.
+ * `ids` is a shared identifier map: the microdata puts the same URI into
+ * `itemid`, and the two descriptions read as one entity, not two.
  */
 
 import { SITE, isPlace } from '../site.config.js';
@@ -19,9 +19,9 @@ export const ids = {
 };
 
 /**
- * Телефони бізнесу — і для JSON-LD, і для мікророзмітки. Один номер — рядок,
- * кілька — масив: мікророзмітка з кількома `itemprop="telephone"` дає рівно
- * такий самий масив, тож формати не розходяться.
+ * The business phones — for both JSON-LD and microdata. One number — a string,
+ * several — an array: microdata with several `itemprop="telephone"` yields
+ * exactly the same array, so the formats don't diverge.
  */
 export const telephones = () => {
 	const list = SITE.contacts.phones.map((phone) => phone.href);
@@ -29,11 +29,11 @@ export const telephones = () => {
 };
 
 /**
- * Бізнес — одна сутність графа, на кожній сторінці. Layout додає вузол сам,
- * тож сторінка не може про нього забути або описати його вдруге.
+ * The business — one graph entity, on every page. The layout adds the node
+ * itself, so a page can neither forget it nor describe it a second time.
  *
- * Кожна властивість тут має пару в мікророзмітці футера й секції контактів —
- * і навпаки. Додаєш властивість в одне місце — додай і в інше.
+ * Every property here has a twin in the footer microdata, and vice versa.
+ * Add a property in one place — add it in the other.
  */
 export function business() {
 	const { contacts } = SITE;
@@ -74,7 +74,7 @@ export function website() {
 	};
 }
 
-/** Один масив `contacts.hours` живить і цей хелпер, і мікророзмітку. */
+/** One `contacts.hours` array feeds both this helper and the microdata. */
 function openingHours() {
 	return SITE.contacts.hours.map((entry) => ({
 		'@type': 'OpeningHoursSpecification',
@@ -97,7 +97,7 @@ function postalAddress() {
 }
 
 /**
- * @param {string} path  напр. '/privacy-policy'
+ * @param {string} path  e.g. '/privacy-policy'
  * @param {{name: string, description?: string, type?: string}} page
  */
 export function webPage(path, page) {
@@ -113,7 +113,7 @@ export function webPage(path, page) {
 	};
 }
 
-/** @param {{label: string, href?: string}[]} trail — останній елемент є поточною сторінкою. */
+/** @param {{label: string, href?: string}[]} trail — the last item is the current page. */
 export function breadcrumbs(trail) {
 	return {
 		'@type': 'BreadcrumbList',
@@ -127,9 +127,8 @@ export function breadcrumbs(trail) {
 }
 
 /**
- * Відповідь FAQ може містити простий HTML (<a>, <strong>) — у JSON-LD іде
- * текст без тегів. Ту саму функцію не потрібно викликати на сторінці:
- * сторінка передає сирий масив, а хелпер чистить сам.
+ * An FAQ answer may contain simple HTML (<a>, <strong>) — JSON-LD gets the text
+ * without tags. The page passes the raw array; the helper strips tags itself.
  *
  * @param {{question: string, answer: string}[]} entries
  */
@@ -145,7 +144,7 @@ export function faqPage(entries) {
 }
 
 /**
- * Загортає вузли в обгортку @graph. Викликає ЛИШЕ layout — сторінка передає
- * через проп `schema` масив своїх вузлів, а не результат `graph()`.
+ * Wraps nodes in the @graph envelope. Called ONLY by the layout — a page passes
+ * an array of its own nodes through the `schema` prop, not the result of `graph()`.
  */
 export const graph = (...nodes) => ({ '@context': 'https://schema.org', '@graph': nodes.flat() });

@@ -1,6 +1,6 @@
 /**
- * Галерея — ряд зі scroll-snap. Свідомо тільки на CSS: scroll-snap уміє
- * нативно те, заради чого зазвичай тягнуть слайдер на ~140 КБ.
+ * Gallery — a scroll-snap row. CSS only on purpose: scroll-snap natively does
+ * what people usually pull in a ~140 KB slider for.
  */
 
 .gallery {

@@ -21,10 +21,10 @@ const updatedLabel = '27 September 2026';
 const { email, phones, address } = SITE.contacts;
 
 /**
- * Розділ 8 має відповідати тому, що сайт РОБИТЬ, а не тому, що хотілося б.
- * Раніше там стояло «жодної аналітики й жодних cookie» — і це була неправда
- * навіть із порожнім конфігом, бо шрифт тягнувся з fonts.googleapis.com. Шрифт
- * тепер самохостений, а про трекери текст питає конфіг, а не вгадує.
+ * Section 8 must match what the site DOES, not what we'd like it to do. It
+ * used to say "no analytics and no cookies" — which was false even with an
+ * empty config, because the font came from fonts.googleapis.com. The font is
+ * self-hosted now, and the text asks the config about trackers instead of guessing.
  */
 const analyticsEnabled = Boolean(SITE.analytics.gtmId || SITE.analytics.gaId);
 const analyticsName = SITE.analytics.gtmId ? 'Google Tag Manager' : 'Google Analytics 4';
@@ -47,9 +47,9 @@ const schema = [
 				<h1>Privacy policy</h1>
 				<p class="privacy__updated">Last updated: <time datetime={updated}>{updatedLabel}</time></p>
 				{/*
-					Чернетка шаблону. Атрибут data-demo-content не дасть `npm run check`
-					пропустити збірку, доки текст не вичитано під клієнта й атрибут не
-					прибрано. Юридичну вичитку робить людина, не агент.
+					Scaffold draft. The data-demo-content attribute won't let `npm run check`
+					pass the build until the text is reviewed for the client and the
+					attribute removed. The legal review is done by a person, not the agent.
 				*/}
 				<p class="lead" data-demo-content>
 					This page explains what personal data we collect through this website, why we collect it and

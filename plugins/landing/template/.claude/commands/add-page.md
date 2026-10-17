@@ -1,31 +1,32 @@
 ---
-description: Додати сторінку з коректним SEO, хлібними крихтами та структурованими даними в обох форматах.
+description: Add a page with correct SEO, breadcrumbs and structured data in both formats.
 ---
 
-Додай нову сторінку до цього сайту на Astro. Якщо розробник ще не сказав, для
-чого вона і як має називатися — спитай.
+Add a new page to this Astro site. If the developer hasn't said what it is for
+and what it should be called — ask.
 
-**Одна сторінка за сесію** (правило 5 у `CLAUDE.md`). Якщо задачі, яка покриває
-цю сторінку, не існує — спершу напиши її за `docs/tasks/_TEMPLATE.md`
-(правило 3).
+**One page per session** (rule 5 in `CLAUDE.md`). If no task covers this page
+yet — first write one from `docs/tasks/_TEMPLATE.md` (rule 3).
 
-Зразок внутрішньої сторінки — `src/pages/privacy-policy.astro`. Зразки FAQ і
-секцій — `src/pages/index.astro`.
+The reference inner page is `src/pages/privacy-policy.astro`. References for
+the FAQ and sections — `src/pages/index.astro`.
 
-Вимоги, усі:
+Requirements, all of them:
 
-1. **Файл** — `src/pages/<slug>.astro`. Це весь крок маршрутизації. Не чіпай
-   `server/htaccess.template` і sitemap: вони генеричні.
+1. **File** — `src/pages/<slug>.astro`. That's the whole routing step. Don't
+   touch `server/htaccess.template` or the sitemap: they are generic.
 
-2. **Layout** — `Base` для звичайної сторінки, `Bare` для автономного екрана
-   без хедера й футера.
+2. **Layout** — `Base` for a regular page, `Bare` for a standalone screen
+   without header and footer.
 
-3. **SEO-пропси** — `title`, `description` (40–160 символів, для людини),
-   `ogImage`, якщо сторінка заслуговує на власне прев'ю. `canonical` не задавай.
+3. **SEO props** — `title`, `description` (40–160 characters, written for a
+   person), `ogImage` if the page deserves its own social preview. Don't set
+   `canonical`.
 
-4. **Структуровані дані** — проп `schema` приймає **масив** власних вузлів
-   сторінки. Не `graph(...)`: обгортку `@graph`, бізнес і `WebSite` додає
-   layout, і `graph()` усередині дав би вкладений, невалідний граф.
+4. **Structured data** — the `schema` prop takes an **array** of the page's own
+   nodes. Not `graph(...)`: the `@graph` wrapper, the business and `WebSite`
+   are added by the layout, and a `graph()` inside it would produce a nested,
+   invalid graph.
 
    ```astro
    import { SITE } from '../site.config.js';
@@ -35,26 +36,27 @@ description: Додати сторінку з коректним SEO, хлібн
    const schema = [webPage('/services', { name: title, description }), breadcrumbs(trail)];
    ```
 
-   Передай **той самий** масив `trail` у `<Breadcrumbs trail={trail} />`. Якщо
-   на сторінці є питання — додай `faqPage(faq)` і згодуй йому той самий масив,
-   який рендерить `<Faq entries={faq} />`.
+   Pass **the same** `trail` array to `<Breadcrumbs trail={trail} />`. If the
+   page has questions — add `faqPage(faq)` and feed it the same array that
+   `<Faq entries={faq} />` renders.
 
-5. **Мікророзмітка теж** — правило 7. Значення беруться з тих самих масивів і з
-   `site.config.js`, руками в `itemprop` не вписуються. Бізнес уже описаний
-   футером — другий вузол бізнесу не додавай.
+5. **Microdata too** — rule 7. Values come from the same arrays and from
+   `site.config.js`, never typed into an `itemprop` by hand. The business is
+   already described by the footer — don't add a second business node.
 
-6. **Стилі** — новий файл у `src/styles/pages/`, імпортований сторінкою.
-   Секції з `src/components/sections/` можна перевикористовувати. Лише токени
-   з `variables.css`, жодних сирих кольорів і пікселів.
+6. **Styles** — a new file in `src/styles/pages/`, imported by the page.
+   Sections from `src/components/sections/` can be reused. Tokens from
+   `variables.css` only, no raw colors or pixels.
 
-7. **Контент** — справжній текст. Реалій бізнесу не знаєш — питай (правило 4).
+7. **Content** — real copy, in the site language. Don't know the business
+   facts — ask (rule 4).
 
-8. **Навігація** — лендинг має якірне меню (`/#id`). Якщо сторінці місце в
-   меню, додай її в `SITE.nav` звичайною адресою (`/services`).
+8. **Navigation** — the landing has an anchor menu (`/#id`). If the page
+   belongs in the menu, add it to `SITE.nav` as a plain path (`/services`).
 
-Наприкінці: `npm run build` і `npm run check`. Переконайся в зібраному HTML,
-що canonical збігається із записом у sitemap, JSON-LD парситься, мікророзмітка
-на місці.
+At the end: `npm run build` and `npm run check`. Confirm in the built HTML that
+the canonical matches the sitemap entry, the JSON-LD parses, and the microdata
+is in place.
 
-Потім — запис у денний файл ченжлогу, рядок у `docs/changelog/changelog.md` і
-коміт, якщо в проєкті є `.git` (правило 3).
+Then — an entry in the day's changelog file, a line in
+`docs/changelog/changelog.md`, and a commit if the project has `.git` (rule 3).

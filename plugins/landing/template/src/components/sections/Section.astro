@@ -1,12 +1,12 @@
 ---
 /**
- * Обгортка секції лендингу: якір, вертикальний ритм, заголовок і підзаголовок.
+ * Landing section wrapper: anchor, vertical rhythm, heading and subheading.
  *
- * `id` — це якір, на який веде меню (`SITE.nav`). Змінив id — зміни й href у
- * конфізі, інакше пункт меню нікуди не приведе.
+ * `id` is the anchor the menu points to (`SITE.nav`). Changed the id — change
+ * the href in the config too, or the menu item leads nowhere.
  *
- * `surface` — тінтована смуга. Чергуй її між сусідніми секціями, щоб сторінка
- * не зливалася в одну білу стіну.
+ * `surface` — a tinted band. Alternate it between neighbouring sections so the
+ * page doesn't merge into one white wall.
  */
 const { id, title, lead, surface = false, tight = false } = Astro.props;
 const classes = ['section', surface && 'section--surface', tight && 'section--tight'].filter(Boolean).join(' ');

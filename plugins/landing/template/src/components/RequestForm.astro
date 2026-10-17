@@ -1,11 +1,11 @@
 ---
 /**
- * Форма заявки. Використовується у двох місцях: вбудовано в секції контактів
- * лендингу і всередині модалки. Обидва рендерять цей самий компонент, тож
- * розмітка існує в єдиному екземплярі.
+ * The request form. Used in two places: embedded in the landing's contacts
+ * section and inside the modal. Both render this same component, so the
+ * markup exists exactly once.
  *
- * `id` обовʼязково різний для кожного екземпляра на сторінці — від нього
- * будуються id полів, а дублікати id ловить `npm run check`.
+ * `id` must differ for every instance on the page — field ids are built from
+ * it, and `npm run check` catches duplicate ids.
  */
 import { SITE, fillMessage } from '../site.config.js';
 
@@ -62,7 +62,7 @@ const accept = SITE.form.allowedExtensions.map((extension) => `.${extension}`).j
 		</div>
 	</div>
 
-	{/* Honeypot: для людини винесений за екран, для бота — звичайне поле. */}
+	{/* Honeypot: moved off-screen for people, an ordinary field for a bot. */}
 	<div class="form__trap" aria-hidden="true">
 		<label>Company<input type="text" name="company" data-form-trap tabindex="-1" autocomplete="off" /></label>
 	</div>

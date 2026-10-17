@@ -1,35 +1,35 @@
 ---
 /**
- * Сторонні скрипти аналітики.
+ * Third-party analytics scripts.
  *
- * У шаблоні їх немає. Вкажи id у `analytics` в site.config.js — і сніпет
- * зʼявиться, **лише в production-збірці**, тож `npm run dev` не засмічує
- * аналітику твоїми власними кліками.
+ * The scaffold has none. Set an id in `analytics` in site.config.js and the
+ * snippet appears **only in the production build**, so `npm run dev` doesn't
+ * pollute the analytics with your own clicks.
  *
- * Layout рендерить компонент двічі: один раз у <head>, другий — одразу після
- * <body> (Google Tag Manager потребує обох половин).
+ * The layout renders the component twice: once in <head>, once right after
+ * <body> (Google Tag Manager needs both halves).
  *
- * Сніпети зібрані рядками тут, а не вписані в розмітку: завантажувач GTM повний
- * фігурних дужок, і парсер шаблонів Astro спотикається об них усередині виразу
- * в атрибуті.
+ * The snippets are assembled as strings here rather than written into the
+ * markup: the GTM loader is full of curly braces, and Astro's template parser
+ * trips over them inside an attribute expression.
  *
- * `is:inline` обовʼязковий — без нього Astro спробує зібрати їх у свій бандл, а
- * сторонній завантажувач має виконуватися як є.
+ * `is:inline` is mandatory — without it Astro tries to bundle them, while a
+ * third-party loader must run as is.
  *
- * Якщо працюєш у ЄС — завантаження трекерів до отримання згоди на твоїй совісті:
- * банера згоди шаблон свідомо не містить.
+ * If you work in the EU, loading trackers before consent is on you: the
+ * scaffold deliberately ships no consent banner.
  */
 import { SITE } from '../site.config.js';
 
 const { position = 'head' } = Astro.props;
 const { gtmId, gaId } = SITE.analytics ?? {};
 
-// Ніколи не вантажимо трекери в dev або preview.
+// Never load trackers in dev or preview.
 const live = import.meta.env.PROD;
 
 const showGtmHead = live && position === 'head' && Boolean(gtmId);
 const showGtmBody = live && position === 'body' && Boolean(gtmId);
-// Tag Manager уже містить GA4, тож прямий тег — лише для сайтів без GTM.
+// Tag Manager already contains GA4, so the direct tag is only for sites without GTM.
 const showGa = live && position === 'head' && Boolean(gaId) && !gtmId;
 
 const gtmHead =
@@ -52,11 +52,12 @@ const gaSrc = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
 {showGtmHead && <script is:inline set:html={gtmHead} />}
 
 {/*
-	Закривний тег обовʼязковий, і це не стиль. `<noscript>` — raw-text елемент:
-	запис `<noscript … />` HTML-парсер самозакривним НЕ вважає, тож усе, що йде
-	в шаблоні нижче, стає його вмістом. Поки умова істинна, це майже непомітно;
-	щойно вона хибна — разом із noscript зникає весь наступний вивід компонента.
-	Саме через це GA4 не потрапляв у збірку: його блок стоїть нижче за цей рядок.
+	The closing tag is mandatory, and not for style. `<noscript>` is a raw-text
+	element: the HTML parser does NOT treat `<noscript … />` as self-closing, so
+	everything below it in the template becomes its content. While the condition
+	is true this is barely visible; once it is false, all the component's later
+	output disappears together with the noscript. That is exactly why GA4 once
+	never reached the build: its block sits below this line.
 */}
 {showGtmBody && <noscript set:html={gtmBody}></noscript>}
 

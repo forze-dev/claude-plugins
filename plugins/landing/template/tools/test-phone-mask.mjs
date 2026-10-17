@@ -1,22 +1,24 @@
 /**
- * Тест маски телефону: `npm run test:phone`.
+ * Phone mask test: `npm run test:phone`.
  *
- * Чому він узагалі існує окремим файлом. Маску вже колись «перевіряли», і
- * перевірка не могла впасти: у поле підставляли готове значення **однією**
- * подією `input`, тоді як реальний набір — це десять подій, і кожна годує
- * функцію її ж попереднім виводом. Саме там і жив дефект. Друга помилка —
- * assert на довжину рядка замість значення: зіпсований номер мав рівно ту саму
- * довжину, що й правильний, тож проходив.
+ * Why it exists as a separate file. The mask was once "tested", and the test
+ * could not fail: a finished value was put into the field with **one** `input`
+ * event, while real typing is ten events, each feeding the function its own
+ * previous output. That's exactly where the defect lived. The second mistake
+ * was asserting the string length instead of the value: the corrupted number
+ * had exactly the same length as the correct one, so it passed.
  *
- * Тому тут:
- *   — набір ЕМУЛЮЄТЬСЯ посимвольно, через справжні слухачі з initPhoneField();
- *   — порівнюються ЗНАЧЕННЯ, а не довжини;
- *   — перевіряється ідемпотентність formatPhone: саме її порушення й давало
- *     накопичення коду країни.
+ * So here:
+ *   — typing is EMULATED character by character, through the real listeners
+ *     from initPhoneField();
+ *   — VALUES are compared, not lengths;
+ *   — formatPhone idempotence is checked: breaking it is exactly what made the
+ *     country code accumulate.
  *
- * Очікування задані для двох конфігурацій. Тест дивиться на `countryCode` у
- * поточному `site.config.js` і бере відповідний набір; для невідомого коду
- * країни літеральні очікування пропускаються, а інваріанти лишаються.
+ * Expectations are given for two configurations. The test looks at
+ * `countryCode` in the current `site.config.js` and takes the matching set;
+ * for an unknown country code the literal expectations are skipped and only
+ * the invariants remain.
  */
 
 import { SITE } from '../src/site.config.js';
@@ -24,11 +26,11 @@ import { formatPhone, phoneDigits, isPhoneComplete, initPhoneField } from '../sr
 
 const MASK = SITE.form.phone;
 
-/* ------------------------------------------------- мінімальний фейк поля */
+/* ------------------------------------------------- a minimal fake field */
 
 /**
- * Рівно стільки DOM, скільки потребує initPhoneField. Слухачі — справжні, з
- * продакшен-коду; ми лише доставляємо їм події так, як це робить браузер.
+ * Exactly as much DOM as initPhoneField needs. The listeners are real, from
+ * production code; we only deliver events to them the way a browser does.
  */
 class FakeInput {
 	constructor() {
@@ -55,7 +57,7 @@ const newField = () => {
 	return input;
 };
 
-/** Набір посимвольно: браузер вставляє символ, потім летить `input`. */
+/** Character-by-character typing: the browser inserts a character, then `input` fires. */
 const typeInto = (input, text) => {
 	for (const char of text) {
 		input.value += char;
@@ -64,14 +66,14 @@ const typeInto = (input, text) => {
 	return input.value;
 };
 
-/** Вставка з буфера: весь рядок одразу, одна подія `input`. */
+/** Pasting from the clipboard: the whole string at once, one `input` event. */
 const pasteInto = (input, text) => {
 	input.value += text;
 	input.fire('input');
 	return input.value;
 };
 
-/** Backspace із урахуванням keydown-захисту префікса. */
+/** Backspace, honouring the keydown guard of the prefix. */
 const backspace = (input) => {
 	const event = input.fire('keydown', { key: 'Backspace' });
 	if (event.defaultPrevented) return input.value;
@@ -91,11 +93,11 @@ const is = (label, actual, expected) => {
 		console.log(`  ok   ${label}\n         ${JSON.stringify(actual)}`);
 	} else {
 		failed++;
-		console.log(`  FAIL ${label}\n         очікували ${JSON.stringify(expected)}\n         отримали  ${JSON.stringify(actual)}`);
+		console.log(`  FAIL ${label}\n         expected ${JSON.stringify(expected)}\n         got      ${JSON.stringify(actual)}`);
 	}
 };
 
-/* -------------------------------------------------------- дані по країнах */
+/* ------------------------------------------------------ data per country */
 
 const CASES = {
 	'+1': {
@@ -125,64 +127,64 @@ const CASES = {
 
 const expectations = CASES[MASK.countryCode];
 
-console.log(`Маска телефону: countryCode=${MASK.countryCode} digits=${MASK.digits} groups=[${MASK.groups}]\n`);
+console.log(`Phone mask: countryCode=${MASK.countryCode} digits=${MASK.digits} groups=[${MASK.groups}]\n`);
 
-/* ------------------------------------------------ літеральні очікування */
+/* ---------------------------------------------------- literal expectations */
 
 if (expectations) {
 	const { national, formatted, pastes, partials } = expectations;
 
-	is('набір посимвольно', typeInto(newField(), national), formatted);
+	is('character-by-character typing', typeInto(newField(), national), formatted);
 
 	for (const [prefix, expected] of partials) {
-		is(`проміжний стан після "${prefix}"`, typeInto(newField(), prefix), expected);
+		is(`intermediate state after "${prefix}"`, typeInto(newField(), prefix), expected);
 	}
 
 	for (const text of pastes) {
-		is(`вставка "${text}"`, pasteInto(newField(), text), formatted);
+		is(`paste "${text}"`, pasteInto(newField(), text), formatted);
 	}
 
-	// Зайві цифри понад ліміт не мають зсувати номер.
-	is('набір із зайвими цифрами', typeInto(newField(), national + '999'), formatted);
+	// Extra digits beyond the limit must not shift the number.
+	is('typing with extra digits', typeInto(newField(), national + '999'), formatted);
 
-	// Backspace до порожнього і набір заново.
+	// Backspace down to empty and type again.
 	const field = newField();
 	typeInto(field, national);
 	let guard = 0;
 	while (field.value !== `${MASK.countryCode} (` && guard++ < 100) backspace(field);
-	is('backspace до префікса', field.value, `${MASK.countryCode} (`);
-	is('набір після backspace', typeInto(field, national), formatted);
+	is('backspace down to the prefix', field.value, `${MASK.countryCode} (`);
+	is('typing after backspace', typeInto(field, national), formatted);
 
-	// Видалення частини номера й донабір.
+	// Deleting part of the number and typing it back.
 	const partial = newField();
 	typeInto(partial, national);
 	backspace(partial);
 	backspace(partial);
-	is('донабір після двох backspace', typeInto(partial, national.slice(-2)), formatted);
+	is('retyping after two backspaces', typeInto(partial, national.slice(-2)), formatted);
 
-	is('isPhoneComplete на повному номері', isPhoneComplete(formatted), true);
-	is('isPhoneComplete на неповному', isPhoneComplete(typeInto(newField(), national.slice(0, -1))), false);
-	is('isPhoneComplete на порожньому полі', isPhoneComplete(`${MASK.countryCode} (`), false);
+	is('isPhoneComplete on a full number', isPhoneComplete(formatted), true);
+	is('isPhoneComplete on an incomplete one', isPhoneComplete(typeInto(newField(), national.slice(0, -1))), false);
+	is('isPhoneComplete on an empty field', isPhoneComplete(`${MASK.countryCode} (`), false);
 } else {
-	console.log(`  (літеральні очікування для ${MASK.countryCode} не задані — лише інваріанти)\n`);
+	console.log(`  (no literal expectations for ${MASK.countryCode} — invariants only)\n`);
 }
 
-/* ------------------------------------------------------------ інваріанти */
+/* ---------------------------------------------------------------- invariants */
 
-console.log('\nІнваріанти:');
+console.log('\nInvariants:');
 
-// Головний. Саме його порушення й давало накопичення коду країни: другий
-// прогін по власному виводу міняв результат.
+// The main one. Breaking it is exactly what made the country code accumulate:
+// a second pass over its own output changed the result.
 const sample = typeInto(newField(), '1'.repeat(MASK.digits));
-is('formatPhone ідемпотентний', formatPhone(sample), sample);
+is('formatPhone is idempotent', formatPhone(sample), sample);
 
 const doubled = formatPhone(formatPhone(formatPhone(sample)));
-is('formatPhone стабільний на трьох прогонах', doubled, sample);
+is('formatPhone is stable over three passes', doubled, sample);
 
-is('phoneDigits не повертає код країни', phoneDigits(sample).length, MASK.digits);
+is('phoneDigits does not return the country code', phoneDigits(sample).length, MASK.digits);
 
-// Кожен проміжний стан набору має лишатися ідемпотентним — інакше наступне
-// натискання зіпсує номер.
+// Every intermediate typing state must stay idempotent — otherwise the next
+// keystroke corrupts the number.
 const field = newField();
 let stable = true;
 for (const char of '1234567890123'.slice(0, MASK.digits)) {
@@ -190,7 +192,7 @@ for (const char of '1234567890123'.slice(0, MASK.digits)) {
 	field.fire('input');
 	if (formatPhone(field.value) !== field.value) stable = false;
 }
-is('кожен проміжний стан ідемпотентний', stable, true);
+is('every intermediate state is idempotent', stable, true);
 
-console.log(`\n${passed} пройшло, ${failed} впало.`);
+console.log(`\n${passed} passed, ${failed} failed.`);
 process.exit(failed ? 1 : 0);

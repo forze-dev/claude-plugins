@@ -1,6 +1,6 @@
 /**
- * Веб-маніфест, згенерований із site.config.js. Він тут, а не в public/, саме
- * щоб назва й колір теми не могли розійтися з рештою сайту.
+ * The web manifest, generated from site.config.js. It lives here rather than in
+ * public/ so the name and theme color can't drift from the rest of the site.
  */
 import { SITE } from '../site.config.js';
 

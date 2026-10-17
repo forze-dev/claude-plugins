@@ -1,18 +1,23 @@
 #!/usr/bin/env node
 /**
- * Розгортає каркас лендингу в нову теку.
+ * Copies the landing scaffold into a new folder.
  *
- *   node scaffold.mjs --template <шлях до template> --target <нова тека>
+ *   node scaffold.mjs --template <path to template> --target <new folder> [--lang <language>]
  *
- * Копіює каркас без артефактів (node_modules, dist, release, .astro) і нічого
- * більше: залежності, git і конфігурацію робить скіл окремими кроками, щоб
- * кожен з них можна було перевірити й пояснити людині.
+ * Copies the scaffold without artifacts (node_modules, dist, release, .astro)
+ * and nothing more: dependencies, git and configuration are separate skill
+ * steps, so each can be checked and explained to the person.
  *
- * Відмовляється працювати, якщо цільова тека існує й не порожня: перезаписати
- * чужий проєкт — гірше, ніж зупинитися й перепитати.
+ * `--lang` is the conversation language (in English, e.g. "Ukrainian"). It is
+ * written into rule 1 of the new project's CLAUDE.md, between the
+ * `forze:lang` markers, so every later session talks to the developer in it —
+ * without translating the docs themselves.
+ *
+ * Refuses if the target exists and is not empty: overwriting someone's project
+ * is worse than stopping to ask again.
  */
 
-import { cpSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { cpSync, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, relative, resolve, sep } from 'node:path';
 
 const arg = (name) => {
@@ -22,9 +27,15 @@ const arg = (name) => {
 
 const template = arg('template');
 const target = arg('target');
+const language = (arg('lang') ?? 'English').trim();
 
 if (!template || !target) {
-	console.error('Використання: node scaffold.mjs --template <шлях до template> --target <нова тека>');
+	console.error('Usage: node scaffold.mjs --template <path to template> --target <new folder> [--lang <language>]');
+	process.exit(2);
+}
+
+if (!/^[\p{L} ()-]{2,40}$/u.test(language)) {
+	console.error(`--lang must be a language name, e.g. "Ukrainian". Got: ${language}`);
 	process.exit(2);
 }
 
@@ -32,16 +43,16 @@ const from = resolve(template);
 const to = resolve(target);
 
 if (!existsSync(from) || !existsSync(resolve(from, 'src', 'site.config.js'))) {
-	console.error(`Каркас не знайдено: ${from}`);
+	console.error(`Scaffold not found: ${from}`);
 	process.exit(2);
 }
 
 if (existsSync(to) && (!statSync(to).isDirectory() || readdirSync(to).length > 0)) {
-	console.error(`Тека ${to} уже існує і не порожня. Обери іншу назву або порожню теку — наявні файли не перезаписуються.`);
+	console.error(`Folder ${to} already exists and is not empty. Pick another name or an empty folder — existing files are never overwritten.`);
 	process.exit(3);
 }
 
-/** Артефакти збірки й локальні файли, які не мають їхати в новий проєкт. */
+/** Build artifacts and local files that must not travel into a new project. */
 const SKIP = new Set(['node_modules', 'dist', 'release', '.astro']);
 const SKIP_FILES = new Set([['server', 'form.limits.json'].join(sep), '.env']);
 
@@ -56,10 +67,19 @@ cpSync(from, to, {
 	},
 });
 
+const claudeMd = resolve(to, 'CLAUDE.md');
+const rules = readFileSync(claudeMd, 'utf8');
+const marked = /<!-- forze:lang -->[^<]*<!-- \/forze:lang -->/g;
+if (!marked.test(rules)) {
+	console.error('CLAUDE.md has no forze:lang markers — the scaffold is damaged.');
+	process.exit(4);
+}
+writeFileSync(claudeMd, rules.replace(marked, `<!-- forze:lang -->${language}<!-- /forze:lang -->`));
+
 const count = (dir) =>
 	readdirSync(dir).reduce((sum, entry) => {
 		const full = resolve(dir, entry);
 		return sum + (statSync(full).isDirectory() ? count(full) : 1);
 	}, 0);
 
-console.log(JSON.stringify({ ok: true, target: to, project: basename(to), files: count(to) }));
+console.log(JSON.stringify({ ok: true, target: to, project: basename(to), language, files: count(to) }));

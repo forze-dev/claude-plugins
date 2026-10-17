@@ -1,9 +1,9 @@
 /**
- * Сторінка 404.
+ * The 404 page.
  *
- * Автономний тупиковий екран: без хедера й футера, з єдиним виходом — назад на
- * головну. Свідомо простіша за сторінку подяки: там людина щойно зробила дію і
- * їй є що розповісти, тут вона просто помилилася адресою.
+ * A standalone dead-end screen: no header or footer, one way out — back to the
+ * home page. Deliberately simpler than the thank-you page: there the person
+ * has just done something and has things to read; here they just mistyped.
  */
 
 .notfound {
@@ -43,8 +43,8 @@
 }
 
 /**
- * Єдиний сміливий елемент сторінки. Aria-hidden: «404» — це графіка, а зчитувач
- * екрана має почути заголовок, а не три цифри.
+ * The page's one bold element. Aria-hidden: "404" is a graphic, and a screen
+ * reader should hear the heading, not three digits.
  */
 .notfound__code {
 	margin-bottom: var(--space-4);

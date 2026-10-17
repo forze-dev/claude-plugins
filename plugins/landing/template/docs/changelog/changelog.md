@@ -1,11 +1,10 @@
-# Ченжлог
+# Changelog
 
-Один рядок на робочий день, найновіші зверху. Деталі — у денному файлі
-`ДД.ММ.РРРР.md`.
+One line per working day, newest first. Details are in the day file
+`DD.MM.YYYY.md`.
 
-Пишеться після **кожного етапу** задачі, разом із комітом цього етапу (якщо є
-git), а не в
-кінці тижня.
+Written after **every stage** of a task, together with that stage's commit (if
+there is git), not at the end of the week.
 
-| Дата | Що сталося | Деталі |
+| Date | What happened | Details |
 | --- | --- | --- |

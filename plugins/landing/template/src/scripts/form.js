@@ -1,21 +1,21 @@
 /**
- * Форма заявки — єдина реалізація.
+ * The request form — the single implementation.
  *
- * І вбудована форма в секції контактів лендингу, і форма в модалці викликають
- * `initForm(formElement)`. Маска телефону, робота з файлом, валідація й
- * надсилання не існують більше ніде.
+ * Both the form embedded in the landing's contacts section and the one in the
+ * modal call `initForm(formElement)`. The phone mask, file handling,
+ * validation and submission exist nowhere else.
  *
- * Очікувана розмітка — повна версія в src/components/RequestForm.astro:
+ * Expected markup — the full version is in src/components/RequestForm.astro:
  *   <form data-form novalidate>
  *     <input name="username">
  *     <input name="phone" type="tel">
  *     <textarea name="comment">
  *     <input type="file" name="drawing" data-file-input>
- *     <button data-file-trigger>            … відкриває вибір файлу
- *     <div data-file-preview>               … назва + розмір + кнопка видалення
- *     <input name="company" data-form-trap> … honeypot, має лишатися порожнім
- *     <input type="hidden" name="elapsedMs">   … скільки мс форма була на екрані
- *     <p data-form-message>                 … вивід валідації / помилок
+ *     <button data-file-trigger>            … opens the file picker
+ *     <div data-file-preview>               … name + size + remove button
+ *     <input name="company" data-form-trap> … honeypot, must stay empty
+ *     <input type="hidden" name="elapsedMs">   … how many ms the form was on screen
+ *     <p data-form-message>                 … validation / error output
  *     <button type="submit">
  */
 
@@ -26,33 +26,33 @@ const MASK = FORM.phone;
 
 /* ------------------------------------------------------------------ phone */
 
-/** Префікс, який поле показує одразу при фокусі, напр. "+1 (". */
+/** The prefix the field shows right on focus, e.g. "+1 (". */
 const PREFIX = `${MASK.countryCode} (`;
 
-/** Цифри коду країни: "+380" → "380". */
+/** The country code digits: "+380" → "380". */
 const COUNTRY_DIGITS = MASK.countryCode.replace(/\D/g, '');
 
 /**
- * Національні цифри з того, що зараз у полі.
+ * The national digits from what is in the field right now.
  *
- * Префікс знімається ЯК ТЕКСТ, перш ніж рахувати цифри, — і це тут головне.
- * Поле майже завжди вже містить `+1 (`, тож `replace(/\D/g, '')` по сирому
- * значенню затягує цифру коду країни в національну частину. Наступне
- * натискання робить це знову — уже зі своїм попереднім виводом, — і номер
- * розповзається: набір 5550102030 давав `+1 (111) 115-5501`, після чого поле
- * переставало приймати ввід узагалі.
+ * The prefix is removed AS TEXT before the digits are counted — that's the key
+ * here. The field almost always already contains `+1 (`, so `replace(/\D/g, '')`
+ * on the raw value pulls the country code digit into the national part. The
+ * next keystroke does it again — this time on its own previous output — and
+ * the number creeps: typing 5550102030 produced `+1 (111) 115-5501`, after
+ * which the field stopped accepting input at all.
  *
- * Стара версія знімала код країни умовно, через
- * `if (digits.length > MASK.digits && …)` — але ця умова стає істинною аж
- * наприкінці набору, коли псування вже накопичене.
+ * The old version removed the country code conditionally, via
+ * `if (digits.length > MASK.digits && …)` — but that condition only becomes
+ * true at the very end of typing, when the corruption has already piled up.
  */
 export function phoneDigits(rawValue) {
 	const body = rawValue.startsWith(PREFIX) ? rawValue.slice(PREFIX.length) : rawValue;
 	let digits = body.replace(/\D/g, '');
 
-	// Вставлений з буфера номер може нести код країни ще раз — і як E.164
-	// (15550102030), і як «+1 555 010 2030». Знімаємо, але лише коли без нього
-	// номер не стане закоротким.
+	// A number pasted from the clipboard may carry the country code again — as
+	// E.164 (15550102030) or as "+1 555 010 2030". Strip it, but only when the
+	// number wouldn't become too short without it.
 	if (digits.length > MASK.digits && digits.startsWith(COUNTRY_DIGITS)) {
 		digits = digits.slice(COUNTRY_DIGITS.length);
 	}
@@ -61,24 +61,26 @@ export function phoneDigits(rawValue) {
 }
 
 /**
- * Чи набрано повний номер.
+ * Whether a complete number has been typed.
  *
- * Рахуються ЦИФРИ, а не довжина рядка: перевірка довжини пропускала зіпсований
- * номер, бо дужки й дефіси давали рівно ту саму довжину, що й правильний.
+ * DIGITS are counted, not the string length: a length check let a corrupted
+ * number through, because brackets and dashes gave exactly the same length as
+ * a correct one.
  */
 export const isPhoneComplete = (rawValue) => phoneDigits(rawValue).length === MASK.digits;
 
 /**
- * Цифри → номер за маскою, цілком керований SITE.form.phone. Форматування
- * робить `formatNational` із конфіга — та сама функція, що дає видимий текст
- * номерів на сайті, тож маска й футер не можуть показувати різні формати.
+ * Digits → a number by the mask, fully driven by SITE.form.phone. Formatting is
+ * done by `formatNational` from the config — the same function that produces
+ * the visible phone text on the site, so the mask and the footer can't show
+ * different formats.
  */
 export const formatPhone = (rawValue) => formatNational(phoneDigits(rawValue));
 
 export function initPhoneField(input) {
 	if (!input) return;
 
-	// Префікс зʼявляється при фокусі, щоб у спокої було видно плейсхолдер.
+	// The prefix appears on focus so the placeholder is visible at rest.
 	input.addEventListener('focus', () => {
 		if (!input.value) input.value = PREFIX;
 	});
@@ -91,7 +93,7 @@ export function initPhoneField(input) {
 		input.value = formatPhone(input.value);
 	});
 
-	// Не даємо backspace зʼїсти префікс і лишити курсор у нікуди.
+	// Don't let backspace eat the prefix and leave the caret nowhere.
 	input.addEventListener('keydown', (event) => {
 		const isDelete = event.key === 'Backspace' || event.key === 'Delete';
 		if (isDelete && input.value.length <= PREFIX.length) event.preventDefault();
@@ -107,9 +109,9 @@ function formatSize(bytes) {
 
 function isAllowedFile(file) {
 	const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
-	// Вирішує розширення, і тільки воно. file.type приходить від браузера — для
-	// CAD він порожній або дивний, а головне, він нічого не доводить. Це лише
-	// зручність: справжню перевірку (сигнатури) роблять бекенди.
+	// The extension decides, and only it. file.type comes from the browser — for
+	// CAD it is empty or odd, and above all it proves nothing. This is only a
+	// convenience: the real check (signatures) is done by the back end.
 	return FORM.allowedExtensions.includes(extension);
 }
 
@@ -127,8 +129,8 @@ function initFileField(form, showMessage) {
 		input.value = '';
 		trigger.hidden = false;
 		preview.hidden = true;
-		// Назву й розмір теж чистимо: інакше прихований блок тримає дані
-		// попереднього файла, і наступне відхилення показало б чужий підпис.
+		// Clear the name and size too: otherwise the hidden block keeps the
+		// previous file's data, and the next rejection would show someone else's label.
 		if (nameOutput) nameOutput.textContent = '';
 		if (sizeOutput) sizeOutput.textContent = '';
 	};
@@ -184,7 +186,7 @@ function createMessenger(form) {
 
 /* ----------------------------------------------------------------- submit */
 
-/** Підключає одну форму. Повертає `reset()`, щоб модалка могла її очистити. */
+/** Wires one form. Returns `reset()` so the modal can clear it. */
 export function initForm(form) {
 	if (!form || form.dataset.formReady === 'true') return () => {};
 	form.dataset.formReady = 'true';
@@ -202,11 +204,11 @@ export function initForm(form) {
 	initPhoneField(phoneInput);
 
 	/**
-	 * Скільки часу форма реально пробула на екрані. Саме ТРИВАЛІСТЬ, а не мітка
-	 * часу: раніше сюди клався Date.now() браузера, а сервер віднімав його від
-	 * свого. У відвідувача з годинником, що випереджає серверний, різниця
-	 * ставала відʼємною — і сервер відхиляв його як бота назавжди, без жодного
-	 * пояснення. performance.now() монотонний і з годинником не звʼязаний.
+	 * How long the form was actually on screen. A DURATION, not a timestamp: the
+	 * browser's Date.now() used to go here and the server subtracted it from its
+	 * own. For a visitor whose clock ran ahead of the server's, the difference
+	 * went negative — and the server rejected them as a bot forever, with no
+	 * explanation. performance.now() is monotonic and not tied to the clock.
 	 */
 	let openedAt = performance.now();
 	const elapsedMs = () => String(Math.round(performance.now() - openedAt));
@@ -237,8 +239,8 @@ export function initForm(form) {
 		payload.append('phone', phoneInput.value.trim());
 		payload.append('comment', commentInput?.value.trim() || '');
 		payload.append('company', trapInput?.value ?? '');
-		// Поле в розмітці лишається: воно документує контракт із бекендом і без
-		// JS піде порожнім — а порожнє значення бекенд відхиляє.
+		// The field stays in the markup: it documents the contract with the back
+		// end, and without JS it is sent empty — and the back end rejects an empty value.
 		if (elapsedInput) elapsedInput.value = elapsedMs();
 		payload.append('elapsedMs', elapsedInput ? elapsedInput.value : elapsedMs());
 		payload.append('page', window.location.pathname);
@@ -256,14 +258,14 @@ export function initForm(form) {
 			const response = await fetch(SITE.formEndpoint, { method: 'POST', body: payload });
 
 			if (!response.ok) {
-				// 429 — окремий текст: людина щойно надіслала заявку, і «спробуйте
-				// ще раз» без пояснення змусило б її натискати знову й знову.
+				// 429 gets its own text: the person has just sent a request, and "try
+				// again" without an explanation would make them click again and again.
 				showMessage('error', response.status === 429 ? COPY.tooManyRequests : COPY.sendError);
 				return;
 			}
 
 			reset();
-			// Сторінка подяки перевіряє цю мітку, перш ніж відрендеритись.
+			// The thank-you page checks this marker before rendering.
 			window.location.href = `${FORM.successUrl}?formStatus=sent&timestamp=${Date.now()}`;
 		} catch {
 			showMessage('error', COPY.networkError);
@@ -278,7 +280,7 @@ export function initForm(form) {
 	return reset;
 }
 
-/** Ініціалізує всі `[data-form]`, що вже є в документі. */
+/** Initializes every `[data-form]` already in the document. */
 export function initForms(root = document) {
 	root.querySelectorAll('[data-form]').forEach((form) => initForm(form));
 }

@@ -1,4 +1,4 @@
-/** Сітка карток: переваги, послуги. */
+/** Card grid: advantages, services. */
 
 .cards {
 	list-style: none;
@@ -28,7 +28,7 @@
 	line-height: var(--lh-relaxed);
 }
 
-/* Ціна притиснута донизу, щоб у сусідніх картках стояла на одному рівні. */
+/* The price is pushed to the bottom so it lines up across neighbouring cards. */
 .card__price {
 	margin-top: auto;
 	padding-top: var(--space-3);

@@ -1,8 +1,8 @@
 /**
- * Поведінка хедера: мобільне меню.
+ * Header behaviour: the mobile menu.
  *
- * Підписи кнопки беруться з data-атрибутів, які рендерить Header.astro з
- * `SITE.ui` — тож мова підписів задається конфігом, а не цим файлом.
+ * The button labels come from data attributes that Header.astro renders from
+ * `SITE.ui` — so the label language is set by the config, not by this file.
  */
 
 function initDrawer(header) {
@@ -20,8 +20,8 @@ function initDrawer(header) {
 
 	burger.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
 
-	// Перехід за якорем усередині меню закриває його — інакше меню лишилося б
-	// поверх секції, до якої людина щойно перейшла.
+	// Following an anchor inside the menu closes it — otherwise the menu would
+	// stay on top of the section the person just jumped to.
 	nav.addEventListener('click', (event) => {
 		if (event.target.closest('a')) setOpen(false);
 	});
@@ -33,7 +33,7 @@ function initDrawer(header) {
 		}
 	});
 
-	// Вихід за мобільний брейкпоінт не має лишити body заблокованим.
+	// Leaving the mobile breakpoint must not leave the body locked.
 	window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
 		if (event.matches) setOpen(false);
 	});

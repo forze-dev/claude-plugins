@@ -1,4 +1,4 @@
-/* Присутність бренду без темного блоку: тінт акценту, а не сам акцент. */
+/* Brand presence without a dark block: a tint of the accent, not the accent itself. */
 .cta-band {
 	display: flex;
 	flex-wrap: wrap;

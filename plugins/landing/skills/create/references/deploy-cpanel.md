@@ -1,61 +1,62 @@
-# Заливання на cPanel — інструкція для людини
+# Uploading to cPanel — instructions for the person
 
-Перекажи це людині своїми словами, підставивши її домен і шлях до архіву.
-Назви пунктів меню cPanel можуть трохи відрізнятися в різних хостерів.
+Retell this to the person in your own words and in the conversation language,
+with their domain and the path to the archive filled in. cPanel menu names may
+differ slightly between hosting providers.
 
-## Перед заливанням
+## Before uploading
 
-- Домен уже підключений до хостингу (DNS вказують на сервер).
-- **SSL є.** cPanel → **SSL/TLS Status** → домен позначений зеленим. Немає —
-  кнопка **Run AutoSSL** і почекати кілька хвилин. Без сертифіката сайт не
-  відкриється: він переадресовує на `https://`.
-- **PHP 8.1 або новіший.** cPanel → **MultiPHP Manager** → обрати домен →
+- The domain is already connected to the hosting (DNS points to the server).
+- **SSL is in place.** cPanel → **SSL/TLS Status** → the domain is marked
+  green. If not — the **Run AutoSSL** button, then wait a few minutes. Without
+  a certificate the site won't open: it redirects to `https://`.
+- **PHP 8.1 or newer.** cPanel → **MultiPHP Manager** → select the domain →
   PHP 8.1+ → Apply.
 
-## Заливання
+## Upload
 
-1. cPanel → **File Manager** → тека `public_html`.
-2. Якщо там лежить старий сайт — зробити резервну копію (виділити все →
-   Compress) або видалити, якщо він точно не потрібен.
-3. **Upload** → обрати `release/<домен>.zip`.
-4. Повернутися в `public_html`, правою кнопкою на архіві → **Extract** → у
-   `public_html`. Файли (`index.html`, `assets/`, `scripts/`…) мають лягти
-   **прямо в `public_html`**, а не в підтеку.
-5. Увімкнути показ прихованих файлів (Settings → Show Hidden Files) і
-   переконатися, що `.htaccess` на місці.
-6. Архів у `public_html` після розпакування видалити.
+1. cPanel → **File Manager** → the `public_html` folder.
+2. If an old site is there — back it up (select all → Compress) or delete it
+   if it's definitely not needed.
+3. **Upload** → choose `release/<domain>.zip`.
+4. Back in `public_html`, right-click the archive → **Extract** → into
+   `public_html`. The files (`index.html`, `assets/`, `scripts/`…) must land
+   **directly in `public_html`**, not in a subfolder.
+5. Turn on hidden files (Settings → Show Hidden Files) and make sure
+   `.htaccess` is there.
+6. Delete the archive from `public_html` after extracting.
 
-## Доступи бота
+## Bot credentials
 
-1. У File Manager піднятися на рівень **вище** `public_html` — у домашню теку
-   (`/home/<користувач>/`).
-2. **+ File** → назва `.env`.
-3. Відкрити (Edit) і вписати:
+1. In File Manager go **one level above** `public_html` — the home folder
+   (`/home/<user>/`).
+2. **+ File** → name it `.env`.
+3. Open it (Edit) and enter:
    ```
-   TELEGRAM_BOT_TOKEN=токен від BotFather
+   TELEGRAM_BOT_TOKEN=the token from BotFather
    CHAT_ID=-100…
    ```
-4. Зберегти.
+4. Save.
 
-## Великі файли у формі
+## Large files in the form
 
-Якщо файли більші за кілька мегабайт не доходять: cPanel → **MultiPHP INI
-Editor** → домен → `upload_max_filesize` і `post_max_size` — не менші за ліміт
-форми (за замовчуванням 20M і 21M) → Apply.
+If files larger than a few megabytes don't arrive: cPanel → **MultiPHP INI
+Editor** → the domain → `upload_max_filesize` and `post_max_size` — not lower
+than the form limit (20M and 21M by default) → Apply.
 
-## Перевірка
+## Check
 
-1. Відкрити сайт за `http://домен` — має перекинути на `https://домен`.
-2. Відкрити `https://домен/privacy-policy` — сторінка є.
-3. Відкрити `https://домен/neisnuyucha-storinka` — має показатися сторінка 404.
-4. Надіслати тестову заявку **без файла**, потім **з файлом** — обидві мають
-   прийти в Telegram, після надсилання відкривається сторінка подяки.
+1. Open the site at `http://domain` — it must redirect to `https://domain`.
+2. Open `https://domain/privacy-policy` — the page exists.
+3. Open `https://domain/no-such-page` — the 404 page must appear.
+4. Send a test request **without a file**, then **with a file** — both must
+   arrive in Telegram, and the thank-you page opens after sending.
 
-Заявка не прийшла:
+The request didn't arrive:
 
-- повідомлення «The form is not configured yet» — `.env` не там або з
-  помилкою в назвах змінних;
-- «Rejected.» — сайт відкрито не з того домену, що вказаний у `SITE.url`
-  (наприклад, через технічний піддомен хостера);
-- «Too many requests» — зачекати 20 секунд між тестами;
-- помилка доставки — неправильний токен або chat id, або бота не додано в групу.
+- the message "The form is not configured yet" — `.env` is in the wrong place
+  or the variable names are wrong;
+- "Rejected." — the site was opened from a domain other than `SITE.url`
+  (for example, the host's technical subdomain);
+- "Too many requests" — wait 20 seconds between tests;
+- a delivery error — wrong token or chat id, or the bot wasn't added to the group.

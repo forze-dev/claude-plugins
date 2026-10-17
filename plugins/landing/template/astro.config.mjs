@@ -8,7 +8,7 @@ import sitemap from '@astrojs/sitemap';
 import { SITE } from './src/site.config.js';
 import { writeFormLimits } from './tools/limits.mjs';
 
-/** Вільний порт для локального PHP — фіксований міг би бути зайнятий. */
+/** A free port for local PHP — a fixed one might be taken. */
 const freePort = () =>
 	new Promise((resolve, reject) => {
 		const probe = createServer();
@@ -19,7 +19,7 @@ const freePort = () =>
 		});
 	});
 
-/** Чекає, доки `php -S` почне приймати зʼєднання. */
+/** Waits until `php -S` starts accepting connections. */
 const waitForPort = async (port, attempts = 50) => {
 	for (let i = 0; i < attempts; i++) {
 		const ok = await new Promise((resolve) => {
@@ -37,24 +37,24 @@ const waitForPort = async (port, attempts = 50) => {
 };
 
 /**
- * Віддає server/form.php під час `astro dev`.
+ * Serves server/form.php during `astro dev`.
  *
- * Бекенд форми — PHP, про який дев-сервер Astro нічого не знає. Плагін при
- * першому запиті до `SITE.formEndpoint` піднімає вбудований сервер PHP
- * (`php -S`) на теці server/ і проксує туди запит як є — тож локально
- * перевіряється той самий файл, що поїде на хостинг, з тими самими лімітами
- * (form.limits.json пишеться поруч із form.php з SITE.form).
+ * The form back end is PHP, which Astro's dev server knows nothing about. On
+ * the first request to `SITE.formEndpoint` this plugin starts PHP's built-in
+ * server (`php -S`) on the server/ folder and proxies the request there as is
+ * — so locally you test the same file that ships to the hosting, with the same
+ * limits (form.limits.json is written next to form.php from SITE.form).
  *
- * Якщо PHP не встановлено, форма в dev відповідає 503 з поясненням, а решта
- * сайту працює як завжди. Під час збірки плагін не робить нічого.
+ * If PHP isn't installed, the form answers 503 in dev with an explanation and
+ * the rest of the site works as usual. The plugin does nothing during a build.
  */
 function devPhpForm() {
 	let php = null;
 	let starting = null;
 
 	const start = async () => {
-		// Без shell: php.exe знаходиться через PATH і так, а з shell kill() на Windows
-		// зупинив би лише cmd.exe, лишивши PHP висіти після dev-сервера.
+		// No shell: php.exe is found through PATH anyway, and with a shell kill()
+		// on Windows would only stop cmd.exe, leaving PHP running after dev exits.
 		const check = spawnSync('php', ['-v']);
 		if (check.status !== 0) return null;
 
@@ -73,8 +73,8 @@ function devPhpForm() {
 		configureServer(server) {
 			server.httpServer?.once('close', () => php?.kill());
 
-			// Усі методи, не лише POST: GET має отримати 405 від самого form.php,
-			// як на хостингу, а не сторінку Astro з кодом 200.
+			// All methods, not just POST: a GET must get a 405 from form.php itself,
+			// as on the hosting, not an Astro page with status 200.
 			server.middlewares.use(SITE.formEndpoint, async (req, res) => {
 				starting ??= start();
 				const port = await starting.catch(() => null);
@@ -107,15 +107,15 @@ export default defineConfig({
 	site: SITE.url,
 
 	/**
-	 * Віддавати privacy-policy.html, а не privacy-policy/index.html. Apache
-	 * обслуговує чисту адресу /privacy-policy через .htaccess.
+	 * Output privacy-policy.html, not privacy-policy/index.html. Apache serves
+	 * the clean address /privacy-policy through .htaccess.
 	 */
 	build: { format: 'file' },
 	trailingSlash: 'never',
 
 	integrations: [
 		sitemap({
-			// Сторінка подяки не повинна знаходитись у пошуку.
+			// The thank-you page must not be found in search.
 			filter: (page) => !page.includes('/thank-you'),
 		}),
 	],
@@ -127,9 +127,9 @@ export default defineConfig({
 			rollupOptions: {
 				output: {
 					/**
-					 * Спільний бандл стилів інакше називається за першою сторінкою,
-					 * яка його зачепила. Артефакт іменування Vite, не баг, але під
-					 * час діагностики збиває з пантелику.
+					 * The shared style bundle is otherwise named after the first page
+					 * that touched it. A Vite naming artifact, not a bug, but it is
+					 * confusing when debugging.
 					 */
 					assetFileNames: (asset) =>
 						asset.names?.[0]?.endsWith('.css') || asset.name?.endsWith('.css')

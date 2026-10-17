@@ -1,133 +1,129 @@
-# Задача: <коротка назва>
+# Task: <short name>
 
-> Скопіюй цей файл у `docs/tasks/<slug>.md` і заповни. Не вигадуй іншу форму —
-> формат існує, щоб будь-який агент міг узяти будь-який етап.
+> Copy this file to `docs/tasks/<slug>.md` and fill it in, in the conversation
+> language from rule 1 of `CLAUDE.md`. Don't invent another shape — the format
+> exists so that any agent can pick up any stage.
 
 | | |
 | --- | --- |
-| **Статус** | чернетка / в роботі / заблоковано / готово |
-| **Створено** | ДД.ММ.РРРР |
-| **Відповідальний** | хто відповідає за результат |
-| **Закривається, коли** | одне речення, яке робить задачу об'єктивно завершеною |
+| **Status** | draft / in progress / blocked / done |
+| **Created** | DD.MM.YYYY |
+| **Owner** | who is responsible for the result |
+| **Done when** | one sentence that makes the task objectively finished |
 
-## Контекст
+## Context
 
-Навіщо це існує. Що попросив клієнт — за можливості його словами. Що
-відбувається зараз і чому цього замало. Посилання на бриф, дизайн, скріншоти,
-попередню задачу, з якої ця випливає.
+Why this exists. What the client asked for — in their words where possible.
+What happens now and why it's not enough. Links to the brief, design,
+screenshots, the previous task this follows from.
 
-Окремо зафіксуй, що **вже вирішено** — щоб жоден агент не відкривав це
-наново, — і що досі відкрите.
+Separately record what is **already decided** — so no agent reopens it — and
+what is still open.
 
-## Обсяг
+## Scope
 
-**Входить** — список, достатньо конкретний, щоб з ним можна було посперечатися.
+**In** — a list concrete enough to argue with.
 
-**Не входить** — те, що інакше вважатимуть включеним за замовчуванням. Пиши
-явно; цей розділ рятує від більшості марної роботи.
+**Out** — things that would otherwise be assumed included. Write them out;
+this section saves most wasted work.
 
-## Обмеження
+## Constraints
 
-Правила, яких ця задача мусить дотримуватися. Завжди переноси сюди ті з
-`CLAUDE.md`, що стосуються справи, і додавай специфічні для задачі. Наприклад:
+Rules this task must follow. Always carry over the relevant ones from
+`CLAUDE.md` and add task-specific ones. For example:
 
-- будь-який видимий рядок береться з `src/site.config.js`, а не вписується
-  в сторінку;
-- одна сторінка за сесію — якщо задачі треба чотири сторінки, їй треба чотири
-  сесії;
-- і JSON-LD, і мікророзмітка, що описують одну сутність, зв'язані через
-  `itemid`;
-- збірка детермінована: однакові входи — байт-у-байт однаковий `dist/`;
-- нічого не вигадувати: невідомий факт питається, а не домислюється.
+- every visible contact comes from `src/site.config.js`, not typed into a page;
+- one page per session — if the task needs four pages, it needs four sessions;
+- JSON-LD and microdata describing one entity are linked through `itemid`;
+- the build is deterministic: same inputs — byte-identical `dist/`;
+- invent nothing: an unknown fact is asked for, not assumed.
 
-## Етапи
+## Stages
 
-Кожен етап — обсяг роботи, який один агент може завершити й перевірити
-самостійно. Нумеруй їх. Етап ніколи не залежить від пізнішого.
+Each stage is a piece of work one agent can finish and verify on its own.
+Number them. A stage never depends on a later one.
 
 ---
 
-### Етап 1 — <назва>
+### Stage 1 — <name>
 
-**Мета.** Одне речення: що стає правдою після цього етапу, чого не було до.
+**Goal.** One sentence: what becomes true after this stage that wasn't before.
 
-**Файли, яких торкається етап.** Перелічи. Якщо перелік невідомий — перше
-завдання етапу з'ясувати це й записати сюди.
+**Files this stage touches.** List them. If the list is unknown, the stage's
+first job is to find out and write it here.
 
-**Кроки.**
+**Steps.**
 
 1. …
 2. …
 
-**Перевірка — має пройти до початку Етапу 2.**
+**Check — must pass before Stage 2 starts.**
 
-- [ ] `npm run build` проходить
-- [ ] конкретне перевірюване твердження про вивід, а не «виглядає нормально»
-- [ ] жодної регресії в перевірках, які додав попередній етап
+- [ ] `npm run build` passes
+- [ ] a concrete, checkable claim about the output, not "looks fine"
+- [ ] no regression in the checks added by previous stages
 
-**Промпт для агента-виконавця.**
+**Prompt for the implementing agent.**
 
 ```
-Ти працюєш у <репозиторій>, це статичний сайт на Astro. Спершу прочитай
-CLAUDE.md і дотримуйся його — це обов'язкові правила, а не поради.
-Спілкуйся українською.
+You are working in <repository>, a static Astro site. First read CLAUDE.md
+and follow it — these are mandatory rules, not suggestions. Talk to the
+developer in the language set in rule 1.
 
-ПЕРЕД БУДЬ-ЯКИМИ ЗМІНАМИ проаналізуй:
-- docs/tasks/<цей файл> — цілком, а не лише цей етап
-- <конкретні файли, яких торкається етап>
-- <компонент або сторінку, де вже зроблено щось подібне — назви її>
-Доповідай, що знайшов і що збираєшся змінити, і лише потім починай.
+BEFORE ANY CHANGES analyse:
+- docs/tasks/<this file> — entirely, not just this stage
+- <the specific files this stage touches>
+- <a component or page where something similar is already done — name it>
+Report what you found and what you're going to change, and only then start.
 
-ЗАВДАННЯ
-<що зробити, конкретно, у термінах файлів і поведінки>
+TASK
+<what to do, concretely, in terms of files and behaviour>
 
-ОБМЕЖЕННЯ
-- <ті правила з розділу «Обмеження», що діють тут>
-- Не чіпай <те, що поза обсягом>
+CONSTRAINTS
+- <the rules from "Constraints" that apply here>
+- Don't touch <what's out of scope>
 
-ПЕРЕВІР, і не звітуй про успіх, поки кожен пункт реально не пройшов:
-- <перевірки з чекліста, сформульовані як команди й твердження>
-- Дивись у зібраний dist/, а не припускай, що з коду це випливає.
+CHECK, and don't report success until every item has really passed:
+- <the checklist items, phrased as commands and claims>
+- Look at the built dist/ rather than assuming it follows from the code.
 
-КОЛИ ЗАКІНЧИШ
-- Напиши docs/changelog/<сьогодні>.md: що змінив, чому, що перевірив, і що
-  перевірити не вдалося та чому.
-- Додай рядок в docs/changelog/changelog.md.
-- Якщо в корені є .git — зроби коміт, назвавши в повідомленні задачу й етап.
-  Якщо .git немає — git-команд не виконуй; познач запис у ченжлозі [етап N].
-- Звітуй, що лишилося. Якщо щось перевірити не вдалося — скажи прямо,
-  а не натякай, що працює.
+WHEN DONE
+- Write docs/changelog/<today>.md: what you changed, why, what you checked,
+  and what couldn't be checked and why.
+- Add a line to docs/changelog/changelog.md.
+- If there is a .git at the root — commit, naming the task and the stage.
+  If there is no .git — run no git commands; mark the changelog entry [stage N].
+- Report what's left. If something couldn't be checked, say so plainly
+  instead of implying it works.
 ```
 
 ---
 
-### Етап 2 — <назва>
+### Stage 2 — <name>
 
-**Залежить від.** Етапу 1, конкретно від <що саме він виробив>.
+**Depends on.** Stage 1, specifically on <what it produced>.
 
-**Перепровірка перед стартом.** Перевірка попереднього етапу **переганяється
-заново**, а не вважається пройденою. Не пройшла — етап зупиняється, попередній
-відкривається.
+**Re-check before starting.** The previous stage's check is **run again**, not
+assumed passed. If it fails, this stage stops and the previous one is reopened.
 
-- [ ] перевірка Етапу 1 усе ще проходить
-- [ ] у `docs/changelog/<день>.md` є запис про Етап 1
-- [ ] коміт Етапу 1 існує (або, без git, запис `[етап 1]` у ченжлозі)
+- [ ] Stage 1's check still passes
+- [ ] `docs/changelog/<day>.md` has an entry for Stage 1
+- [ ] Stage 1's commit exists (or, without git, a `[stage 1]` changelog entry)
 
-**Мета / Файли / Кроки / Перевірка / Промпт** — та сама структура, що в Етапі 1.
+**Goal / Files / Steps / Check / Prompt** — the same structure as Stage 1.
 
 ---
 
-## Відкриті питання
+## Open questions
 
-Те, на що має відповісти людина. Кожен пункт називає, хто відповідає і що
-заблоковано до відповіді. Агент, який упирається в такий пункт, зупиняється й
-питає — не вгадує.
+What a person has to answer. Each item names who answers and what is blocked
+until then. An agent that hits such an item stops and asks — it doesn't guess.
 
-## Критерій готовності
+## Definition of done
 
-Для всієї задачі, не для етапу:
+For the whole task, not a stage:
 
-- [ ] кожен етап перевірено
-- [ ] `npm run build` чистий
-- [ ] ченжлог написано для кожного етапу
-- [ ] цей файл перенесено в `docs/archive/` з приміткою зверху
+- [ ] every stage verified
+- [ ] `npm run build` is clean
+- [ ] a changelog entry exists for every stage
+- [ ] this file moved to `docs/archive/` with a note at the top

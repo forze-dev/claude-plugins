@@ -1,6 +1,6 @@
 /**
- * robots.txt, згенерований із site.config.js — тож адреса sitemap завжди вказує
- * на правильний домен. Під час збірки потрапляє у dist/robots.txt.
+ * robots.txt generated from site.config.js — so the sitemap address always
+ * points to the right domain. Ends up in dist/robots.txt at build time.
  */
 import { SITE } from '../site.config.js';
 

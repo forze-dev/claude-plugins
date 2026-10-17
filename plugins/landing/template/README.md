@@ -1,66 +1,67 @@
-# Лендинг
+# Landing
 
-Односторінковий сайт на Astro: лендинг, політика конфіденційності, сторінка
-подяки й 404. Форма заявки надсилає дані в Telegram через PHP — сайт
-розрахований на звичайний хостинг з cPanel. Створено плагіном `landing@forze`.
+A one-page site on Astro: the landing, a privacy policy, a thank-you page and
+a 404. The request form sends data to Telegram through PHP — the site targets
+ordinary cPanel hosting. Created by the `landing@forze` plugin.
 
-Правила роботи з проєктом — у `CLAUDE.md`. Їх читає й Claude Code, тож далі
-можна працювати з ним напряму: `/add-section`, `/add-page`.
+The rules for working with the project are in `CLAUDE.md`. Claude Code reads
+them too, so you can keep working with it directly: `/add-section`, `/add-page`.
 
-## Швидкий старт
+## Quick start
 
 ```bash
-npm ci               # саме ci, не install — точні версії з lock-файла
+npm ci               # ci, not install — exact versions from the lock file
 npm run dev          # http://localhost:4321
 ```
 
-Для перевірки форми локально потрібен PHP 8.1+ і файл `.env` у корені проєкту
-(скопіюй `.env.example`). Без PHP сайт працює, а форма відповідає поясненням.
+Testing the form locally needs PHP 8.1+ and a `.env` file at the project root
+(copy `.env.example`). Without PHP the site works and the form replies with an
+explanation.
 
-| Команда | Що робить |
+| Command | What it does |
 | --- | --- |
-| `npm run dev` | Дев-сервер; форма працює через локальний PHP |
-| `npm run build` | Збірка в `dist/` разом із `form.php` і `.htaccess` |
-| `npm run check` | Перевірка зібраного сайту перед здачею |
-| `npm run pack` | `release/<домен>.zip` — архів для заливання |
-| `npm run preview` | Перегляд `dist/` (без PHP: форма тут не працює) |
-| `npm run test:phone` | Тест маски телефону |
+| `npm run dev` | Dev server; the form runs through local PHP |
+| `npm run build` | Build into `dist/` with `form.php` and `.htaccess` |
+| `npm run check` | Check the built site before delivery |
+| `npm run pack` | `release/<domain>.zip` — the archive to upload |
+| `npm run preview` | Preview `dist/` (no PHP: the form doesn't work here) |
+| `npm run test:phone` | Phone mask test |
 
-## Що де міняти
+## What to change where
 
-| Що | Де |
+| What | Where |
 | --- | --- |
-| Назва, домен, телефони, email, адреса, години, месенджери, меню | `src/site.config.js` |
-| Кольори, шрифти, відступи | `src/styles/base/variables.css` |
-| Тексти лендингу, порядок секцій | `src/pages/index.astro` |
-| Політика конфіденційності | `src/pages/privacy-policy.astro` |
-| Фото й іконки | `public/assets/` |
-| OG-зображення 1200×630 | `public/assets/seo/og.jpg` |
+| Name, domain, phones, email, address, hours, messengers, menu | `src/site.config.js` |
+| Colors, fonts, spacing | `src/styles/base/variables.css` |
+| Landing copy, section order | `src/pages/index.astro` |
+| Privacy policy | `src/pages/privacy-policy.astro` |
+| Photos and icons | `public/assets/` |
+| OG image 1200×630 | `public/assets/seo/og.jpg` |
 
-## Заливання на cPanel
+## Uploading to cPanel
 
 ```bash
 npm run build && npm run check && npm run pack
 ```
 
-1. **SSL.** У cPanel → SSL/TLS Status переконайся, що для домену є сертифікат
-   (AutoSSL). Сайт переадресовує на `https://`, і без сертифіката не відкриється.
-2. **Файли.** cPanel → File Manager → `public_html` → Upload →
-   `release/<домен>.zip` → Extract. Вміст архіву має лягти прямо в
-   `public_html`, без проміжної теки.
-3. **Доступи бота.** Створи файл `.env` **на рівень вище** за `public_html`
-   (тобто в `/home/<користувач>/.env`), зі змістом як у `.env.example` —
-   справжній токен бота й chat id.
-4. **PHP.** cPanel → MultiPHP Manager: версія PHP 8.1 або новіша. Якщо файли
-   від 8 МБ не доходять — cPanel → MultiPHP INI Editor: `upload_max_filesize`
-   і `post_max_size` не менші за ліміт у `SITE.form.maxFileMb`.
-5. **Перевірка.** Надішли тестову заявку з сайту й переконайся, що вона
-   прийшла в Telegram — з файлом і без.
+1. **SSL.** In cPanel → SSL/TLS Status make sure the domain has a certificate
+   (AutoSSL). The site redirects to `https://` and won't open without one.
+2. **Files.** cPanel → File Manager → `public_html` → Upload →
+   `release/<domain>.zip` → Extract. The archive contents must land directly
+   in `public_html`, without an intermediate folder.
+3. **Bot credentials.** Create a `.env` file **one level above** `public_html`
+   (i.e. `/home/<user>/.env`), with content as in `.env.example` — the real
+   bot token and chat id.
+4. **PHP.** cPanel → MultiPHP Manager: PHP 8.1 or newer. If files over 8 MB
+   don't arrive — cPanel → MultiPHP INI Editor: `upload_max_filesize` and
+   `post_max_size` no lower than `SITE.form.maxFileMb`.
+5. **Check.** Send a test request from the site and confirm it arrived in
+   Telegram — with a file and without.
 
-## Перед здачею клієнту
+## Before handing over to the client
 
-- [ ] `npm run check` зелений
-- [ ] OG-зображення й фавікони клієнта на місці
-- [ ] Політику конфіденційності вичитав юрист
-- [ ] Тестова заявка дійшла в Telegram на бойовому домені
-- [ ] `npm audit` чистий або знахідки оцінені (правило 6 у `CLAUDE.md`)
+- [ ] `npm run check` is green
+- [ ] The client's OG image and favicons are in place
+- [ ] A lawyer has reviewed the privacy policy
+- [ ] A test request reached Telegram on the live domain
+- [ ] `npm audit` is clean or its findings are assessed (rule 6 in `CLAUDE.md`)

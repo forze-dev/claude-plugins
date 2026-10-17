@@ -1,8 +1,8 @@
 /**
- * Форма заявки.
+ * The request form.
  *
- * Використовується і вбудовано на контактах, і всередині модалки, тож нічого
- * тут не припускає колір поверхні — його задає контейнер.
+ * Used both embedded in the contacts section and inside the modal, so nothing
+ * here assumes a surface color — the container sets it.
  */
 
 .form {
@@ -52,7 +52,7 @@
 	resize: vertical;
 }
 
-/* --- Прикріплення файлу ------------------------------------------------- */
+/* --- File attachment ----------------------------------------------------- */
 
 .form__file-trigger {
 	display: inline-flex;
@@ -118,7 +118,7 @@
 	background: var(--accent-hover);
 }
 
-/** Honeypot: для людини за екраном, для бота — звичайна розмітка. */
+/** Honeypot: off-screen for people, ordinary markup for a bot. */
 .form__trap {
 	position: absolute;
 	left: -9999px;
@@ -127,7 +127,7 @@
 	overflow: hidden;
 }
 
-/* --- Повідомлення ------------------------------------------------------- */
+/* --- Messages ------------------------------------------------------------ */
 
 .form__message {
 	margin: 0;

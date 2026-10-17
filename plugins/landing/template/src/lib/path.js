@@ -1,9 +1,10 @@
 /**
- * Нормалізує шлях до тієї адреси, яку реально бачать люди й пошукові роботи.
+ * Normalizes a path to the address people and crawlers actually see.
  *
- * З `build.format: 'file'` під час збірки Astro.url.pathname дорівнює
- * `/about.html`, тоді як сайт обслуговується за `/about`. Canonical, sitemap і
- * перевірка поточної сторінки мусять збігатися — тож усі йдуть через цю функцію.
+ * With `build.format: 'file'`, Astro.url.pathname during the build is
+ * `/privacy-policy.html`, while the site is served at `/privacy-policy`. The
+ * canonical, the sitemap and current-page checks must agree — so they all go
+ * through this function.
  */
 export function cleanPath(pathname) {
 	return (

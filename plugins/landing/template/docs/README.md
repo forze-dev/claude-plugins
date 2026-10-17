@@ -1,55 +1,55 @@
-# Документація
+# Documentation
 
-Кожен проєкт на цьому шаблоні веде власний письмовий облік тут. Це не
-опційно: задачу, яку не записано, неможливо передати іншому агенту, підняти
-через тиждень або пояснити клієнту.
+Every project on this scaffold keeps its own written record here. This is not
+optional: a task that isn't written down can't be handed to another agent,
+picked up a week later, or explained to the client.
 
-Уся документація ведеться **українською** (правило 1 у `CLAUDE.md`). Якщо
-розробник на старті обрав іншу мову — проєкт ведеться нею.
+These templates are in English. Task files and changelog entries are written
+in the conversation language set in rule 1 of `CLAUDE.md`.
 
 ```
 docs/
 ├── changelog/
-│   ├── changelog.md        індекс — рядок на день, посилання на денний файл
-│   └── ДД.ММ.РРРР.md       один файл на день, усе зроблене за день, детально
+│   ├── changelog.md        index — one line per day, linking to the day file
+│   └── DD.MM.YYYY.md       one file per day, everything done that day, in detail
 ├── tasks/
-│   ├── _TEMPLATE.md        формат задачі — копіюй його, не вигадуй свій
-│   └── <task>.md           один файл на задачу, поділений на етапи
-└── archive/                закриті задачі й застарілі документи
+│   ├── _TEMPLATE.md        the task format — copy it, don't invent your own
+│   └── <task>.md           one file per task, split into stages
+└── archive/                closed tasks and outdated documents
 ```
 
 ## changelog
 
-`changelog.md` — індекс. Один короткий рядок на робочий день, найновіші зверху,
-з посиланням на денний файл. Він для швидкого перегляду, не для деталей.
+`changelog.md` is the index. One short line per working day, newest first,
+linking to the day file. It's for a quick overview, not for details.
 
-`ДД.ММ.РРРР.md` — один файл на день, **ніколи не більше**. Туди йде все
-зроблене того дня: що змінилося, чому, що зламалося, що перевірено і як.
-Настільки детально, щоб людина, якої там не було, могла відновити хід думки.
+`DD.MM.YYYY.md` — one file per day, **never more**. Everything done that day
+goes there: what changed, why, what broke, what was checked and how. Detailed
+enough that someone who wasn't there can reconstruct the reasoning.
 
-Новий запис пишеться **після кожного етапу задачі**, разом із комітом цього
-етапу (якщо в проєкті є `.git`; без git — запис із позначкою `[етап N]`, див.
-правило 3 у `CLAUDE.md`). Не в кінці тижня і не «коли буде час».
+A new entry is written **after every task stage**, together with that stage's
+commit (if the project has `.git`; without git — an entry marked `[stage N]`,
+see rule 3 in `CLAUDE.md`). Not at the end of the week and not "when there's time".
 
 ## tasks
 
-Один файл на задачу, створений **до того, як написано перший рядок коду**. На
-новому проєкті це найперший артефакт: зібрали бриф → записали задачею → і лише
-тоді реалізація.
+One file per task, created **before the first line of code is written**. On a
+new project it is the very first artifact: collect the brief → write it as a
+task → only then implement.
 
-Задача ділиться на етапи. Кожен етап завершується готовим промптом для агента,
-який його виконуватиме, і перевіркою, що має пройти до початку наступного
-етапу. Формат — у `_TEMPLATE.md`; копіюй його, а не вигадуй щоразу нову форму.
+A task is split into stages. Each stage ends with a ready prompt for the agent
+that will do it, and a check that must pass before the next stage starts. The
+format is in `_TEMPLATE.md`; copy it rather than inventing a new shape.
 
-Задачі пишуться так, щоб їх можна було роздати **кільком агентам, які працюють
-окремо**. Тому етап має бути самодостатнім: агент, який читає лише цей етап і
-названі в ньому файли, мусить зробити роботу, не перепитуючи, що малося на
-увазі.
+Tasks are written so they can be handed to **several agents working
+separately**. So a stage must be self-contained: an agent that reads only that
+stage and the files it names must be able to do the work without asking what
+was meant.
 
 ## archive
 
-Коли задача завершена або документ перестав бути правдою — він переїжджає сюди,
-а не видаляється. Ім'я файлу лишаємо; зверху дописуємо рядок: коли закрито і
-чому.
+When a task is done or a document stops being true, it moves here instead of
+being deleted. Keep the file name; add a line at the top: when it was closed
+and why.
 
-Сенс у тому, щоб у `docs/tasks/` завжди лежала тільки жива робота.
+The point is that `docs/tasks/` only ever holds live work.

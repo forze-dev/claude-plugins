@@ -1,15 +1,15 @@
 /**
- * Передзапускова перевірка зібраного сайту.
+ * Pre-launch check of the built site.
  *
- * Запускається як `npm run check` ПІСЛЯ `npm run build` і працює по `dist/` —
- * тобто по тому, що реально поїде на хостинг, а не по сирцях. Ловить клас
- * помилок, які інакше знаходить лише уважність людини і які видно вже після
- * деплою: OG-зображення, якого немає; домен-заглушка, що лишився в canonical;
- * сторінка без `<title>`; блок JSON-LD, який не парситься.
+ * Runs as `npm run check` AFTER `npm run build` and works on `dist/` — that
+ * is, on what actually goes to the hosting, not on the sources. It catches a
+ * class of mistakes otherwise found only by a careful human, and visible only
+ * after deployment: an OG image that doesn't exist; a placeholder domain left
+ * in the canonical; a page without `<title>`; a JSON-LD block that doesn't parse.
  *
- * Скрипт НІЧОГО не змінює — лише читає. Жодних залежностей: чистий Node.
+ * The script changes NOTHING — it only reads. No dependencies: plain Node.
  *
- * Код виходу: 0 — усе чисто (попередження не рахуються), 1 — є помилки.
+ * Exit code: 0 — all clean (warnings don't count), 1 — there are errors.
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
@@ -18,21 +18,21 @@ import { join, posix } from 'node:path';
 const DIST = 'dist';
 
 /**
- * Значення, які лишилися з початкового конфіга шаблону. Якщо вони доїхали до
- * `dist/` — конфіг під клієнта не заповнили, і сайт піде в продакшен з чужими
- * контактами.
+ * Values left over from the scaffold's initial config. If they reached
+ * `dist/`, the config wasn't filled in for the client, and the site would go
+ * to production with someone else's contacts.
  */
 const PLACEHOLDERS = [
-	{ value: 'example.com', fix: 'заповни SITE.url у src/site.config.js' },
-	{ value: 'hello@example.com', fix: 'заповни SITE.contacts.email' },
-	{ value: 'Forze Landing Demo', fix: 'заповни SITE.name і SITE.shortName' },
-	{ value: '+1 (555) 010-20', fix: 'заповни PHONES у src/site.config.js' },
-	{ value: 'https://t.me/example', fix: 'заповни SITE.messengers' },
-	{ value: 'instagram.com/example', fix: 'заповни SITE.social' },
-	{ value: '350 Fifth Avenue', fix: 'заповни SITE.contacts.address або постав address: null' },
+	{ value: 'example.com', fix: 'fill in SITE.url in src/site.config.js' },
+	{ value: 'hello@example.com', fix: 'fill in SITE.contacts.email' },
+	{ value: 'Forze Landing Demo', fix: 'fill in SITE.name and SITE.shortName' },
+	{ value: '+1 (555) 010-20', fix: 'fill in PHONES in src/site.config.js' },
+	{ value: 'https://t.me/example', fix: 'fill in SITE.messengers' },
+	{ value: 'instagram.com/example', fix: 'fill in SITE.social' },
+	{ value: '350 Fifth Avenue', fix: 'fill in SITE.contacts.address or set address: null' },
 	{
 		value: 'data-demo-content',
-		fix: 'демо-текст шаблону ще на сторінці: заміни його справжнім і прибери атрибут data-demo-content (index.astro, privacy-policy.astro)',
+		fix: 'scaffold demo copy is still on the page: replace it with real copy and remove the data-demo-content attribute (index.astro, privacy-policy.astro)',
 	},
 ];
 
@@ -43,9 +43,9 @@ const warnings = [];
 const error = (file, problem, fix) => errors.push({ file, problem, fix });
 const warn = (file, problem, fix) => warnings.push({ file, problem, fix });
 
-/* ------------------------------------------------------------- допоміжне */
+/* --------------------------------------------------------------- helpers */
 
-/** Усі файли в теці, рекурсивно, шляхами відносно неї: `assets/icons/pin.svg`. */
+/** All files in a folder, recursively, as paths relative to it: `assets/icons/pin.svg`. */
 function walk(dir, base = dir) {
 	const out = [];
 	for (const entry of readdirSync(dir)) {
@@ -56,7 +56,7 @@ function walk(dir, base = dir) {
 	return out;
 }
 
-/** Абсолютний URL сайту → шлях усередині dist, або null для чужого домену. */
+/** An absolute site URL → a path inside dist, or null for another domain. */
 function toLocalPath(url, siteOrigin) {
 	if (url.startsWith('//')) return null;
 	if (/^[a-z]+:/i.test(url)) {
@@ -68,12 +68,12 @@ function toLocalPath(url, siteOrigin) {
 }
 
 /**
- * Чи існує в `dist/` те, на що вказує шлях. `build.format: 'file'` віддає
- * `privacy-policy.html` за адресою `/privacy-policy`, тож перевіряються обидва варіанти.
+ * Whether what the path points to exists in `dist/`. `build.format: 'file'`
+ * serves `privacy-policy.html` at `/privacy-policy`, so both forms are checked.
  */
 function resolves(path, files) {
 	const clean = decodeURIComponent(path).replace(/^\//, '');
-	if (clean === '' ) return files.includes('index.html');
+	if (clean === '') return files.includes('index.html');
 	return (
 		files.includes(clean) ||
 		files.includes(clean + '.html') ||
@@ -83,10 +83,10 @@ function resolves(path, files) {
 
 const attrs = (html, re) => [...html.matchAll(re)].map((m) => m[1]);
 
-/* ----------------------------------------------------------------- старт */
+/* ----------------------------------------------------------------- start */
 
 if (!existsSync(DIST)) {
-	console.error('Теки dist/ немає. Спершу `npm run build`, потім `npm run check`.');
+	console.error('There is no dist/ folder. Run `npm run build` first, then `npm run check`.');
 	process.exit(1);
 }
 
@@ -94,20 +94,20 @@ const files = walk(DIST);
 const pages = files.filter((f) => f.endsWith('.html')).sort();
 
 if (!pages.length) {
-	console.error('У dist/ немає жодного .html. Схоже, збірка не відпрацювала.');
+	console.error('dist/ contains no .html files. The build seems to have failed.');
 	process.exit(1);
 }
 
-/* ------------------------------------- 1. Канонічний домен і robots.txt */
+/* ------------------------------------ 1. Canonical domain and robots.txt */
 
 /**
- * Домен береться з canonical головної сторінки.
+ * The domain is taken from the home page canonical.
  *
- * Раніше він брався з рядка `Sitemap:` у robots.txt — і це була прихована
- * залежність: якби robots.txt колись перестав його виводити, `siteOrigin`
- * лишився б null, а половина перевірок (канонічність, локальні OG-зображення,
- * абсолютні посилання) мовчки ослабла б, не впавши. Тепер джерело — canonical,
- * тобто те саме, що бачить пошуковик, а robots.txt звіряється з ним.
+ * It used to come from the `Sitemap:` line in robots.txt — a hidden
+ * dependency: had robots.txt ever stopped printing it, `siteOrigin` would stay
+ * null and half the checks (canonicals, local OG images, absolute links) would
+ * quietly weaken instead of failing. Now the source is the canonical — what
+ * the search engine sees — and robots.txt is checked against it.
  */
 let siteOrigin = null;
 
@@ -117,78 +117,78 @@ const homeCanonical = home.match(/<link\s+rel="canonical"\s+href="([^"]*)"/);
 if (!homeCanonical) {
 	error(
 		'dist/index.html',
-		'немає <link rel="canonical"> — без нього неможливо визначити канонічний домен сайту',
-		'перевір src/components/Seo.astro і те, що головна сторінка йде через layout'
+		'no <link rel="canonical"> — without it the canonical domain cannot be determined',
+		'check src/components/Seo.astro and that the home page goes through a layout'
 	);
 } else {
 	try {
 		siteOrigin = new URL(homeCanonical[1]).origin;
 	} catch {
-		error('dist/index.html', `canonical не є абсолютним URL: ${homeCanonical[1]}`, 'звір SITE.url у src/site.config.js');
+		error('dist/index.html', `canonical is not an absolute URL: ${homeCanonical[1]}`, 'check SITE.url in src/site.config.js');
 	}
 }
 
 if (!files.includes('robots.txt')) {
-	error('dist/robots.txt', 'файла немає', 'перевір src/pages/robots.txt.js');
+	error('dist/robots.txt', 'file is missing', 'check src/pages/robots.txt.js');
 } else {
 	const robots = readFileSync(join(DIST, 'robots.txt'), 'utf8');
 	const sitemapLine = robots.match(/^Sitemap:\s*(\S+)/mi);
 	if (!sitemapLine) {
-		error('dist/robots.txt', 'немає рядка Sitemap:', 'додай його в src/pages/robots.txt.js');
+		error('dist/robots.txt', 'no Sitemap: line', 'add it in src/pages/robots.txt.js');
 	} else {
 		try {
 			const sitemapUrl = new URL(sitemapLine[1]);
 			if (siteOrigin && sitemapUrl.origin !== siteOrigin) {
 				error(
 					'dist/robots.txt',
-					`Sitemap веде на ${sitemapUrl.origin}, а canonical сайту — ${siteOrigin}`,
-					'обидва мають виводитись із SITE.url — перевір src/pages/robots.txt.js'
+					`Sitemap points to ${sitemapUrl.origin}, but the site canonical is ${siteOrigin}`,
+					'both must come from SITE.url — check src/pages/robots.txt.js'
 				);
 			}
 			const local = sitemapUrl.pathname.replace(/^\//, '');
 			if (!files.includes(local)) {
 				error(
 					'dist/robots.txt',
-					`Sitemap вказує на ${sitemapUrl.pathname}, а такого файла в dist/ немає`,
-					'перевір інтеграцію @astrojs/sitemap в astro.config.mjs'
+					`Sitemap points to ${sitemapUrl.pathname}, but dist/ has no such file`,
+					'check the @astrojs/sitemap integration in astro.config.mjs'
 				);
 			}
 		} catch {
-			error('dist/robots.txt', `Sitemap не є абсолютним URL: ${sitemapLine[1]}`, 'має бути повний URL з доменом');
+			error('dist/robots.txt', `Sitemap is not an absolute URL: ${sitemapLine[1]}`, 'it must be a full URL with the domain');
 		}
 	}
 }
 
-/* ------------------------------------------------- 2. посторінкові перевірки */
+/* ------------------------------------------------------- 2. per-page checks */
 
 for (const page of pages) {
 	const where = `dist/${page}`;
 	const html = readFileSync(join(DIST, page), 'utf8');
 
-	/* --- обовʼязкові теги --- */
+	/* --- required tags --- */
 
 	const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/);
 	if (!title || !title[1].trim()) {
-		error(where, 'немає <title> або він порожній', 'передай title у Base/Bare');
+		error(where, 'no <title> or it is empty', 'pass title to Base/Bare');
 	}
 
 	const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/);
 	if (!description || !description[1].trim()) {
-		error(where, 'немає <meta name="description"> або він порожній', 'передай description у Base/Bare');
+		error(where, 'no <meta name="description"> or it is empty', 'pass description to Base/Bare');
 	} else if (description[1].length > 165) {
-		warn(where, `description ${description[1].length} символів — Google обріже після ~160`, 'скороти опис сторінки');
+		warn(where, `description is ${description[1].length} characters — Google truncates after ~160`, 'shorten the page description');
 	}
 
 	const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]*)"/);
 	if (!canonical) {
-		error(where, 'немає <link rel="canonical">', 'canonical ставить src/components/Seo.astro — перевір, що сторінка йде через layout');
+		error(where, 'no <link rel="canonical">', 'the canonical is set by src/components/Seo.astro — check the page goes through a layout');
 	} else if (siteOrigin && !canonical[1].startsWith(siteOrigin)) {
-		error(where, `canonical (${canonical[1]}) не з домену сайту (${siteOrigin})`, 'звір SITE.url у src/site.config.js');
+		error(where, `canonical (${canonical[1]}) is not on the site domain (${siteOrigin})`, 'check SITE.url in src/site.config.js');
 	} else if (canonical[1].endsWith('.html')) {
-		error(where, `canonical вказує на .html: ${canonical[1]}`, 'нормалізуй шлях через cleanPath() із src/lib/path.js');
+		error(where, `canonical points to .html: ${canonical[1]}`, 'normalize the path with cleanPath() from src/lib/path.js');
 	}
 
-	/* --- OG і Twitter зображення --- */
+	/* --- OG and Twitter images --- */
 
 	const images = [
 		...attrs(html, /<meta\s+property="og:image"\s+content="([^"]*)"/g),
@@ -197,14 +197,14 @@ for (const page of pages) {
 	for (const image of new Set(images)) {
 		const local = toLocalPath(image, siteOrigin);
 		if (local === null) {
-			warn(where, `og/twitter:image веде на чужий домен: ${image}`, 'соцмережі не завжди тягнуть чужі зображення — краще покласти файл у public/');
+			warn(where, `og/twitter:image points to another domain: ${image}`, 'social networks don\'t always fetch foreign images — better put the file in public/');
 			continue;
 		}
 		if (!files.includes(local.replace(/^\//, ''))) {
 			error(
 				where,
-				`og/twitter:image вказує на ${local}, а файла в dist/ немає`,
-				'поклади зображення 1200×630 у public' + local.replace(/\/[^/]+$/, '/') + ' або передай наявне через проп ogImage'
+				`og/twitter:image points to ${local}, but dist/ has no such file`,
+				'put a 1200×630 image in public' + local.replace(/\/[^/]+$/, '/') + ' or pass an existing one via the ogImage prop'
 			);
 		}
 	}
@@ -216,11 +216,11 @@ for (const page of pages) {
 		try {
 			JSON.parse(raw);
 		} catch (e) {
-			error(where, `блок ld+json #${index + 1} не парситься: ${e.message}`, 'перевір хелпери в src/lib/schema.js — найчастіше це незаекранована лапка в контенті');
+			error(where, `ld+json block #${index + 1} does not parse: ${e.message}`, 'check the helpers in src/lib/schema.js — usually an unescaped quote in the content');
 		}
 	});
 
-	/* --- дублікати id --- */
+	/* --- duplicate ids --- */
 
 	const idList = attrs(html, /\sid="([^"]+)"/g);
 	const seen = new Set();
@@ -229,12 +229,12 @@ for (const page of pages) {
 	if (dupes.size) {
 		error(
 			where,
-			`дублікати id у документі: ${[...dupes].join(', ')}`,
-			'найчастіше це форма, вставлена і на сторінці, і в модалці — id мають бути унікальні в межах документа'
+			`duplicate ids in the document: ${[...dupes].join(', ')}`,
+			'usually a form placed both on the page and in the modal — ids must be unique within a document'
 		);
 	}
 
-	/* --- локальні посилання й ресурси --- */
+	/* --- local links and resources --- */
 
 	const refs = [
 		...attrs(html, /\shref="([^"]+)"/g),
@@ -248,22 +248,22 @@ for (const page of pages) {
 		if (!resolves(local, files)) broken.add(local);
 	}
 	for (const path of broken) {
-		error(where, `посилання на ${path} нікуди не веде`, 'або створи сторінку/файл, або виправ адресу');
+		error(where, `link to ${path} leads nowhere`, 'either create the page/file or fix the address');
 	}
 
-	/* --- .html у посиланнях --- */
+	/* --- .html in links --- */
 
 	const htmlLinks = refs.filter((r) => /^\/[^/].*\.html$/.test(r));
 	if (htmlLinks.length) {
 		error(
 			where,
-			`посилання на .html: ${[...new Set(htmlLinks)].join(', ')}`,
-			'посилайся на чисту адресу (/privacy-policy), хостинг віддасть файл сам'
+			`links to .html: ${[...new Set(htmlLinks)].join(', ')}`,
+			'link to the clean address (/privacy-policy); the hosting serves the file itself'
 		);
 	}
 }
 
-/* ------------------------------------------- 3. значення-заглушки в dist/ */
+/* --------------------------------------------- 3. placeholder values in dist/ */
 
 const textFiles = files.filter((f) => /\.(html|xml|txt|json|webmanifest|js|css)$/.test(f));
 
@@ -272,54 +272,54 @@ for (const { value, fix } of PLACEHOLDERS) {
 	if (hits.length) {
 		const shown = hits.slice(0, 4).map((h) => 'dist/' + h).join(', ');
 		error(
-			`${shown}${hits.length > 4 ? ` та ще ${hits.length - 4}` : ''}`,
-			`лишилося значення-заглушка «${value}» (${hits.length} файл(ів))`,
+			`${shown}${hits.length > 4 ? ` and ${hits.length - 4} more` : ''}`,
+			`placeholder value "${value}" is still there (${hits.length} file(s))`,
 			fix
 		);
 	}
 }
 
-/* ------------------------------------------- 4. файли для PHP-хостингу */
+/* -------------------------------------------------- 4. files for PHP hosting */
 
 /**
- * Без цих файлів форма на cPanel не працюватиме, а сайт виглядатиме цілим —
- * тобто помилку знайде вже клієнт, а не ми.
+ * Without these files the form won't work on cPanel while the site looks
+ * whole — meaning the client finds the bug, not us.
  */
 const REQUIRED = [
-	{ path: 'scripts/form.php', fix: 'збирай через `npm run build` (tools/build.mjs), а не `astro build` напряму' },
-	{ path: 'scripts/form.limits.json', fix: 'збирай через `npm run build` (tools/build.mjs)' },
-	{ path: '.htaccess', fix: 'збирай через `npm run build`: .htaccess генерується з server/htaccess.template' },
-	{ path: '404.html', fix: 'перевір src/pages/404.astro' },
+	{ path: 'scripts/form.php', fix: 'build with `npm run build` (tools/build.mjs), not `astro build` directly' },
+	{ path: 'scripts/form.limits.json', fix: 'build with `npm run build` (tools/build.mjs)' },
+	{ path: '.htaccess', fix: 'build with `npm run build`: .htaccess is generated from server/htaccess.template' },
+	{ path: '404.html', fix: 'check src/pages/404.astro' },
 ];
 
 for (const { path, fix } of REQUIRED) {
-	if (!files.includes(path)) error(`dist/${path}`, 'файла немає', fix);
+	if (!files.includes(path)) error(`dist/${path}`, 'file is missing', fix);
 }
 
 if (files.includes('.htaccess') && readFileSync(join(DIST, '.htaccess'), 'utf8').includes('__')) {
-	error('dist/.htaccess', 'лишилися непідставлені маркери __…__', 'перевір заміни в tools/build.mjs і server/htaccess.template');
+	error('dist/.htaccess', 'unsubstituted __…__ markers remain', 'check the replacements in tools/build.mjs and server/htaccess.template');
 }
 
 for (const file of files) {
 	if (/(^|\/)\.env(\..*)?$/.test(file)) {
-		error(`dist/${file}`, 'у збірці лежить файл із доступами', 'прибери його з public/: .env живе поза репозиторієм і поза public_html');
+		error(`dist/${file}`, 'a credentials file is in the build', 'remove it from public/: .env lives outside the repository and outside public_html');
 	}
 }
 
-/* ------------------------------------------------------------------ вивід */
+/* ----------------------------------------------------------------- output */
 
 const line = (item) => `  ${item.file}\n      ${item.problem}\n      → ${item.fix}`;
 
 if (warnings.length) {
-	console.log(`\nПопередження (${warnings.length}) — не блокують:\n`);
+	console.log(`\nWarnings (${warnings.length}) — not blocking:\n`);
 	console.log(warnings.map(line).join('\n\n'));
 }
 
 if (errors.length) {
-	console.log(`\nПомилки (${errors.length}):\n`);
+	console.log(`\nErrors (${errors.length}):\n`);
 	console.log(errors.map(line).join('\n\n'));
-	console.log(`\nПеревірено ${pages.length} сторінок у dist/. Запуск заблоковано.\n`);
+	console.log(`\nChecked ${pages.length} pages in dist/. Launch blocked.\n`);
 	process.exit(1);
 }
 
-console.log(`\nПеревірено ${pages.length} сторінок у dist/ — помилок немає.\n`);
+console.log(`\nChecked ${pages.length} pages in dist/ — no errors.\n`);
