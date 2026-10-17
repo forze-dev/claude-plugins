@@ -49,7 +49,7 @@
 	 * If the project needs a separate heading font — change only
 	 * --font-display.
 	 * --------------------------------------------------------------- */
-	--font-sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--font-sans: 'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	--font-display: var(--font-sans);
 
 	--fz-xs: 0.8125rem;   /* 13px — meta, file size */

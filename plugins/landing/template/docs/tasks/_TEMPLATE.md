@@ -1,7 +1,8 @@
 # Task: <short name>
 
 > Copy this file to `docs/tasks/<slug>.md` and fill it in, in the conversation
-> language from rule 1 of `CLAUDE.md`. Don't invent another shape — the format
+> language from rule 1 of `CLAUDE.md` — the agent prompts included (the English
+> prompt below is only the shape to follow). Don't invent another shape — the format
 > exists so that any agent can pick up any stage.
 
 | | |
@@ -14,8 +15,8 @@
 ## Context
 
 Why this exists. What the client asked for — in their words where possible.
-What happens now and why it's not enough. Links to the brief, design,
-screenshots, the previous task this follows from.
+What happens now and why it's not enough. Links to the brief (`docs/brief/`),
+design, screenshots, the previous task this follows from.
 
 Separately record what is **already decided** — so no agent reopens it — and
 what is still open.

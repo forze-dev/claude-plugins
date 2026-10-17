@@ -1,13 +1,35 @@
 ---
 /**
- * The brand mark. One path with fill-rule="evenodd": the rounded square is
- * filled and the letter is cut out of it — so the mark reads on any background.
+ * The brand mark when the client has no logo: a rounded square in the accent
+ * color with the first letter of `SITE.shortName` cut out of it — so the mark
+ * matches the brand instead of a fixed letter. Replace this component with the
+ * client's SVG logo when there is one (keep `fill="currentColor"` so CSS
+ * colors it).
+ *
+ * `id` must be unique per page (the mask is referenced by id): the header and
+ * the footer render the mark on the same page, and `npm run check` fails on
+ * duplicate ids.
  */
+import { SITE } from '../site.config.js';
+
+const { id = 'logo' } = Astro.props;
+const maskId = `${id}-mask`;
+const letter = [...SITE.shortName.trim()][0]?.toUpperCase() ?? '';
 ---
+
 <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-	<path
-		fill="currentColor"
-		fill-rule="evenodd"
-		d="M9 0h14a9 9 0 0 1 9 9v14a9 9 0 0 1-9 9H9a9 9 0 0 1-9-9V9a9 9 0 0 1 9-9Zm7 8.6L23 23.4h-3.4l-1.2-2.7h-4.8l-1.2 2.7H9Zm0 5.2-1.6 3.6h3.2Z"
-	/>
+	<mask id={maskId}>
+		<rect width="32" height="32" fill="white" />
+		<text
+			x="16"
+			y="16"
+			text-anchor="middle"
+			dominant-baseline="central"
+			font-family="Onest, system-ui, sans-serif"
+			font-weight="700"
+			font-size="19"
+			fill="black">{letter}</text
+		>
+	</mask>
+	<rect width="32" height="32" rx="9" fill="currentColor" mask={`url(#${maskId})`} />
 </svg>

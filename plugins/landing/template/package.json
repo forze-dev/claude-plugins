@@ -10,6 +10,9 @@
 		"preview": "astro preview",
 		"check": "node tools/check.mjs",
 		"pack": "node tools/pack.mjs",
+		"env": "node tools/env.mjs",
+		"og": "node tools/og.mjs",
+		"icons:preview": "node tools/icons-preview.mjs",
 		"test:phone": "node tools/test-phone-mask.mjs"
 	},
 	"dependencies": {

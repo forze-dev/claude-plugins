@@ -8,19 +8,14 @@
  * description (one node with itemid per page). The data is the same — from
  * site.config.js.
  */
-import { SITE, isPlace } from '../../site.config.js';
+import { SITE, isPlace, formatAddress } from '../../site.config.js';
 import RequestForm from '../RequestForm.astro';
 
 import '../../styles/sections/contacts.css';
 
 const { id = 'contacts', title, lead, formTitle, formNote } = Astro.props;
 const { contacts, ui } = SITE;
-const { address } = contacts;
-const fullAddress = address
-	? [address.street, address.locality, [address.region, address.postalCode].filter(Boolean).join(' '), address.countryName ?? address.country]
-			.filter(Boolean)
-			.join(', ')
-	: null;
+const fullAddress = formatAddress();
 ---
 
 <section class="section" id={id} aria-labelledby={`${id}-title`}>

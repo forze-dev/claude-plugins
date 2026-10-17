@@ -6,6 +6,9 @@
  * through `ErrorDocument 404 /404.html` in .htaccess. No header or footer — a
  * dead end should only lead back, hence the `Bare` layout. No structured data:
  * the page is noindex and describes no entity.
+ *
+ * `data-demo-content` marks the scaffold copy: `npm run check` stays red until
+ * it is rewritten in the site language.
  */
 import Bare from '../layouts/Bare.astro';
 import Logo from '../components/Logo.astro';
@@ -17,7 +20,7 @@ import '../styles/pages/404.css';
 <Bare title="Page not found" description="The page you are looking for does not exist." noindex={true}>
 	<main class="notfound" id="main">
 		<div class="container">
-			<div class="notfound__card">
+			<div class="notfound__card" data-demo-content>
 				<a class="notfound__brand" href="/" aria-label={`${SITE.name} — ${SITE.ui.home}`}>
 					<Logo />
 					{SITE.shortName}

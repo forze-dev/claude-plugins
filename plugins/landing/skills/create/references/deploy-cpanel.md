@@ -26,17 +26,20 @@ differ slightly between hosting providers.
    `.htaccess` is there.
 6. Delete the archive from `public_html` after extracting.
 
-## Bot credentials
+## Credentials — the `secrets` folder
 
-1. In File Manager go **one level above** `public_html` — the home folder
+The project has `.env.<domain>` (created by `npm run env`) with empty values
+and notes on where to get each one.
+
+1. Fill in the values locally, in that file.
+2. In File Manager go **one level above** `public_html` — the home folder
    (`/home/<user>/`).
-2. **+ File** → name it `.env`.
-3. Open it (Edit) and enter:
-   ```
-   TELEGRAM_BOT_TOKEN=the token from BotFather
-   CHAT_ID=-100…
-   ```
-4. Save.
+3. **+ Folder** → `secrets`.
+4. Upload `.env.<domain>` into `secrets/` (renaming it to plain `.env` also
+   works). Result: `/home/<user>/secrets/.env.<domain>`.
+
+Never put the file into `public_html`, `dist/` or `public/`: anything there
+can be downloaded by anyone. `scripts/form.php` reads it from `secrets/`.
 
 ## Large files in the form
 
@@ -54,8 +57,8 @@ than the form limit (20M and 21M by default) → Apply.
 
 The request didn't arrive:
 
-- the message "The form is not configured yet" — `.env` is in the wrong place
-  or the variable names are wrong;
+- the message "The form is not configured yet" — the file is not in
+  `/home/<user>/secrets/`, or the variable names are wrong;
 - "Rejected." — the site was opened from a domain other than `SITE.url`
   (for example, the host's technical subdomain);
 - "Too many requests" — wait 20 seconds between tests;

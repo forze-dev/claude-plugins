@@ -6,6 +6,8 @@ Plugins for building client websites with Claude Code.
 | --- | --- | --- |
 | `landing@forze` | `/landing:create` | Turn-key one-page landing: client materials → brief → Astro site with a Telegram request form → zip for cPanel |
 
+> **landing@forze targets PHP hosting with cPanel** (Apache + PHP 8.1+, ordinary shared hosting). The output is static files plus one PHP form handler, uploaded into `public_html`; credentials go into a `secrets/` folder one level above it. Not for Vercel/Netlify.
+
 ## Install
 
 Requires [Claude Code](https://claude.com/claude-code) and Node.js 22.12+.
@@ -41,6 +43,7 @@ Update: `claude plugin marketplace update forze`. Remove:
 - **Pre-launch check** that fails on template placeholders, missing OG images,
   broken links, invalid JSON-LD and duplicate ids.
 - **Deterministic build and zip** — the same input gives a byte-identical archive.
+- **Credentials done right.** At the end the skill creates `.env.<domain>` with empty variables and notes on where to get each, and explains that it goes into `secrets/` above `public_html` — never into `dist/` or the public folder.
 - **Lives on without the plugin.** The generated project has `CLAUDE.md`,
   task/changelog docs and `/add-section`, `/add-page` commands.
 

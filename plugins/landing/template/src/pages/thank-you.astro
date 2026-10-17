@@ -2,6 +2,10 @@
 /**
  * The thank-you page. A standalone screen without header and footer — the
  * `Bare` layout. noindex: the page only makes sense right after a request is sent.
+ *
+ * `data-demo-content` marks the scaffold copy: `npm run check` stays red until
+ * it is rewritten in the site language. Promise a reply time only if the
+ * client actually committed to one.
  */
 import Bare from '../layouts/Bare.astro';
 import Logo from '../components/Logo.astro';
@@ -13,10 +17,10 @@ const year = new Date().getFullYear();
 const phone = SITE.contacts.phones[0];
 ---
 
-<Bare title="Request received" description="Your request has been received. We will reply the same working day." noindex={true}>
+<Bare title="Request received" description="Your request has been received." noindex={true}>
 	<main class="thanks" id="main">
 		<div class="container">
-			<div class="thanks__card">
+			<div class="thanks__card" data-demo-content>
 				<a class="thanks__brand" href="/" aria-label={`${SITE.name} — ${SITE.ui.home}`}>
 					<Logo />
 					{SITE.shortName}
@@ -29,7 +33,7 @@ const phone = SITE.contacts.phones[0];
 				</div>
 
 				<h1>Request received</h1>
-				<p class="thanks__lead">Thank you! We will call you back the same working day.</p>
+				<p class="thanks__lead">Thank you! We have your request and will contact you soon.</p>
 
 				<div class="thanks__next">
 					<h2>While you wait</h2>

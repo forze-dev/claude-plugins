@@ -13,6 +13,8 @@ const { id = 'form', showNote = false } = Astro.props;
 const { ui } = SITE;
 const phonePlaceholder = SITE.form.phone.placeholder ?? SITE.contacts.phones[0].display;
 const accept = SITE.form.allowedExtensions.map((extension) => `.${extension}`).join(',');
+/** The consent sentence around the link — `{link}` keeps word order natural in any language. */
+const [consentBefore, consentAfter = ''] = ui.formConsent.split('{link}');
 ---
 
 <form class="form" data-form novalidate>
@@ -62,7 +64,11 @@ const accept = SITE.form.allowedExtensions.map((extension) => `.${extension}`).j
 		</div>
 	</div>
 
-	{/* Honeypot: moved off-screen for people, an ordinary field for a bot. */}
+	{/*
+		Honeypot: moved off-screen for people, an ordinary field for a bot. The
+		"Company" label is deliberately not localized: it is aria-hidden and never
+		seen, and an English field name is what form-filling bots look for.
+	*/}
 	<div class="form__trap" aria-hidden="true">
 		<label>Company<input type="text" name="company" data-form-trap tabindex="-1" autocomplete="off" /></label>
 	</div>
@@ -74,7 +80,7 @@ const accept = SITE.form.allowedExtensions.map((extension) => `.${extension}`).j
 
 	{showNote && (
 		<p class="form__note">
-			{fillMessage(SITE.messages.fileNote)} {ui.formConsent} <a href="/privacy-policy">{ui.privacy.toLowerCase()}</a>.
+			{fillMessage(SITE.messages.fileNote)} {consentBefore}<a href="/privacy-policy">{ui.privacyLink}</a>{consentAfter}
 		</p>
 	)}
 </form>

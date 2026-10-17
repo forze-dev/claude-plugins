@@ -6,6 +6,10 @@ argument-hint: "[project name]"
 
 # Turn-key landing — `/landing:create`
 
+**Target: PHP hosting with cPanel (Apache + PHP 8.1+).** The result is a
+static site plus one PHP form handler, uploaded by hand into `public_html`.
+No Vercel, no Node on the server.
+
 You take a person from "I have a client and a pile of materials" to an archive
 with a finished site they upload to cPanel. The person may know nothing about
 web development: speak plainly, explain what you do and why, and keep
@@ -153,8 +157,11 @@ npm audit
    a logo, screenshots of the client conversation.
 2. After each batch: "Received: … Is that everything, or is there more?"
    Repeat until they say that's all.
-3. Copy files given by path into the project's `temp/` (leave the originals
-   alone). Open Figma links if you have access; if not, ask for screenshots.
+3. Text materials (brief, specs, notes — `.md`, `.txt`, `.pdf`, `.docx`) go
+   into `docs/brief/`: it is tracked by git, so the task file's sources survive a
+   fresh clone. Heavy media (photos, archives, mockups) go into `temp/`, which
+   is git-ignored. Leave the originals where they were. Open Figma links if you
+   have access; if not, ask for screenshots.
 4. **Analyse** everything and show a summary:
    - **known for certain** — the fact and its source (`brief.pdf, p. 2`);
    - **conflicts** — different phones in the brief and on the mockup, etc.;
@@ -163,8 +170,16 @@ npm audit
 5. Media for the site: compress, give meaningful Latin names
    (`IMG_2041.jpg` → `clinic-reception.webp`), put in `public/assets/images/`;
    favicons — in `public/`; OG 1200×630 — `public/assets/seo/og.jpg`.
-   No compression tool available — ask whether you may use one (`sharp-cli`
-   via `npx`), or move files as they are and note it in the task.
+   For compression use `sharp`: Astro already installs it, nothing needs
+   downloading. No OG image from the client — with the person's consent,
+   `npm run og` makes a simple one from the name, description and accent
+   color; look at the result before committing it.
+6. **Icons.** Brand icons (WhatsApp, Telegram, Viber, Instagram, Facebook…)
+   come only from Simple Icons (https://simpleicons.org, CC0) — never draw
+   them by hand. The scaffold already has WhatsApp, Telegram and Viber from
+   there. For any icon you add or change, run `npm run icons:preview` and
+   **look at `temp/icons-preview.png`**: a lopsided shape or a mushy glyph at
+   24px is invisible in the SVG source and obvious in the picture.
 
 ### Stage 5. Brief — gaps only
 
@@ -178,13 +193,14 @@ Assume nothing.
 Write `docs/tasks/<slug>.md` from `docs/tasks/_TEMPLATE.md`, in the
 conversation language:
 
-- **Context** — who the client is, what they sell, to whom; sources (files in `temp/`).
+- **Context** — who the client is, what they sell, to whom; sources (files in `docs/brief/`).
 - **Decided** — all brief data: contacts, phone format, domain, site language,
   palette, lead receiver, analytics.
 - **Landing structure** — the sections in order, with anchors, and for each —
   where the text comes from (`references/sections.md`).
 - **Out of scope** — other pages, CRM integrations, a blog, etc.
 - **Stages** — per the scheme below, each with a checklist and a prompt.
+  Everything in the task file, prompts included, is in the conversation language.
 
 Stage scheme (one page — the landing — plus the service pages):
 
@@ -206,6 +222,8 @@ Task stages one by one, **sequentially**. After each:
    for later are acceptable;
 2. a check by the **`landing:verifier`** agent — give it the project path,
    the task file and the stage number; it changes nothing, it only reports.
+   It runs **before** this stage's changelog entry and commit, so it does not
+   expect them yet.
    Fix its `FAIL`s before moving on. Verify fixes against the files, not
    against your own account of them;
 3. a changelog entry (rule 3), a commit if git is available.
@@ -217,18 +235,37 @@ What each stage is about:
   or a subtype; online only → `Organization`, `address: null`), `PHONES`,
   `PHONE_FORMAT`, contacts, hours, messengers (only those the client gave),
   `social`, `nav` (section anchors), `analytics`, `lang`, `locale`, and
-  `messages` and `ui` in the site language. Palette — in `variables.css`: an
-  accent ramp from the brand color (`--accent`, `-hover` lighter, `-active`
-  darker, `-tint` ~8%, `-tint-strong` ~16% on white), `themeColor` = `--accent`.
-  Check the contrast of `--on-accent` on `--accent` ≥ 4.5:1.
+  `messages` and `ui` in the site language, `author` only if the client agreed
+  to a credit. A service that travels to the customer (cleaning, repairs) keeps
+  `LocalBusiness` or a subtype even without a customer-facing office: the
+  address is then the legal one (`ui.address` says so), and `areaServed` names
+  the city or region it works in.
+  Palette — in `variables.css`: an accent ramp from the brand color
+  (`--accent`, `-hover`, `-active`, `-tint` ~8%, `-tint-strong` ~16% on white),
+  `themeColor` = `--accent`. White text on `--accent`, `-hover` and `-active`
+  must each reach **4.5:1**. If the brand color itself doesn't (bright teals,
+  oranges and yellows often fail), darken it step by step until it does — keep
+  the hue, change only lightness — and use that as `--accent`; make `-hover`
+  and `-active` darker still, never lighter. The untouched brand color can
+  still appear on the OG image and as a large decorative fill. Record the
+  decision in the task file.
+- **Fonts.** The scaffold uses Onest (Latin + Cyrillic). If the client's
+  design needs another font, it must cover the site language's script — check
+  before switching; a font without the script silently falls back to the
+  system font.
 - **Landing.** Build `index.astro` from sections per `references/sections.md`.
   Copy comes from the client's materials, edited for the web; what isn't
   there isn't written. Remove `data-demo-content`. `title` up to ~60
-  characters, `description` 120–160.
+  characters, `description` 120–160. No logo from the client — the scaffold's
+  `Logo.astro` shows the first letter of `shortName`; a real SVG logo
+  replaces the component.
 - **Service pages.** Privacy policy: company details, receiver (Telegram),
-  analytics — from the brief; remove `data-demo-content`; tell the person
-  plainly that a lawyer must review the text. Thank-you page and 404 — in the
-  site language.
+  analytics — from the brief. The draft deliberately has no retention periods,
+  response deadlines or legal bases: add them only if the client gives them.
+  Remove `data-demo-content`; tell the person plainly that a lawyer must review
+  the text. Thank-you page and 404 — rewrite in the site language (they carry
+  `data-demo-content` too); promise a reply time only if the client committed
+  to one.
 
 ### Stage 8. Review and revisions
 
@@ -265,14 +302,36 @@ Verify determinism: keep a copy of `release/<domain>.zip`, run
 `npm run build` and `npm run pack` again, compare — the archives must be
 identical.
 
+Then the credentials file:
+
+```bash
+npm run env
+```
+
+It creates `.env.<domain>` at the project root (e.g. `.env.promo.abect.com`)
+with every variable the back end reads **left empty** and a note on where to
+get each one. If the brief named a receiver other than Telegram, its variables
+must already be in `tools/env.mjs` (stage-7 work, from its documentation).
+Never fill in values yourself and never ask for them in the chat.
+
+The build in `dist/` stays in place: it is exactly what goes to the hosting.
+
 Final message to the person:
 
-1. where the archive is (`release/<domain>.zip`) and **step-by-step upload
-   instructions** from `references/deploy-cpanel.md` — in your own words, for
-   their hosting;
-2. what **remains on them** — as a checklist: `.env` with the token and chat id
-   on the server, legal review of the privacy policy, OG/favicons (if not
-   provided), a test request after upload;
+1. **What to upload and from where**: the **contents** of `dist/` (or the same
+   files packed in `release/<domain>.zip`) go into `public_html` — directly,
+   without a `dist` folder around them. Step-by-step instructions from
+   `references/deploy-cpanel.md`, in your own words, for their hosting.
+2. **Credentials** — say all of this explicitly:
+   - fill in `.env.<domain>` — where each value comes from is written in the
+     file (for Telegram: @BotFather for the token, `getUpdates` for the chat id);
+   - on the hosting, create a **`secrets`** folder **one level above**
+     `public_html` (`/home/<user>/secrets/`) and put the file there;
+   - the file must **never** be in `dist/`, in `public/` or in `public_html`:
+     anything there can be downloaded by anyone;
+   - `.env.*` and `secrets/` are git-ignored — it is never committed.
+3. what else **remains on them** — as a checklist: legal review of the privacy
+   policy, OG/favicons (if not provided), a test request after upload;
 3. what is **not verified** and why (the form end to end without credentials;
    locally without PHP);
 4. that the project lives on without the plugin: `/add-section`, `/add-page`,

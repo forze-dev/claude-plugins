@@ -1,4 +1,8 @@
+# Credentials — locally and per domain (.env.<domain>, created by npm run env).
 .env
+.env.*
+!.env.example
+secrets/
 node_modules/
 dist/
 release/

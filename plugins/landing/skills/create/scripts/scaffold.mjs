@@ -76,6 +76,12 @@ if (!marked.test(rules)) {
 }
 writeFileSync(claudeMd, rules.replace(marked, `<!-- forze:lang -->${language}<!-- /forze:lang -->`));
 
+/** The package takes the project's name, not the scaffold's: npm and editors show it. */
+const packageFile = resolve(to, 'package.json');
+const pkg = JSON.parse(readFileSync(packageFile, 'utf8'));
+pkg.name = basename(to).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || pkg.name;
+writeFileSync(packageFile, JSON.stringify(pkg, null, '\t') + '\n');
+
 const count = (dir) =>
 	readdirSync(dir).reduce((sum, entry) => {
 		const full = resolve(dir, entry);

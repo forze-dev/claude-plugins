@@ -10,6 +10,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import RequestModal from '../components/RequestModal.astro';
 import { graph, business, website } from '../lib/schema.js';
+import { preloadFonts } from '../lib/fonts.js';
 
 import '../styles/main.css';
 
@@ -36,11 +37,11 @@ const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].f
 		<Seo {...seo} noindex={noindex} />
 
 		{/*
-			The main face is preloaded because every screen needs it and it affects
-			LCP. The rest loads by unicode-range only if those characters actually
-			appear in the text. The font is self-hosted.
+			The ranges the site's language needs are preloaded because every screen
+			needs them and they affect LCP (src/lib/fonts.js). The rest load by
+			unicode-range only if those characters actually appear. Self-hosted.
 		*/}
-		<link rel="preload" href="/fonts/instrument-sans-latin-normal.woff2" as="font" type="font/woff2" crossorigin />
+		{preloadFonts().map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 
 		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd, null, '\t')} />}
 

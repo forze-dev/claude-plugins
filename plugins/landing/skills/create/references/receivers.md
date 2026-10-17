@@ -15,9 +15,10 @@ values into the chat):
 3. Post any message in the group.
 4. Open `https://api.telegram.org/bot<TOKEN>/getUpdates` in a browser and find
    `"chat":{"id":-100…` — that's the chat id (groups start with `-100`).
-5. Put both values into `.env`:
-   - locally — in the project root (copy `.env.example` → `.env`);
-   - on the hosting — in a `.env` file **one level above** `public_html`.
+5. Put both values into `.env.<domain>` (created empty by `npm run env`):
+   - locally — the file stays at the project root;
+   - on the hosting — in the `secrets` folder **one level above**
+     `public_html`: `/home/<user>/secrets/.env.<domain>`.
 
 Can't find the chat id (empty `getUpdates`) — the bot can't see group
 messages: in BotFather `/setprivacy` → Disable, or send a message with the
@@ -34,7 +35,10 @@ means requests that are silently lost.
    verification checklist.
 3. Implement it in `server/form.php` **after** all the anti-spam checks, where
    the Telegram delivery happens (or next to it, if both are needed). Keys
-   come only from `.env`, like `TELEGRAM_BOT_TOKEN`.
+   come only from the env file, like `TELEGRAM_BOT_TOKEN`. Add the receiver
+   to `SITE.form.receivers` and its variables — with a note on where to get
+   each — to `RECEIVERS` in `tools/env.mjs`, so `npm run env` writes them into
+   `.env.<domain>`.
 4. The server response stays the same: `200 Sent.` on success, `502` when
    delivery fails — the form's behaviour in the browser depends on it.
 5. Update section 4 of the privacy policy: who else receives the data.

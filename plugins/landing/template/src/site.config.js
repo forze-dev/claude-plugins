@@ -82,8 +82,12 @@ export const SITE = {
 	lang: 'en',
 	locale: 'en_US',
 	themeColor: '#14532d',
-	author: 'Forze',
-	/** Link in the footer's "Made by" line. `null` — the line is not output. */
+	/**
+	 * Who made the site: `<meta name="author">` and the footer's "Made by" line.
+	 * `null` — neither is output. Fill in only if the client agreed to a credit.
+	 */
+	author: null,
+	/** Link for the "Made by" line. Output only together with `author`. */
 	authorUrl: null,
 
 	/**
@@ -111,6 +115,15 @@ export const SITE = {
 			/** Country name in words: a person reads it in the contacts section. */
 			countryName: 'United States',
 		},
+		/**
+		 * Where the business works, for a service that travels to the customer
+		 * (cleaning, repairs, delivery): a city or region name, e.g. 'Lviv'.
+		 * Goes into `areaServed` in both JSON-LD and microdata. `null` — not output.
+		 * Such a business keeps `LocalBusiness` (or a subtype) even when visitors
+		 * never come to its address: the address is then the legal one, and
+		 * `ui.address` says so ("Registered address").
+		 */
+		areaServed: null,
 		/** `null` if there are no coordinates. */
 		geo: { latitude: 40.74844, longitude: -73.985664 },
 		/** An empty array — the hours block is not output. */
@@ -194,6 +207,12 @@ export const SITE = {
 			placeholder: null,
 		},
 		successUrl: '/thank-you',
+		/**
+		 * Where requests go. `telegram` is built into server/form.php. Another
+		 * receiver means: its code in form.php and its variables in tools/env.mjs,
+		 * both from its current documentation.
+		 */
+		receivers: ['telegram'],
 	},
 
 	/**
@@ -247,9 +266,29 @@ export const SITE = {
 		formAttach: 'Attach a file',
 		formRemoveFile: 'Remove file',
 		formSubmit: 'Send request',
-		formConsent: 'By sending this form you agree to our',
+		/** `{link}` is replaced by a link with the `privacyLink` text — word order stays natural in any language. */
+		formConsent: 'By sending this form you agree to our {link}.',
+		privacyLink: 'privacy policy',
 		breadcrumb: 'Breadcrumb',
 	},
+};
+
+/**
+ * The address as one line, the same everywhere it is shown (footer, contacts,
+ * privacy policy). `withCountry` adds the country name. Empty parts are
+ * skipped, so a missing region never leaves a stray comma.
+ */
+export const formatAddress = ({ withCountry = true } = {}) => {
+	const address = SITE.contacts.address;
+	if (!address) return null;
+	return [
+		address.street,
+		address.locality,
+		[address.region, address.postalCode].filter(Boolean).join(' '),
+		withCountry ? (address.countryName ?? address.country) : null,
+	]
+		.filter(Boolean)
+		.join(', ');
 };
 
 /** Substitutes `{size}` and `{types}` in a string from `messages`. */

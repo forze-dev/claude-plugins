@@ -20,8 +20,11 @@ The structure inside is arbitrary — the agent sorts it, not the developer.
 ## What the agent does with it
 
 **1. Read first, then ask.** What's in `temp/` replaces some of the brief
-questions. The `landing@forze` plugin puts the client's original materials
-here while creating the project, and the agent checks this folder first.
+questions. The agent checks this folder first.
+
+Text materials (the brief, specs, notes) are copied into `docs/brief/` — that
+folder is tracked by git, so task files can cite it as a source. `temp/` is
+for heavy media and anything not worth versioning.
 
 **2. Sorts media into place.** Images and other static files move to
 `public/assets/`:

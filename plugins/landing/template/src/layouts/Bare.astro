@@ -12,6 +12,7 @@ import { SITE } from '../site.config.js';
 import Seo from '../components/Seo.astro';
 import Analytics from '../components/Analytics.astro';
 import { graph, business, website } from '../lib/schema.js';
+import { preloadFonts } from '../lib/fonts.js';
 
 import '../styles/main.css';
 
@@ -28,7 +29,7 @@ const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].f
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<Seo {...seo} noindex={noindex} />
 		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd, null, '\t')} />}
-		<link rel="preload" href="/fonts/instrument-sans-latin-normal.woff2" as="font" type="font/woff2" crossorigin />
+		{preloadFonts().map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
 		<Analytics position="head" />
 	</head>
 	<body>

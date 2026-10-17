@@ -11,10 +11,13 @@
  * generated from src/site.config.js (tools/limits.mjs) and placed next to this
  * file.
  *
- * Credentials come from a .env file that must live OUTSIDE the site root:
+ * Credentials come from a .env file in a `secrets` folder OUTSIDE the site root:
  *
- *   /home/user/.env          ← the file
- *   /home/user/public_html/  ← the site root
+ *   /home/user/secrets/.env.<domain>   ← the file, as created by `npm run env`
+ *   /home/user/public_html/            ← the site root
+ *
+ * The file may also be renamed to plain `.env` inside secrets/. Locally (npm
+ * run dev) the same names are read from the project root.
  */
 
 declare(strict_types=1);
@@ -55,8 +58,7 @@ function load_limits(): array
 $LIMITS = load_limits();
 
 /**
- * A minimal .env reader. First looks one level above the site root, then
- * falls back to the project root — for local development.
+ * A minimal .env reader: the first readable candidate wins.
  */
 function load_env(array $candidates): array
 {
@@ -308,16 +310,26 @@ enforce_rate_limit((int) ($LIMITS['rateLimitSeconds'] ?? 20));
 
 /* ------------------------------------------------------------ credentials */
 
-$env = load_env([
-    dirname($_SERVER['DOCUMENT_ROOT'] ?? __DIR__) . '/.env',
-    __DIR__ . '/../../.env',
-]);
+/**
+ * One level above the site root: on the hosting that is the user's home folder
+ * (secrets/ lives there); under `npm run dev` the document root is server/, so
+ * one level up is the project root, where the local .env files live.
+ */
+$above = dirname((string) ($_SERVER['DOCUMENT_ROOT'] ?? __DIR__));
+$domain = (string) (parse_url((string) ($LIMITS['siteUrl'] ?? ''), PHP_URL_HOST) ?? '');
+
+$env = load_env(array_filter([
+    $domain !== '' ? "{$above}/secrets/.env.{$domain}" : null,
+    "{$above}/secrets/.env",
+    $domain !== '' ? "{$above}/.env.{$domain}" : null,
+    "{$above}/.env",
+]));
 
 $botToken = $env['TELEGRAM_BOT_TOKEN'] ?? (getenv('TELEGRAM_BOT_TOKEN') ?: '');
 $chatId   = $env['CHAT_ID'] ?? (getenv('CHAT_ID') ?: '');
 
 if ($botToken === '' || $chatId === '') {
-    fail(500, 'The form is not configured yet: TELEGRAM_BOT_TOKEN and CHAT_ID are missing. Copy .env.example to .env and fill them in.');
+    fail(500, 'The form is not configured yet: TELEGRAM_BOT_TOKEN and CHAT_ID are missing. Put the filled .env.<domain> into the secrets folder one level above public_html.');
 }
 
 /* ----------------------------------------------------------------- message */

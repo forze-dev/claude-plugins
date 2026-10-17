@@ -1,5 +1,5 @@
 {
 	"plugin": "landing@forze",
-	"template": "0.2.0",
+	"template": "0.3.0",
 	"note": "Marker of a project created by the landing@forze plugin. The plugin's hooks use it to tell this project apart from all others and enable the dist/ guard. Deleting the file only disables the guard — it has no effect on the site."
 }

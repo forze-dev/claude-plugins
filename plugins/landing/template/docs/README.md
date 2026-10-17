@@ -21,7 +21,8 @@ docs/
 ## changelog
 
 `changelog.md` is the index. One short line per working day, newest first,
-linking to the day file. It's for a quick overview, not for details.
+linking to the day file. Several stages on one day update that day's line —
+they don't add new ones. It's for a quick overview, not for details.
 
 `DD.MM.YYYY.md` — one file per day, **never more**. Everything done that day
 goes there: what changed, why, what broke, what was checked and how. Detailed

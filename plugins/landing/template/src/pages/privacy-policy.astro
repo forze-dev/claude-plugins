@@ -1,7 +1,19 @@
 ---
+/**
+ * Privacy policy — a DRAFT for a lawyer, not legal advice.
+ *
+ * The text states only what the site provably does (from the config and the
+ * code) and avoids commitments nobody has made: no retention periods, no
+ * response deadlines, no legal bases. Those depend on the client's
+ * jurisdiction and practice — the agent asks for them or leaves the neutral
+ * wording; it never invents a number.
+ *
+ * `data-demo-content` on the body keeps `npm run check` red until the text has
+ * been rewritten for the client and the site language. Remove it only then.
+ */
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import { SITE } from '../site.config.js';
+import { SITE, formatAddress } from '../site.config.js';
 import { webPage, breadcrumbs } from '../lib/schema.js';
 
 import '../styles/pages/privacy.css';
@@ -15,22 +27,19 @@ const trail = [
 	{ label: 'Privacy policy' },
 ];
 
-const updated = '2026-09-27';
-const updatedLabel = '27 September 2026';
+/** The date the text was last changed — set it when you edit the policy. */
+const updated = '2026-10-17';
+const updatedLabel = '17 October 2026';
 
-const { email, phones, address } = SITE.contacts;
+const { email, phones } = SITE.contacts;
+const postal = formatAddress();
 
 /**
- * Section 8 must match what the site DOES, not what we'd like it to do. It
- * used to say "no analytics and no cookies" — which was false even with an
- * empty config, because the font came from fonts.googleapis.com. The font is
- * self-hosted now, and the text asks the config about trackers instead of guessing.
+ * Section 8 must match what the site DOES, not what we'd like it to do — so it
+ * asks the config about trackers instead of guessing.
  */
 const analyticsEnabled = Boolean(SITE.analytics.gtmId || SITE.analytics.gaId);
 const analyticsName = SITE.analytics.gtmId ? 'Google Tag Manager' : 'Google Analytics 4';
-const postal = address
-	? [address.street, address.locality, [address.region, address.postalCode].filter(Boolean).join(' ')].filter(Boolean).join(', ')
-	: null;
 
 const schema = [
 	{ ...webPage('/privacy-policy', { name: title, description }), dateModified: updated },
@@ -46,24 +55,19 @@ const schema = [
 			<header class="privacy__head">
 				<h1>Privacy policy</h1>
 				<p class="privacy__updated">Last updated: <time datetime={updated}>{updatedLabel}</time></p>
-				{/*
-					Scaffold draft. The data-demo-content attribute won't let `npm run check`
-					pass the build until the text is reviewed for the client and the
-					attribute removed. The legal review is done by a person, not the agent.
-				*/}
-				<p class="lead" data-demo-content>
+				<p class="lead">
 					This page explains what personal data we collect through this website, why we collect it and
 					what rights you have over it.
 				</p>
 			</header>
 
-			<div class="prose privacy__body">
+			<div class="prose privacy__body" data-demo-content>
 				<section class="privacy__section">
 					<h2>1. Who we are</h2>
 					<p>
 						This website is operated by {SITE.name} ("we", "us"). You can reach us at
-						<a href={`mailto:${email}`}>{email}</a>{postal && <> or by post at {postal}</>}. We decide how and why your
-						personal data is processed, which makes us the data controller.
+						<a href={`mailto:${email}`}>{email}</a>{postal && <> or by post at {postal}</>}. We decide how
+						and why your personal data is processed.
 					</p>
 				</section>
 
@@ -85,9 +89,8 @@ const schema = [
 				<section class="privacy__section">
 					<h2>3. Why we use it</h2>
 					<p>
-						We use your data to reply to your request, to prepare a quote, and to keep a record of what
-						was agreed. The legal basis is our legitimate interest in responding to people who contact
-						us, and the steps necessary to enter into a contract at your request.
+						We use your data to reply to your request, to prepare an offer and to keep a record of what was
+						agreed.
 					</p>
 				</section>
 
@@ -103,66 +106,54 @@ const schema = [
 				<section class="privacy__section">
 					<h2>5. How long we keep it</h2>
 					<p>
-						Requests that do not turn into a project are deleted within twelve months. Where a project
-						goes ahead, we keep the correspondence for as long as the law requires us to retain
-						business records, and then delete it.
+						We keep your request for as long as we need it to answer you and to carry out what was agreed,
+						and for as long as the law requires us to keep business records. After that we delete it.
 					</p>
 				</section>
 
 				<section class="privacy__section">
 					<h2>6. How we protect it</h2>
 					<p>
-						The site is served over HTTPS and the form posts directly to our own endpoint. Credentials
-						for the delivery bot are stored outside the web root and are never exposed to the browser.
-						Attachments are passed straight through and are not stored on the web server.
+						The site is served over HTTPS and the form posts directly to our own server. Credentials for
+						the delivery bot are stored outside the public part of the server and are never exposed to the
+						browser. Attachments are passed straight through and are not stored on the web server.
 					</p>
 				</section>
 
 				<section class="privacy__section">
 					<h2>7. Your rights</h2>
 					<p>
-						You can ask us for a copy of your data, ask us to correct or delete it, ask us to restrict
-						how we use it, or object to our using it at all. Write to
-						<a href={`mailto:${email}`}>{email}</a> and we will respond within 30 days. If you are not
-						satisfied with our response, you can complain to your local data protection authority.
+						You can ask us for a copy of your data, ask us to correct or delete it, or object to our using
+						it. Write to <a href={`mailto:${email}`}>{email}</a>. If you are not satisfied with our
+						response, you can complain to your local data protection authority.
 					</p>
 				</section>
 
 				<section class="privacy__section">
 					<h2>8. Cookies, analytics and third-party requests</h2>
 					<p>
-						We set no cookies of our own. Every font, stylesheet, script and image is served from
-						this domain: the page layout itself reaches no other company, so no third party learns
-						your IP address from the design of the site.
+						We set no cookies of our own. Every font, stylesheet, script and image is served from this
+						domain: the page layout itself reaches no other company.
 					</p>
 					{analyticsEnabled ? (
 						<p>
-							We do use {analyticsName}, which is provided by Google and does set cookies. It records
-							which pages you open, roughly where you are from and which site sent you, and Google
-							processes that data on our behalf. This means data may be transferred outside your
-							country. If you do not want it, a browser that blocks third-party scripts, or any
-							tracker blocker, prevents it entirely.
+							We do use {analyticsName}, which is provided by Google and sets cookies. It records which
+							pages you open, roughly where you are from and which site sent you. A browser that blocks
+							third-party scripts, or any tracker blocker, prevents it entirely.
 						</p>
 					) : (
-						<p>
-							We run no analytics, advertising or session-recording scripts. Nothing on the site
-							profiles you or follows you to other sites.
-						</p>
+						<p>We run no analytics, advertising or session-recording scripts.</p>
 					)}
-					<p>
-						If you add an analytics tool, a chat widget, a map embed or any other third-party script,
-						update this section before launch: name the provider, say what it stores, and say whether
-						it needs consent where your visitors live.
-					</p>
+					{/*
+						Developer note, not for visitors: if you add a chat widget, a map embed or
+						any other third-party script, update this section before launch — name
+						the provider, what it stores, and whether it needs consent.
+					*/}
 				</section>
 
 				<section class="privacy__section">
 					<h2>9. Changes to this policy</h2>
-					<p>
-						When we change this policy we update the date at the top of the page. Material changes will
-						be announced on the homepage for at least 14 days. Continuing to use the site after a
-						change means you accept the updated policy.
-					</p>
+					<p>When we change this policy, we update the date at the top of this page.</p>
 				</section>
 
 				<section class="privacy__section">

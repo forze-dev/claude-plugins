@@ -13,7 +13,7 @@ the rest has a sensible default the person only confirms.
 | Domain **[req.]** | `url` | no trailing slash; without a domain there is no canonical and no sitemap |
 | One- or two-sentence description **[req.]** | `description` | 120–160 characters; goes into search and the footer |
 | Site language | `lang`, `locale`, `messages`, `ui` | default — the language of the materials |
-| Business type | `businessType` | has an address visitors come to → `LocalBusiness` or a subtype (`Dentist`, `Restaurant`, `BeautySalon`, `AutoRepair`…); online only → `Organization` |
+| Business type | `businessType` | has an address visitors come to → `LocalBusiness` or a subtype (`Dentist`, `Restaurant`, `BeautySalon`, `AutoRepair`…); travels to the customer (cleaning, repairs) → still `LocalBusiness` or a subtype (`HomeAndConstructionBusiness`, `ProfessionalService`…) + `areaServed`; online only → `Organization` |
 
 ## Contacts
 
@@ -23,6 +23,7 @@ the rest has a sensible default the person only confirms.
 | Country number format **[req.]** | `PHONE_FORMAT` | `countryCode`, `digits` (after the country code), `groups`. Ukraine: `+380`, `9`, `[2, 3, 2, 2]` → `+380 (67) 123-45-67`. USA: `+1`, `10`, `[3, 3, 4]` |
 | Email **[req.]** | `contacts.email` | |
 | Address | `contacts.address` | street, city, region, postal code, ISO country code; none → `null` |
+| Area served | `contacts.areaServed` | for a service that travels to the customer: the city or region, e.g. `Lviv` |
 | Coordinates | `contacts.geo` | from Google Maps; none → `null` |
 | Opening hours | `contacts.hours` | days in English (`Monday`…) for schema.org + a `label` in the site language |
 | Messengers | `messengers` | only those the client gave; Telegram — a `t.me/…` link, WhatsApp — from the number |
@@ -33,7 +34,7 @@ the rest has a sensible default the person only confirms.
 | What | Note |
 | --- | --- |
 | Design source | Figma / current site / screenshots / "up to you" (then — the scaffold's look) |
-| Brand color | hex; from the logo or the mockup. None — offer 3 options, the person picks |
+| Brand color | hex; from the logo or the mockup. None — offer 3 options, the person picks. White text on it must reach 4.5:1 — if not, the accent is darkened (see the skill) |
 | Logo | SVG or PNG with a transparent background; none — the scaffold's text mark |
 | Photos | real photos of the business; without them the hero has no image — that's fine |
 

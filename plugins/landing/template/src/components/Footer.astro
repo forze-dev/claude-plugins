@@ -10,7 +10,7 @@
  * vice versa. `itemid` is the same URI as `@id` in the JSON-LD. Values come
  * from the config only.
  */
-import { SITE, isPlace } from '../site.config.js';
+import { SITE, isPlace, formatAddress } from '../site.config.js';
 import { ids } from '../lib/schema.js';
 import Logo from './Logo.astro';
 
@@ -19,9 +19,7 @@ const year = new Date().getFullYear();
 const logoUrl = new URL('/android-chrome-512x512.png', SITE.url).href;
 const siteUrl = new URL('/', SITE.url).href;
 const { address, geo } = contacts;
-const addressText = address
-	? `${address.street}, ${address.locality}${address.region ? `, ${address.region}` : ''} ${address.postalCode}`.trim()
-	: null;
+const addressText = formatAddress();
 ---
 
 <footer class="footer" itemscope itemtype={`https://schema.org/${SITE.businessType}`} itemid={ids.organization}>
@@ -29,6 +27,7 @@ const addressText = address
 	<link itemprop="logo" href={logoUrl} />
 	{SITE.social.map((profile) => <link itemprop="sameAs" href={profile} />)}
 	{SITE.priceRange && isPlace && <meta itemprop="priceRange" content={SITE.priceRange} />}
+	{contacts.areaServed && <meta itemprop="areaServed" content={contacts.areaServed} />}
 	{isPlace && geo && (
 		<span itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates" hidden>
 			<meta itemprop="latitude" content={String(geo.latitude)} />
@@ -40,7 +39,7 @@ const addressText = address
 		<div class="footer__top">
 			<div>
 				<a class="footer__brand" href="/">
-					<Logo />
+					<Logo id="logo-footer" />
 					<span itemprop="name">{SITE.name}</span>
 				</a>
 				<p class="footer__description" itemprop="description">{SITE.description}</p>
@@ -95,7 +94,12 @@ const addressText = address
 				<ul class="footer__contact" role="list">
 					<li class="footer__contact-item">
 						<img src="/assets/icons/email.svg" alt="" width="20" height="20" aria-hidden="true" />
-						<a itemprop="email" href={`mailto:${contacts.email}`}>{contacts.email}</a>
+						{/*
+							A meta, not itemprop on the link: on an <a> microdata takes the href,
+							so the value would be "mailto:…" while JSON-LD has the bare address.
+						*/}
+						<meta itemprop="email" content={contacts.email} />
+						<a href={`mailto:${contacts.email}`}>{contacts.email}</a>
 					</li>
 					{contacts.phones.map((phone) => (
 						<li class="footer__contact-item">
@@ -112,7 +116,7 @@ const addressText = address
 								<meta itemprop="streetAddress" content={address.street} />
 								<meta itemprop="addressLocality" content={address.locality} />
 								{address.region && <meta itemprop="addressRegion" content={address.region} />}
-								<meta itemprop="postalCode" content={address.postalCode} />
+								{address.postalCode && <meta itemprop="postalCode" content={address.postalCode} />}
 								<meta itemprop="addressCountry" content={address.country} />
 								{addressText}
 							</span>
@@ -127,7 +131,7 @@ const addressText = address
 			<ul class="footer__legal" role="list">
 				<li><a href="/privacy-policy">{ui.privacy}</a></li>
 			</ul>
-			{SITE.authorUrl && (
+			{SITE.author && SITE.authorUrl && (
 				<p class="footer__credit">
 					{ui.madeBy} <a href={SITE.authorUrl} rel="nofollow noopener">{SITE.author}</a>
 				</p>

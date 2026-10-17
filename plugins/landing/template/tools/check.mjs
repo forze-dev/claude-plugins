@@ -12,6 +12,7 @@
  * Exit code: 0 — all clean (warnings don't count), 1 — there are errors.
  */
 
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, posix } from 'node:path';
 
@@ -32,7 +33,7 @@ const PLACEHOLDERS = [
 	{ value: '350 Fifth Avenue', fix: 'fill in SITE.contacts.address or set address: null' },
 	{
 		value: 'data-demo-content',
-		fix: 'scaffold demo copy is still on the page: replace it with real copy and remove the data-demo-content attribute (index.astro, privacy-policy.astro)',
+		fix: 'scaffold demo copy is still on the page: rewrite it for the client in the site language and remove the data-demo-content attribute (index.astro, privacy-policy.astro, thank-you.astro, 404.astro)',
 	},
 ];
 
@@ -304,6 +305,33 @@ for (const file of files) {
 	if (/(^|\/)\.env(\..*)?$/.test(file)) {
 		error(`dist/${file}`, 'a credentials file is in the build', 'remove it from public/: .env lives outside the repository and outside public_html');
 	}
+}
+
+/* ------------------------------------------------- 5. scaffold favicons */
+
+/**
+ * The scaffold's own favicons, by SHA-256. A warning, not an error: a client
+ * without a logo may launch with them — but it must be a decision, not an
+ * oversight.
+ */
+const SCAFFOLD_FAVICONS = new Set([
+	'4272b87a6a12507dcd36978588d0a9fe7d0e09b32c00c1485cb81e290c2b4bdc',
+	'ee435a96f3fee6fbb148f44ada20e4571f36fed3a8deb58c78f689ba5c14c2aa',
+	'18afb9b03872572813987921a325fef917b63fc708348bd74f588609f7952ee8',
+	'9b498caaa6d0ae61f3ffe2f0bc6b7237eb41ce79ae248a510021e98bf15a6c11',
+	'd5ea1586facca8b506cbeb08f6326383beaaacef2eaa8d3448035f79685efe83',
+	'b230d88ae9a7d242be1867478c8dd93ce196b6a4975f87dadb511b1ea16f71e7',
+]);
+
+const leftover = files.filter(
+	(f) => /^(favicon|apple-touch-icon|android-chrome)/.test(f) && SCAFFOLD_FAVICONS.has(createHash('sha256').update(readFileSync(join(DIST, f))).digest('hex'))
+);
+if (leftover.length) {
+	warn(
+		leftover.map((f) => 'dist/' + f).join(', '),
+		'these are still the scaffold favicons',
+		"put the client's favicon set into public/ (same file names), or confirm with the client that the scaffold ones stay"
+	);
 }
 
 /* ----------------------------------------------------------------- output */

@@ -10,7 +10,9 @@ and what actually sits in the files and in `dist/`. The implementer's report
 does not interest you — only files and command output.
 
 You receive the project path, the task file (`docs/tasks/<slug>.md`) and the
-stage number. Read the project's `CLAUDE.md` — it is the criteria. Write the
+stage number. You run BEFORE the changelog entry and the commit of the stage
+under review — don't report those as missing for this stage; do check that
+earlier stages have theirs. Read the project's `CLAUDE.md` — it is the criteria. Write the
 report in the conversation language set in rule 1 of that `CLAUDE.md`.
 
 ## What to check
@@ -43,7 +45,15 @@ Run from the project root. Each item is a command or a concrete claim.
 8. **Form.** `dist/scripts/form.php`, `dist/scripts/form.limits.json` and
    `dist/.htaccess` exist; `maxFileSize` in the limits equals
    `SITE.form.maxFileMb × 1048576`; `.htaccess` has no `__…__` markers.
-9. **Audit.** `npm audit` — record the result.
+9. **Icons.** `npm run icons:preview` and look at `temp/icons-preview.png`
+   (Read it as an image): every icon is recognizable at 24px, nothing is
+   lopsided, clipped or mushy. Brand icons must be the Simple Icons shapes.
+10. **Script.** The site language's script is covered by the font: for a
+    Cyrillic-script language, `dist/index.html` preloads
+    `/fonts/onest-cyrillic.woff2` (or the replacement font has a cyrillic range).
+11. **Credentials** (final stage only): `.env.<domain>` exists at the project
+    root with every variable empty; no `.env*` file in `dist/` or `public/`.
+12. **Audit.** `npm audit` — record the result.
 
 ## Report
 

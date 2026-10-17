@@ -48,7 +48,7 @@ const fullTitle = title.includes(SITE.shortName) || title.includes(SITE.name) ? 
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />
 
-<meta name="author" content={SITE.author} />
+{SITE.author && <meta name="author" content={SITE.author} />}
 <meta name="theme-color" content={SITE.themeColor} />
 
 <!-- Favicons — replace the files in public/, keep the names -->

@@ -48,6 +48,7 @@ export function business() {
 		telephone: telephones(),
 		...(SITE.priceRange && isPlace ? { priceRange: SITE.priceRange } : {}),
 		...(contacts.address ? { address: postalAddress() } : {}),
+		...(contacts.areaServed ? { areaServed: contacts.areaServed } : {}),
 		...(isPlace && contacts.geo
 			? {
 					geo: {
@@ -84,15 +85,22 @@ function openingHours() {
 	}));
 }
 
+/**
+ * Empty parts are left out rather than written as `null`: the footer microdata
+ * skips them too, and `"addressRegion": null` is noise a validator flags.
+ */
 function postalAddress() {
 	const { address } = SITE.contacts;
-	return {
-		'@type': 'PostalAddress',
+	const fields = {
 		streetAddress: address.street,
 		addressLocality: address.locality,
 		addressRegion: address.region,
 		postalCode: address.postalCode,
 		addressCountry: address.country,
+	};
+	return {
+		'@type': 'PostalAddress',
+		...Object.fromEntries(Object.entries(fields).filter(([, value]) => value)),
 	};
 }
 
