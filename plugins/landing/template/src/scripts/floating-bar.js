@@ -38,6 +38,9 @@ export function initFloatingBar() {
 		.join('');
 
 	document.body.appendChild(bar);
+	// Lets CSS reserve room under the footer on mobile, so the fixed bar never
+	// covers the last lines of the page (see floating-bar.css).
+	document.body.classList.add('has-floating-bar');
 
 	let visible = false;
 	let ticking = false;

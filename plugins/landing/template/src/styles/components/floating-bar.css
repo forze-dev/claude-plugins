@@ -69,6 +69,19 @@
 	text-overflow: ellipsis;
 }
 
+/**
+ * The bar is fixed to the bottom of the screen, so at the very end of the page
+ * it would sit on top of the footer's last lines (copyright, privacy link).
+ * floating-bar.js marks the body when the bar exists; on mobile the footer then
+ * gets extra bottom padding: the bar's height plus its gap to the screen edge.
+ * The bar is hidden on desktop, so is the padding.
+ */
+@media (max-width: 900px) {
+	.has-floating-bar .footer {
+		padding-bottom: calc(var(--space-6) + 48px + 2 * var(--space-3));
+	}
+}
+
 /* On desktop there's the header button and the footer — the bar would be just noise. */
 @media (min-width: 901px) {
 	.floating-bar {
