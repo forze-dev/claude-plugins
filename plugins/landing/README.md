@@ -1,6 +1,6 @@
 # landing — turn-key one-page sites for cPanel hosting
 
-<img src="icon.svg" width="72" height="72" alt="landing@forze icon">
+![landing@forze icon](icon.png)
 
 A Claude Code plugin that takes a developer from "I have a client and a pile of
 materials" to a finished one-page website packed for upload to ordinary PHP
@@ -44,12 +44,32 @@ review that isn't in the materials is asked for, not guessed.
 - Hosting: Apache + PHP 8.1+ (cPanel or any shared hosting). Not for
   Vercel/Netlify-style static hosts — the form needs PHP.
 
-## What runs where
+## What the plugin runs, sends and fetches
 
-Everything runs on your machine: the plugin's scripts, `npm ci` (from the npm
-registry), the Astro build. The plugin sends nothing anywhere and collects no
-data. The sites it builds send form submissions only to the receiver you
-configure (Telegram by default).
+Everything runs on your machine. The plugin collects no data and has no
+telemetry. In full:
+
+- **Hook** — `hooks/guard.mjs` runs with Node before every file edit and shell
+  command in a Claude Code session. It reads only the tool call it is given and
+  checks for a `.forze/landing.json` marker in the project. In a project created
+  by this plugin it blocks: edits inside `dist/` and `release/`, `.env` files in
+  `public/`, `npm audit fix --force`, and a bare `npm install`. Everywhere else
+  it does nothing. It makes no network requests and writes nothing.
+- **Skill scripts** (run when the skill tells Claude to): `doctor.mjs` reads the
+  installed versions of Node, npm, PHP and git; `scaffold.mjs` copies
+  `template/` into the new project folder you name. Neither touches the network.
+- **In the generated project**, at the skill's direction and only with your
+  approval in Claude Code:
+  - `npm ci` downloads the project's pinned dependencies from the npm registry;
+  - `npm audit` sends the dependency list to the npm registry's audit service;
+  - the Astro build, `check`, `pack`, `env`, `og` and `icons:preview` scripts
+    run locally and make no network requests;
+  - installing Node, PHP or git (only if missing, only after you confirm) uses
+    your OS package manager (`winget`, `brew`, `apt`).
+- **Links you share** (a Figma file, a reference site) are opened by Claude
+  only when you provide them.
+- **Websites built with the plugin** send form submissions only to the receiver
+  you configure — Telegram by default, through the PHP handler on your hosting.
 
 ## Links
 

@@ -13,16 +13,19 @@
  * config rather than retyped by hand.
  */
 
-import { execFileSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import { build } from 'astro';
 
 import { SITE } from '../src/site.config.js';
 import { writeFormLimits } from './limits.mjs';
 
 const OUT_DIR = join('dist', 'scripts');
 
-execFileSync('npx', ['astro', 'build'], { stdio: 'inherit', shell: process.platform === 'win32' });
+// Astro's JavaScript API, not `npx astro build`: it runs exactly the pinned
+// version from node_modules, with no package launcher in between.
+await build({});
 
 mkdirSync(OUT_DIR, { recursive: true });
 copyFileSync(join('server', 'form.php'), join(OUT_DIR, 'form.php'));

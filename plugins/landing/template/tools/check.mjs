@@ -315,7 +315,6 @@ for (const file of files) {
  * oversight.
  */
 const SCAFFOLD_FAVICONS = new Set([
-	'4272b87a6a12507dcd36978588d0a9fe7d0e09b32c00c1485cb81e290c2b4bdc',
 	'ee435a96f3fee6fbb148f44ada20e4571f36fed3a8deb58c78f689ba5c14c2aa',
 	'18afb9b03872572813987921a325fef917b63fc708348bd74f588609f7952ee8',
 	'9b498caaa6d0ae61f3ffe2f0bc6b7237eb41ce79ae248a510021e98bf15a6c11',
