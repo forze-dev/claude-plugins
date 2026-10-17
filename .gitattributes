@@ -1,0 +1,8 @@
+# Однакові кінці рядків на всіх машинах: плагін ставлять і на Windows, і на macOS/Linux,
+# а скрипти з CRLF на Unix ламаються.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
