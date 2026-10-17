@@ -1,12 +1,12 @@
 {
 	"name": "landing",
 	"displayName": "Landing (forze)",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "Turn-key one-page landing for small businesses: brief from client materials, Astro static site with Telegram request form, PHP back end for cPanel, both structured-data formats, and a ready-to-upload zip.",
 	"author": {
 		"name": "forze"
 	},
-	"homepage": "https://github.com/forze-dev/claude-plugins",
+	"homepage": "https://github.com/forze-dev/claude-plugins/tree/main/plugins/landing#readme",
 	"repository": "https://github.com/forze-dev/claude-plugins",
 	"license": "MIT",
 	"keywords": [
@@ -18,5 +18,10 @@
 		"seo",
 		"json-ld",
 		"small-business"
-	]
+	],
+	"icon": "./icon.png",
+	"documentationUrl": "https://github.com/forze-dev/claude-plugins/tree/main/plugins/landing#readme",
+	"supportUrl": "https://github.com/forze-dev/claude-plugins/issues",
+	"privacyPolicyUrl": "https://github.com/forze-dev/claude-plugins/blob/main/docs/PRIVACY.md",
+	"termsOfServiceUrl": "https://github.com/forze-dev/claude-plugins/blob/main/docs/TERMS.md"
 }
