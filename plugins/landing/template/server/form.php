@@ -325,8 +325,11 @@ $env = load_env(array_filter([
     "{$above}/.env",
 ]));
 
-$botToken = $env['TELEGRAM_BOT_TOKEN'] ?? (getenv('TELEGRAM_BOT_TOKEN') ?: '');
-$chatId   = $env['CHAT_ID'] ?? (getenv('CHAT_ID') ?: '');
+// Only from the secrets file — never from the process environment: on shared
+// hosting that environment is not ours to rely on, and one documented source
+// is easier to reason about than two.
+$botToken = (string) ($env['TELEGRAM_BOT_TOKEN'] ?? '');
+$chatId   = (string) ($env['CHAT_ID'] ?? '');
 
 if ($botToken === '' || $chatId === '') {
     fail(500, 'The form is not configured yet: TELEGRAM_BOT_TOKEN and CHAT_ID are missing. Put the filled .env.<domain> into the secrets folder one level above public_html.');

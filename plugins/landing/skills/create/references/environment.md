@@ -41,12 +41,11 @@ command from the site themselves; it asks for a password).
 
 ## Linux (Debian/Ubuntu)
 
-```bash
-# Node 22 via nvm — no sudo and no conflict with a system node
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-# restart the terminal, then:
-nvm install 22
+Node 22: the person installs it themselves, from https://nodejs.org (LTS) or
+with nvm following its own README (https://github.com/nvm-sh/nvm#installing-and-updating).
+Never pipe a downloaded script straight into a shell on their behalf.
 
+```bash
 sudo apt update
 sudo apt install -y php-cli php-curl php-mbstring git
 ```
