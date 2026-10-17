@@ -1,0 +1,30 @@
+---
+/**
+ * Хлібні крихти для внутрішніх сторінок (політика конфіденційності й будь-які
+ * сторінки, які додадуть пізніше). На самому лендингу їх немає.
+ *
+ * Той самий масив `trail` передається у `breadcrumbs()` з lib/schema.js для
+ * JSON-LD і рендериться тут як мікророзмітка BreadcrumbList. Один масив, два
+ * синтаксиси — розійтися вони не можуть.
+ */
+import { SITE } from '../site.config.js';
+
+const { trail } = Astro.props;
+---
+
+<div class="container breadcrumbs">
+	<nav aria-label={SITE.ui.breadcrumb}>
+		<ol class="breadcrumbs__list" role="list" itemscope itemtype="https://schema.org/BreadcrumbList">
+			{trail.map((crumb, index) => (
+				<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+					{crumb.href ? (
+						<a itemprop="item" href={crumb.href}><span itemprop="name">{crumb.label}</span></a>
+					) : (
+						<span itemprop="name" aria-current="page">{crumb.label}</span>
+					)}
+					<meta itemprop="position" content={String(index + 1)} />
+				</li>
+			))}
+		</ol>
+	</nav>
+</div>

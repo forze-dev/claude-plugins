@@ -1,0 +1,120 @@
+/**
+ * Кнопки.
+ *
+ * Один базовий клас, три призначення. Жодних стрілок у підписах — підпис сам
+ * каже, що станеться.
+ */
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	min-height: 48px;
+	padding: 0 var(--space-6);
+	border: 1px solid transparent;
+	border-radius: var(--radius-pill);
+	font-size: var(--fz-base);
+	font-weight: 600;
+	line-height: 1;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background-color var(--duration-fast) var(--ease),
+		border-color var(--duration-fast) var(--ease),
+		color var(--duration-fast) var(--ease);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+	opacity: 0.55;
+	pointer-events: none;
+}
+
+/** Головна — та єдина дія, якої ми справді хочемо на сторінці. */
+.btn--primary {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+
+.btn--primary:hover {
+	background: var(--accent-hover);
+}
+
+.btn--primary:active {
+	background: var(--accent-active);
+}
+
+/** Другорядна — рішення тієї ж ваги, але тихіша присутність. */
+.btn--secondary {
+	background: transparent;
+	border-color: var(--border-strong);
+	color: var(--ink);
+}
+
+.btn--secondary:hover {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+
+/** Для футера — єдиного місця з акцентним тлом. */
+.btn--inverse {
+	background: var(--on-accent);
+	color: var(--accent);
+}
+
+.btn--inverse:hover {
+	background: var(--accent-tint);
+}
+
+.btn--block {
+	width: 100%;
+}
+
+/**
+ * Текстове посилання, що поводиться як дія.
+ * Підкреслення — це підказка, тому воно є й у спокої.
+ */
+.link {
+	color: var(--accent);
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+.link:hover {
+	color: var(--accent-hover);
+}
+
+/** Кругла кнопка лише з іконкою: месенджери й закриття модалки. */
+.icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: var(--radius-pill);
+	background: var(--surface);
+	color: var(--ink);
+	text-decoration: none;
+	transition: background-color var(--duration-fast) var(--ease);
+}
+
+.icon-btn:hover {
+	background: var(--surface-strong);
+}
+
+.icon-btn img,
+.icon-btn svg {
+	width: 22px;
+	height: 22px;
+}
+
+.icon-btn--on-accent {
+	background: rgba(255, 255, 255, 0.14);
+	color: var(--on-accent);
+}
+
+.icon-btn--on-accent:hover {
+	background: rgba(255, 255, 255, 0.24);
+}

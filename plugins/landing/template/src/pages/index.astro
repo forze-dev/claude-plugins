@@ -1,0 +1,80 @@
+---
+/**
+ * Лендинг — головна й єдина контентна сторінка сайту.
+ *
+ * Сторінка складається з секцій із src/components/sections/. Порядок секцій —
+ * порядок у цьому файлі; якір кожної (`id`) має збігатися з пунктом меню в
+ * `SITE.nav`. Непотрібну секцію прибирають разом з її даними й пунктом меню.
+ *
+ * Текст секцій — це контент, і його місце тут. Контакти, телефони, назва
+ * бізнесу — НЕ контент: вони беруться з site.config.js.
+ *
+ * Атрибут `data-demo-content` позначає демо-текст шаблону. `npm run check`
+ * не пропустить збірку, доки він лишається, — прибери його, коли текст
+ * замінено справжнім.
+ */
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Cards from '../components/sections/Cards.astro';
+import Steps from '../components/sections/Steps.astro';
+import Section from '../components/sections/Section.astro';
+import Cta from '../components/sections/Cta.astro';
+import Contacts from '../components/sections/Contacts.astro';
+import Faq from '../components/Faq.astro';
+import { SITE } from '../site.config.js';
+import { webPage, faqPage } from '../lib/schema.js';
+
+const title = `${SITE.name} — what we do and how to reach us`;
+const description = SITE.description;
+
+const services = [
+	{ title: 'Consultation', body: 'A first call to understand the task, the deadline and the budget. Free and with no obligation.' },
+	{ title: 'Delivery', body: 'The work itself, done to an agreed plan, with one person responsible for the result.' },
+	{ title: 'Support', body: 'Help after the work is done: answers to questions and small changes when you need them.' },
+];
+
+const steps = [
+	{ title: 'You leave a request', body: 'Through the form, by phone or in a messenger — whatever is easier.' },
+	{ title: 'We call you back', body: 'We clarify the details and agree on the scope, price and timing.' },
+	{ title: 'We do the work', body: 'You get updates along the way, not only at the end.' },
+	{ title: 'You get the result', body: 'We hand over the work and stay in touch for any questions.' },
+];
+
+/** Один масив — і для видимого списку з мікророзміткою, і для FAQPage у JSON-LD. */
+const faq = [
+	{ question: 'How quickly do you reply?', answer: 'On the same working day. Requests sent in the evening are answered the next morning.' },
+	{ question: 'Is the first consultation free?', answer: 'Yes. The first call is free and does not oblige you to anything.' },
+	{ question: 'Can I attach a file to the request?', answer: 'Yes. The form accepts documents and images — attach them if they help explain the task.' },
+];
+
+// Бізнес і WebSite додає Base.astro — сторінка описує лише себе.
+const schema = [webPage('/', { name: title, description }), faqPage(faq)];
+---
+
+<Base title={title} description={description} schema={schema}>
+	<div data-demo-content>
+		<Hero
+			title="A clear one-line promise of what the business does"
+			lead="Two or three sentences for the visitor: who this is for, what problem it solves and why it is worth leaving a request right now."
+			facts={['Reply the same working day', 'Free first consultation', 'One person responsible for your request']}
+			secondary={{ label: 'How we work', href: '/#steps' }}
+		/>
+	</div>
+
+	<Cards id="services" title="Services" lead="What you can order. Replace these with the client's real services." items={services} surface />
+
+	<Steps id="steps" title="How we work" lead="Four steps from the request to the result." items={steps} />
+
+	<Section id="faq" title="Questions" lead="The questions people ask before leaving a request." surface>
+		<Faq entries={faq} />
+	</Section>
+
+	<Cta title="Ready to start?" text="Leave a request and we will call you back the same working day." />
+
+	<Contacts
+		title="Contacts"
+		lead="Call, write in a messenger or leave a request — every channel reaches the same people."
+		formTitle="Leave a request"
+		formNote="Two fields are required. Everything else helps us answer faster."
+	/>
+</Base>

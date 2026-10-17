@@ -1,0 +1,30 @@
+/** Нумеровані етапи роботи. */
+
+.steps {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--space-6);
+	list-style: none;
+	counter-reset: none;
+}
+
+.steps__item {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	padding-top: var(--space-5);
+	border-top: 2px solid var(--accent);
+}
+
+.steps__number {
+	font-family: var(--font-display);
+	font-size: var(--fz-sm);
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	color: var(--accent);
+}
+
+.steps__item p {
+	color: var(--ink-muted);
+	line-height: var(--lh-relaxed);
+}

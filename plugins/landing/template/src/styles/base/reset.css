@@ -1,0 +1,133 @@
+/**
+ * Reset — з характером, але короткий. Лише ті правила, що себе виправдовують.
+ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-behavior: smooth;
+	/* Секції з якорями мають відступати від фіксованого хедера. */
+	scroll-padding-top: calc(var(--header-height) + var(--space-5));
+
+	/**
+	 * Назавжди резервуємо місце під смугу прокрутки.
+	 *
+	 * Без цього блокування сторінки (модалка, мобільне меню) прибирає смугу,
+	 * вікно ширшає, і кожен елемент position:fixed — насамперед хедер — помітно
+	 * стрибає вбік. Компенсація через padding на <body> не рятує, бо фіксовані
+	 * елементи її ігнорують.
+	 *
+	 * Бонусом: короткі сторінки більше не зсуваються відносно довгих.
+	 */
+	scrollbar-gutter: stable;
+}
+
+body {
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: var(--fz-base);
+	line-height: var(--lh-normal);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+/** Блокується, поки відкрите мобільне меню або модалка. */
+body.is-scroll-locked {
+	overflow: hidden;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
+/**
+ * `hidden` має перемагати власне правило display у компонента. Без цього
+ * будь-який клас із display (flex, grid, inline-flex) мовчки перебиває атрибут,
+ * і JS, що перемикає `hidden`, наче нічого не робить.
+ */
+[hidden] {
+	display: none !important;
+}
+
+img,
+picture,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+img {
+	height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+}
+
+button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+ul[role='list'],
+ol[role='list'] {
+	list-style: none;
+}
+
+a {
+	color: inherit;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+/** Один стиль видимого фокуса на весь сайт. */
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: var(--radius-sm);
+}
+
+:focus:not(:focus-visible) {
+	outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

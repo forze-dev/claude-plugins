@@ -1,0 +1,22 @@
+{
+	"name": "forze-landing",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"description": "One-page landing on Astro with a Telegram request form and a PHP back end for cPanel. Scaffolded by landing@forze.",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "node tools/build.mjs",
+		"preview": "astro preview",
+		"check": "node tools/check.mjs",
+		"pack": "node tools/pack.mjs",
+		"test:phone": "node tools/test-phone-mask.mjs"
+	},
+	"dependencies": {
+		"@astrojs/sitemap": "3.7.4",
+		"astro": "7.3.5"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	}
+}

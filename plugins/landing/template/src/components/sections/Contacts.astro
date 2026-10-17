@@ -1,0 +1,93 @@
+---
+/**
+ * Секція контактів: прямі способи звʼязку ліворуч, форма заявки праворуч.
+ * Меню веде сюди якорем `#contacts`, і сюди ж ведуть кнопки «залишити заявку»,
+ * коли JavaScript недоступний.
+ *
+ * Мікророзмітки тут немає свідомо: повний опис бізнесу несе футер (один вузол
+ * з itemid на сторінку). Дані ті самі — з site.config.js.
+ */
+import { SITE, isPlace } from '../../site.config.js';
+import RequestForm from '../RequestForm.astro';
+
+import '../../styles/sections/contacts.css';
+
+const { id = 'contacts', title, lead, formTitle, formNote } = Astro.props;
+const { contacts, ui } = SITE;
+const { address } = contacts;
+const fullAddress = address
+	? [address.street, address.locality, [address.region, address.postalCode].filter(Boolean).join(' '), address.countryName ?? address.country]
+			.filter(Boolean)
+			.join(', ')
+	: null;
+---
+
+<section class="section" id={id} aria-labelledby={`${id}-title`}>
+	<div class="container contacts-layout">
+		<div class="contacts-details">
+			<h2 id={`${id}-title`}>{title}</h2>
+			{lead && <p class="lead contacts-details__lead">{lead}</p>}
+
+			<ul class="contacts-list" role="list">
+				{contacts.phones.map((phone) => (
+					<li class="contacts-item">
+						<img src="/assets/icons/phone.svg" alt="" width="24" height="24" aria-hidden="true" />
+						<div>
+							<span class="contacts-item__label">{ui.formPhone}</span>
+							<a href={`tel:${phone.href}`}>{phone.display}</a>
+						</div>
+					</li>
+				))}
+				<li class="contacts-item">
+					<img src="/assets/icons/email.svg" alt="" width="24" height="24" aria-hidden="true" />
+					<div>
+						<span class="contacts-item__label">{ui.email}</span>
+						<a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+					</div>
+				</li>
+				{fullAddress && (
+					<li class="contacts-item">
+						<img src="/assets/icons/pin.svg" alt="" width="24" height="24" aria-hidden="true" />
+						<div>
+							<span class="contacts-item__label">{ui.address}</span>
+							<span>{fullAddress}</span>
+						</div>
+					</li>
+				)}
+				{isPlace && contacts.hours.length > 0 && (
+					<li class="contacts-item">
+						<img src="/assets/icons/clock.svg" alt="" width="24" height="24" aria-hidden="true" />
+						<div>
+							<span class="contacts-item__label">{ui.footerHours}</span>
+							{contacts.hours.map((entry) => <span>{entry.label}</span>)}
+						</div>
+					</li>
+				)}
+			</ul>
+
+			{SITE.messengers.length > 0 && (
+				<ul class="contacts-messengers" role="list" aria-label={ui.chatWithUs}>
+					{SITE.messengers.map((messenger) => (
+						<li>
+							<a
+								class="icon-btn"
+								href={messenger.href}
+								target={messenger.href.startsWith('http') ? '_blank' : undefined}
+								rel={messenger.href.startsWith('http') ? 'noopener nofollow' : undefined}
+								aria-label={`${ui.messageOn} ${messenger.name}`}
+							>
+								<img src={messenger.icon} alt="" width="22" height="22" aria-hidden="true" />
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+
+		<div class="panel contacts-form">
+			{formTitle && <h3>{formTitle}</h3>}
+			{formNote && <p class="contacts-form__note">{formNote}</p>}
+			<RequestForm id="contact" showNote={true} />
+		</div>
+	</div>
+</section>

@@ -1,0 +1,22 @@
+{
+	"name": "landing",
+	"displayName": "Landing (forze)",
+	"version": "0.1.0",
+	"description": "Turn-key one-page landing for small businesses: brief from client materials, Astro static site with Telegram request form, PHP back end for cPanel, both structured-data formats, and a ready-to-upload zip.",
+	"author": {
+		"name": "forze"
+	},
+	"homepage": "https://github.com/forze-dev/claude-plugins",
+	"repository": "https://github.com/forze-dev/claude-plugins",
+	"license": "MIT",
+	"keywords": [
+		"landing",
+		"astro",
+		"cpanel",
+		"php",
+		"telegram",
+		"seo",
+		"json-ld",
+		"small-business"
+	]
+}

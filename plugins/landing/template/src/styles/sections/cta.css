@@ -1,0 +1,32 @@
+/* Присутність бренду без темного блоку: тінт акценту, а не сам акцент. */
+.cta-band {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-6);
+	padding: var(--space-8);
+	background: var(--accent-tint);
+	border-radius: var(--radius-lg);
+}
+
+.cta-band h2 {
+	max-width: 20ch;
+}
+
+.cta-band p {
+	max-width: 52ch;
+	margin-top: var(--space-3);
+	color: var(--ink-muted);
+	line-height: var(--lh-relaxed);
+}
+
+@media (max-width: 768px) {
+	.cta-band {
+		padding: var(--space-6);
+	}
+
+	.cta-band .btn {
+		width: 100%;
+	}
+}

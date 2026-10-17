@@ -1,0 +1,83 @@
+/**
+ * Панель месенджерів для мобільних, рендерить scripts/floating-bar.js.
+ *
+ * Кожне посилання несе власний колір --brand, щоб канали лишалися впізнаваними;
+ * це єдине місце в шаблоні, яке виходить за межі палітри.
+ */
+
+.floating-bar {
+	position: fixed;
+	right: var(--space-3);
+	bottom: var(--space-3);
+	left: var(--space-3);
+	z-index: var(--z-floating-bar);
+	display: flex;
+	gap: var(--space-2);
+	transform: translateY(calc(100% + var(--space-4)));
+	transition: transform var(--duration-slow) var(--ease);
+}
+
+.floating-bar.is-visible {
+	transform: translateY(0);
+}
+
+.floating-bar__link {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: var(--space-2);
+	min-width: 0;
+	min-height: 48px;
+	padding-inline: var(--space-3);
+	border-radius: var(--radius-md);
+	background: var(--brand, var(--accent));
+	color: #ffffff;
+	text-decoration: none;
+	box-shadow: var(--shadow-raised);
+	transition: filter var(--duration-fast) var(--ease);
+}
+
+.floating-bar__link:active {
+	filter: brightness(0.92);
+}
+
+.floating-bar__icon {
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+	/* Іконки йдуть у currentColor; на брендовій заливці робимо їх білими. */
+	filter: brightness(0) invert(1);
+}
+
+.floating-bar__text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	line-height: 1.2;
+}
+
+.floating-bar__text span {
+	font-size: 10px;
+	opacity: 0.85;
+}
+
+.floating-bar__text strong {
+	font-size: var(--fz-xs);
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* На десктопі є кнопка в хедері й футер — панель була б тільки шумом. */
+@media (min-width: 901px) {
+	.floating-bar {
+		display: none;
+	}
+}
+
+@media (max-width: 360px) {
+	.floating-bar__text span {
+		display: none;
+	}
+}

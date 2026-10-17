@@ -1,0 +1,30 @@
+---
+/**
+ * Сітка карток — переваги, послуги, «для кого це». Одна секція на три
+ * призначення: відрізняються лише дані.
+ *
+ * `items`: { title, body, price?, icon? }
+ *   body  — може містити простий HTML (<strong>, <a>)
+ *   price — ЛИШЕ з брифу або site.config; вигадана ціна гірша за відсутню
+ *   icon  — шлях до SVG у /assets/icons/
+ * `columns`: 2 або 3.
+ */
+import Section from './Section.astro';
+
+import '../../styles/sections/cards.css';
+
+const { id, title, lead, items, columns = 3, surface = false } = Astro.props;
+---
+
+<Section id={id} title={title} lead={lead} surface={surface}>
+	<ul class={`grid grid--${columns} cards`} role="list">
+		{items.map((item) => (
+			<li class="panel card">
+				{item.icon && <img class="card__icon" src={item.icon} alt="" width="32" height="32" aria-hidden="true" />}
+				<h3>{item.title}</h3>
+				<p set:html={item.body}></p>
+				{item.price && <p class="card__price">{item.price}</p>}
+			</li>
+		))}
+	</ul>
+</Section>

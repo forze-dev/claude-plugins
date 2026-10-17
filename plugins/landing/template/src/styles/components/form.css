@@ -1,0 +1,161 @@
+/**
+ * Форма заявки.
+ *
+ * Використовується і вбудовано на контактах, і всередині модалки, тож нічого
+ * тут не припускає колір поверхні — його задає контейнер.
+ */
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.form__field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.form__label {
+	font-size: var(--fz-sm);
+	font-weight: 600;
+	color: var(--ink);
+}
+
+.form__input {
+	width: 100%;
+	min-height: 48px;
+	padding: var(--space-3) var(--space-4);
+	background: var(--bg);
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-sm);
+	font-size: var(--fz-base);
+	color: var(--ink);
+	transition: border-color var(--duration-fast) var(--ease),
+		box-shadow var(--duration-fast) var(--ease);
+}
+
+.form__input::placeholder {
+	color: var(--ink-subtle);
+}
+
+.form__input:focus {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+.form__textarea {
+	min-height: 110px;
+	padding-top: var(--space-3);
+	resize: vertical;
+}
+
+/* --- Прикріплення файлу ------------------------------------------------- */
+
+.form__file-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	padding: var(--space-3) 0;
+	font-size: var(--fz-sm);
+	font-weight: 600;
+	color: var(--accent);
+	text-decoration: underline;
+	text-underline-offset: 0.25em;
+}
+
+.form__file-trigger img {
+	width: 18px;
+	height: 18px;
+}
+
+.form__file-trigger:hover {
+	color: var(--accent-hover);
+}
+
+.form__file-preview {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	padding: var(--space-3);
+	background: var(--accent-tint);
+	border-radius: var(--radius-sm);
+	font-size: var(--fz-sm);
+	color: var(--accent);
+}
+
+.form__file-name {
+	flex: 1;
+	min-width: 0;
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.form__file-size {
+	flex-shrink: 0;
+	font-size: var(--fz-xs);
+	opacity: 0.75;
+}
+
+.form__file-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: var(--accent);
+	color: var(--on-accent);
+	transition: background-color var(--duration-fast) var(--ease);
+}
+
+.form__file-remove:hover {
+	background: var(--accent-hover);
+}
+
+/** Honeypot: для людини за екраном, для бота — звичайна розмітка. */
+.form__trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* --- Повідомлення ------------------------------------------------------- */
+
+.form__message {
+	margin: 0;
+	padding: var(--space-3) var(--space-4);
+	border-radius: var(--radius-sm);
+	font-size: var(--fz-sm);
+	font-weight: 500;
+}
+
+.form__message[hidden] {
+	display: none;
+}
+
+.form__message--validation {
+	background: var(--warning-bg);
+	color: var(--warning);
+}
+
+.form__message--error {
+	background: var(--danger-bg);
+	color: var(--danger);
+}
+
+.form__note {
+	font-size: var(--fz-xs);
+	color: var(--ink-subtle);
+}
+
+.form__note a {
+	color: var(--ink-muted);
+}

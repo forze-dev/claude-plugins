@@ -1,0 +1,14 @@
+{
+	"name": "forze",
+	"description": "Plugins by forze for building client websites with Claude Code.",
+	"owner": {
+		"name": "forze"
+	},
+	"plugins": [
+		{
+			"name": "landing",
+			"source": "./plugins/landing",
+			"description": "Turn-key one-page landing: brief → Astro site with Telegram form → zip for cPanel."
+		}
+	]
+}

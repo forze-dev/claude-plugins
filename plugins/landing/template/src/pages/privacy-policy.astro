@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE } from '../site.config.js';
+import { webPage, breadcrumbs } from '../lib/schema.js';
+
+import '../styles/pages/privacy.css';
+
+const title = 'Privacy Policy';
+const description =
+	'How we collect, use, store and delete the personal data you submit through the request form, and the rights you have over it.';
+
+const trail = [
+	{ label: SITE.ui.home, href: '/' },
+	{ label: 'Privacy policy' },
+];
+
+const updated = '2026-09-27';
+const updatedLabel = '27 September 2026';
+
+const { email, phones, address } = SITE.contacts;
+
+/**
+ * Розділ 8 має відповідати тому, що сайт РОБИТЬ, а не тому, що хотілося б.
+ * Раніше там стояло «жодної аналітики й жодних cookie» — і це була неправда
+ * навіть із порожнім конфігом, бо шрифт тягнувся з fonts.googleapis.com. Шрифт
+ * тепер самохостений, а про трекери текст питає конфіг, а не вгадує.
+ */
+const analyticsEnabled = Boolean(SITE.analytics.gtmId || SITE.analytics.gaId);
+const analyticsName = SITE.analytics.gtmId ? 'Google Tag Manager' : 'Google Analytics 4';
+const postal = address
+	? [address.street, address.locality, [address.region, address.postalCode].filter(Boolean).join(' ')].filter(Boolean).join(', ')
+	: null;
+
+const schema = [
+	{ ...webPage('/privacy-policy', { name: title, description }), dateModified: updated },
+	breadcrumbs(trail),
+];
+---
+
+<Base title={title} description={description} type="article" schema={schema}>
+	<Breadcrumbs trail={trail} />
+
+	<section class="section--tight">
+		<div class="container privacy">
+			<header class="privacy__head">
+				<h1>Privacy policy</h1>
+				<p class="privacy__updated">Last updated: <time datetime={updated}>{updatedLabel}</time></p>
+				{/*
+					Чернетка шаблону. Атрибут data-demo-content не дасть `npm run check`
+					пропустити збірку, доки текст не вичитано під клієнта й атрибут не
+					прибрано. Юридичну вичитку робить людина, не агент.
+				*/}
+				<p class="lead" data-demo-content>
+					This page explains what personal data we collect through this website, why we collect it and
+					what rights you have over it.
+				</p>
+			</header>
+
+			<div class="prose privacy__body">
+				<section class="privacy__section">
+					<h2>1. Who we are</h2>
+					<p>
+						This website is operated by {SITE.name} ("we", "us"). You can reach us at
+						<a href={`mailto:${email}`}>{email}</a>{postal && <> or by post at {postal}</>}. We decide how and why your
+						personal data is processed, which makes us the data controller.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>2. What we collect</h2>
+					<p>We only collect what the request form asks for, plus a small amount of technical data:</p>
+					<ul>
+						<li>Your name and phone number, because we cannot answer a request without them.</li>
+						<li>The message you write, and any file you choose to attach.</li>
+						<li>The page you submitted from, so we know what the request refers to.</li>
+						<li>Your IP address, used only to rate-limit submissions and block automated abuse.</li>
+					</ul>
+					<p>
+						We do not ask for payment details, government identifiers or health information, and you
+						should not send them through this form.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>3. Why we use it</h2>
+					<p>
+						We use your data to reply to your request, to prepare a quote, and to keep a record of what
+						was agreed. The legal basis is our legitimate interest in responding to people who contact
+						us, and the steps necessary to enter into a contract at your request.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>4. Who else sees it</h2>
+					<p>
+						Form submissions are delivered to a private Telegram chat, so Telegram processes them in
+						transit. Our website is served by a hosting provider that records standard access logs. We
+						do not sell your data, and we do not share it with advertisers.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>5. How long we keep it</h2>
+					<p>
+						Requests that do not turn into a project are deleted within twelve months. Where a project
+						goes ahead, we keep the correspondence for as long as the law requires us to retain
+						business records, and then delete it.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>6. How we protect it</h2>
+					<p>
+						The site is served over HTTPS and the form posts directly to our own endpoint. Credentials
+						for the delivery bot are stored outside the web root and are never exposed to the browser.
+						Attachments are passed straight through and are not stored on the web server.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>7. Your rights</h2>
+					<p>
+						You can ask us for a copy of your data, ask us to correct or delete it, ask us to restrict
+						how we use it, or object to our using it at all. Write to
+						<a href={`mailto:${email}`}>{email}</a> and we will respond within 30 days. If you are not
+						satisfied with our response, you can complain to your local data protection authority.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>8. Cookies, analytics and third-party requests</h2>
+					<p>
+						We set no cookies of our own. Every font, stylesheet, script and image is served from
+						this domain: the page layout itself reaches no other company, so no third party learns
+						your IP address from the design of the site.
+					</p>
+					{analyticsEnabled ? (
+						<p>
+							We do use {analyticsName}, which is provided by Google and does set cookies. It records
+							which pages you open, roughly where you are from and which site sent you, and Google
+							processes that data on our behalf. This means data may be transferred outside your
+							country. If you do not want it, a browser that blocks third-party scripts, or any
+							tracker blocker, prevents it entirely.
+						</p>
+					) : (
+						<p>
+							We run no analytics, advertising or session-recording scripts. Nothing on the site
+							profiles you or follows you to other sites.
+						</p>
+					)}
+					<p>
+						If you add an analytics tool, a chat widget, a map embed or any other third-party script,
+						update this section before launch: name the provider, say what it stores, and say whether
+						it needs consent where your visitors live.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>9. Changes to this policy</h2>
+					<p>
+						When we change this policy we update the date at the top of the page. Material changes will
+						be announced on the homepage for at least 14 days. Continuing to use the site after a
+						change means you accept the updated policy.
+					</p>
+				</section>
+
+				<section class="privacy__section">
+					<h2>10. Contact</h2>
+					<p>
+						Questions about this policy, or about anything we hold on you, go to
+						<a href={`mailto:${email}`}>{email}</a> or
+						<a href={`tel:${phones[0].href}`}>{phones[0].display}</a>. The
+						<a href="/#contacts">contacts section</a> lists every other way to reach us.
+					</p>
+				</section>
+			</div>
+		</div>
+	</section>
+</Base>

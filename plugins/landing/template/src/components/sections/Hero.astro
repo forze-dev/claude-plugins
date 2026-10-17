@@ -1,0 +1,63 @@
+---
+/**
+ * Перший екран. Єдиний h1 сторінки живе тут.
+ *
+ * Пропси:
+ *   title    — h1, обіцянка бізнесу одним реченням
+ *   lead     — абзац під ним
+ *   facts    — 2–4 короткі твердження (лише перевірювані факти з брифу)
+ *   primary  — { label } — кнопка відкриває модалку заявки
+ *   secondary— { label, href } — необовʼязкова друга дія, зазвичай якір
+ *   image    — { src, alt, width, height } — необовʼязково
+ */
+import { SITE } from '../../site.config.js';
+
+import '../../styles/sections/hero.css';
+
+const { title, lead, facts = [], primary, secondary, image } = Astro.props;
+const { ui } = SITE;
+---
+
+<section class="hero">
+	<div class={image ? 'container hero__inner' : 'container hero__inner hero__inner--text'}>
+		<div class="hero__content">
+			<h1>{title}</h1>
+			{lead && <p class="hero__lead">{lead}</p>}
+
+			{facts.length > 0 && (
+				<ul class="hero__facts" role="list">
+					{facts.map((fact) => <li>{fact}</li>)}
+				</ul>
+			)}
+
+			<div class="hero__actions">
+				<a class="btn btn--primary" href="/#contacts" data-modal-open>{primary?.label ?? ui.cta}</a>
+				{secondary && <a class="btn btn--secondary" href={secondary.href}>{secondary.label}</a>}
+			</div>
+
+			{SITE.messengers.length > 0 && (
+				<ul class="hero__messengers" role="list" aria-label={ui.chatWithUs}>
+					{SITE.messengers.map((messenger) => (
+						<li>
+							<a
+								class="icon-btn"
+								href={messenger.href}
+								target={messenger.href.startsWith('http') ? '_blank' : undefined}
+								rel={messenger.href.startsWith('http') ? 'noopener nofollow' : undefined}
+								aria-label={`${ui.messageOn} ${messenger.name}`}
+							>
+								<img src={messenger.icon} alt="" width="22" height="22" aria-hidden="true" />
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+
+		{image && (
+			<div class="hero__media">
+				<img src={image.src} alt={image.alt} width={image.width} height={image.height} fetchpriority="high" />
+			</div>
+		)}
+	</div>
+</section>

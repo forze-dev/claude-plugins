@@ -1,0 +1,8 @@
+node_modules/
+dist/
+release/
+.astro/
+.env
+**/server/form.limits.json
+.DS_Store
+Thumbs.db

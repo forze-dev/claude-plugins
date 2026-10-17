@@ -1,0 +1,38 @@
+---
+/**
+ * Мінімальний каркас для автономних екранів без обрамлення сайту: сторінка
+ * подяки й 404. Існує окремим layout тому, що Astro піднімає теги <script>
+ * глобально: умова всередині Base усе одно віддала б цим сторінкам код хедера,
+ * модалки й плаваючої панелі, яких у них немає.
+ *
+ * Обидві сторінки `noindex`, тому структурованих даних на них немає взагалі —
+ * ні JSON-LD, ні мікророзмітки бізнесу.
+ */
+import { SITE } from '../site.config.js';
+import Seo from '../components/Seo.astro';
+import Analytics from '../components/Analytics.astro';
+import { graph, business, website } from '../lib/schema.js';
+
+import '../styles/main.css';
+
+const { schema, noindex = false, ...seo } = Astro.props;
+
+/** Той самий базовий граф, що й у `Base`, якщо колись тут зʼявиться індексована сторінка. */
+const jsonLd = noindex ? null : graph(business(), website(), ...[schema ?? []].flat());
+---
+
+<!DOCTYPE html>
+<html lang={SITE.lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<Seo {...seo} noindex={noindex} />
+		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd, null, '\t')} />}
+		<link rel="preload" href="/fonts/instrument-sans-latin-normal.woff2" as="font" type="font/woff2" crossorigin />
+		<Analytics position="head" />
+	</head>
+	<body>
+		<Analytics position="body" />
+		<slot />
+	</body>
+</html>

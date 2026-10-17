@@ -1,0 +1,121 @@
+/**
+ * Типографіка.
+ *
+ * Заголовки набрані щільно й вирівняні ліворуч; основний текст тримає комфортну
+ * міру рядка. Розмір береться зі шкали у variables.css — ніколи не вписуй
+ * font-size у стилі сторінки руками.
+ */
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--font-display);
+	color: var(--ink);
+	font-weight: 600;
+	letter-spacing: var(--tracking-display);
+	line-height: var(--lh-tight);
+	text-wrap: balance;
+}
+
+h1 {
+	font-size: var(--fz-5xl);
+	font-weight: 700;
+}
+
+h2 {
+	font-size: var(--fz-3xl);
+}
+
+h3 {
+	font-size: var(--fz-xl);
+	line-height: var(--lh-snug);
+}
+
+h4 {
+	font-size: var(--fz-md);
+	line-height: var(--lh-snug);
+}
+
+p {
+	max-width: var(--measure);
+	text-wrap: pretty;
+}
+
+/** Вступний абзац під заголовком. */
+.lead {
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+.text-muted {
+	color: var(--ink-muted);
+}
+
+.text-subtle {
+	font-size: var(--fz-sm);
+	color: var(--ink-subtle);
+}
+
+/**
+ * Блок заголовка секції: заголовок плюс необовʼязковий рядок під ним.
+ * Без надзаголовка — роботу робить сам заголовок.
+ */
+.section-head {
+	max-width: var(--measure);
+	margin-bottom: var(--space-7);
+}
+
+.section-head p {
+	margin-top: var(--space-3);
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+/** Довгий текст, напр. політика конфіденційності. */
+.prose h2 {
+	font-size: var(--fz-xl);
+	margin-bottom: var(--space-3);
+}
+
+.prose p,
+.prose li {
+	color: var(--ink-muted);
+	line-height: var(--lh-relaxed);
+}
+
+.prose p + p {
+	margin-top: var(--space-3);
+}
+
+.prose ul {
+	margin-top: var(--space-3);
+	padding-left: var(--space-5);
+	max-width: var(--measure);
+}
+
+.prose li + li {
+	margin-top: var(--space-2);
+}
+
+.prose a {
+	color: var(--accent);
+	font-weight: 500;
+}
+
+.prose a:hover {
+	color: var(--accent-hover);
+}
+
+/** Код у рядку. Використовується в текстах на «Про нас» і в політиці. */
+code {
+	padding: 0.15em 0.4em;
+	background: var(--accent-tint);
+	border-radius: 4px;
+	font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+	font-size: 0.9em;
+	color: var(--accent);
+	word-break: break-word;
+}

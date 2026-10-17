@@ -1,0 +1,62 @@
+---
+/**
+ * Хедер сайту. Меню будується з SITE.nav — на лендингу це якорі секцій, тож
+ * «поточної сторінки» тут немає: усі пункти ведуть на ту саму сторінку.
+ *
+ * Мікророзмітки меню немає свідомо: ItemList із якорів rich results не дає,
+ * а другий опис без сигналу — лише шум.
+ */
+import { SITE } from '../site.config.js';
+import Logo from './Logo.astro';
+
+const { ui } = SITE;
+---
+
+<header class="header">
+	<div class="container header__inner">
+		<a class="header__logo" href="/" aria-label={`${SITE.name} — ${ui.home}`}>
+			<Logo />
+			{SITE.shortName}
+		</a>
+
+		<nav class="header__nav" id="site-nav" aria-label={ui.mainNav}>
+			<ul class="header__list" role="list">
+				{SITE.nav.map((item) => (
+					<li class="header__item">
+						<a class="header__link" href={item.href}>{item.label}</a>
+					</li>
+				))}
+			</ul>
+
+			<div class="header__nav-footer">
+				{SITE.messengers.map((messenger) => (
+					<a
+						class="icon-btn"
+						href={messenger.href}
+						target={messenger.href.startsWith('http') ? '_blank' : undefined}
+						rel={messenger.href.startsWith('http') ? 'noopener nofollow' : undefined}
+						aria-label={`${ui.messageOn} ${messenger.name}`}
+					>
+						<img src={messenger.icon} alt="" width="22" height="22" aria-hidden="true" />
+					</a>
+				))}
+			</div>
+		</nav>
+
+		<div class="header__actions">
+			<a class="btn btn--primary header__cta" href="/#contacts" data-modal-open>{ui.cta}</a>
+			<a class="btn btn--secondary header__call" href={`tel:${SITE.contacts.phones[0].href}`}>{ui.call}</a>
+			<button
+				class="header__burger"
+				type="button"
+				aria-label={ui.menuOpen}
+				data-label-open={ui.menuOpen}
+				data-label-close={ui.menuClose}
+				aria-expanded="false"
+				aria-controls="site-nav"
+			>
+				<span></span><span></span><span></span>
+			</button>
+		</div>
+	</div>
+</header>

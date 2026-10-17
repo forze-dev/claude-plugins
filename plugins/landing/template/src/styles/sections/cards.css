@@ -1,0 +1,38 @@
+/** Сітка карток: переваги, послуги. */
+
+.cards {
+	list-style: none;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+}
+
+.section--surface .card {
+	border-color: transparent;
+}
+
+.card__icon {
+	width: 32px;
+	height: 32px;
+}
+
+.card h3 {
+	max-width: 24ch;
+}
+
+.card p {
+	color: var(--ink-muted);
+	line-height: var(--lh-relaxed);
+}
+
+/* Ціна притиснута донизу, щоб у сусідніх картках стояла на одному рівні. */
+.card__price {
+	margin-top: auto;
+	padding-top: var(--space-3);
+	font-size: var(--fz-lg);
+	font-weight: 700;
+	color: var(--ink) !important;
+}

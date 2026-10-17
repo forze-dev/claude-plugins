@@ -1,0 +1,33 @@
+/** Відгуки клієнтів. */
+
+.testimonials {
+	list-style: none;
+}
+
+.testimonial {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: var(--space-5);
+}
+
+.section--surface .testimonial {
+	border-color: transparent;
+}
+
+.testimonial blockquote p {
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink);
+}
+
+.testimonial__author {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-1);
+	font-size: var(--fz-sm);
+}
+
+.testimonial__author span {
+	color: var(--ink-subtle);
+}

@@ -1,0 +1,23 @@
+---
+/**
+ * Смуга заклику до дії посеред або наприкінці сторінки. Кнопка відкриває
+ * модалку заявки; без JavaScript веде до секції контактів.
+ */
+import { SITE } from '../../site.config.js';
+
+import '../../styles/sections/cta.css';
+
+const { title, text, label = SITE.ui.cta } = Astro.props;
+---
+
+<section class="section section--tight">
+	<div class="container">
+		<div class="cta-band">
+			<div>
+				<h2>{title}</h2>
+				{text && <p>{text}</p>}
+			</div>
+			<a class="btn btn--primary" href="/#contacts" data-modal-open>{label}</a>
+		</div>
+	</div>
+</section>

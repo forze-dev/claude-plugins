@@ -1,0 +1,24 @@
+---
+/**
+ * Нумеровані етапи роботи: «як ми працюємо». Порядок задає масив.
+ *
+ * `items`: { title, body }
+ */
+import Section from './Section.astro';
+
+import '../../styles/sections/steps.css';
+
+const { id, title, lead, items, surface = false } = Astro.props;
+---
+
+<Section id={id} title={title} lead={lead} surface={surface}>
+	<ol class="steps" role="list">
+		{items.map((item, index) => (
+			<li class="steps__item">
+				<span class="steps__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+				<h3>{item.title}</h3>
+				<p set:html={item.body}></p>
+			</li>
+		))}
+	</ol>
+</Section>

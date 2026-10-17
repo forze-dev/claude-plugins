@@ -1,0 +1,70 @@
+/**
+ * Галерея — ряд зі scroll-snap. Свідомо тільки на CSS: scroll-snap уміє
+ * нативно те, заради чого зазвичай тягнуть слайдер на ~140 КБ.
+ */
+
+.gallery {
+	display: flex;
+	gap: var(--space-4);
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-padding-inline: var(--gutter);
+	padding-bottom: var(--space-4);
+	/* Firefox */
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-strong) transparent;
+}
+
+.gallery::-webkit-scrollbar {
+	height: 6px;
+}
+
+.gallery::-webkit-scrollbar-thumb {
+	background: var(--border-strong);
+	border-radius: var(--radius-pill);
+}
+
+.gallery::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.gallery__item {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 min(82%, 440px);
+	scroll-snap-align: center;
+	overflow: hidden;
+	border-radius: var(--radius-md);
+	background: var(--surface);
+}
+
+.gallery__item img {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 11;
+	object-fit: cover;
+}
+
+.gallery__caption {
+	flex: 1;
+	max-width: none;
+	padding: var(--space-4);
+	font-size: var(--fz-sm);
+	color: var(--ink-muted);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-top: none;
+	border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.gallery__hint {
+	margin-top: var(--space-3);
+	font-size: var(--fz-xs);
+	color: var(--ink-subtle);
+}
+
+@media (min-width: 900px) {
+	.gallery__item {
+		flex-basis: min(46%, 520px);
+	}
+}

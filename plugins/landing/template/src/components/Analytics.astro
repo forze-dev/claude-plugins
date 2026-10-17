@@ -1,0 +1,68 @@
+---
+/**
+ * Сторонні скрипти аналітики.
+ *
+ * У шаблоні їх немає. Вкажи id у `analytics` в site.config.js — і сніпет
+ * зʼявиться, **лише в production-збірці**, тож `npm run dev` не засмічує
+ * аналітику твоїми власними кліками.
+ *
+ * Layout рендерить компонент двічі: один раз у <head>, другий — одразу після
+ * <body> (Google Tag Manager потребує обох половин).
+ *
+ * Сніпети зібрані рядками тут, а не вписані в розмітку: завантажувач GTM повний
+ * фігурних дужок, і парсер шаблонів Astro спотикається об них усередині виразу
+ * в атрибуті.
+ *
+ * `is:inline` обовʼязковий — без нього Astro спробує зібрати їх у свій бандл, а
+ * сторонній завантажувач має виконуватися як є.
+ *
+ * Якщо працюєш у ЄС — завантаження трекерів до отримання згоди на твоїй совісті:
+ * банера згоди шаблон свідомо не містить.
+ */
+import { SITE } from '../site.config.js';
+
+const { position = 'head' } = Astro.props;
+const { gtmId, gaId } = SITE.analytics ?? {};
+
+// Ніколи не вантажимо трекери в dev або preview.
+const live = import.meta.env.PROD;
+
+const showGtmHead = live && position === 'head' && Boolean(gtmId);
+const showGtmBody = live && position === 'body' && Boolean(gtmId);
+// Tag Manager уже містить GA4, тож прямий тег — лише для сайтів без GTM.
+const showGa = live && position === 'head' && Boolean(gaId) && !gtmId;
+
+const gtmHead =
+	"(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});" +
+	"var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;" +
+	"j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})" +
+	"(window,document,'script','dataLayer','" + gtmId + "');";
+
+const gtmBody =
+	'<iframe src="https://www.googletagmanager.com/ns.html?id=' + gtmId +
+	'" height="0" width="0" style="display:none;visibility:hidden"></iframe>';
+
+const gaInit =
+	'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}' +
+	"gtag('js',new Date());gtag('config','" + gaId + "');";
+
+const gaSrc = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+---
+
+{showGtmHead && <script is:inline set:html={gtmHead} />}
+
+{/*
+	Закривний тег обовʼязковий, і це не стиль. `<noscript>` — raw-text елемент:
+	запис `<noscript … />` HTML-парсер самозакривним НЕ вважає, тож усе, що йде
+	в шаблоні нижче, стає його вмістом. Поки умова істинна, це майже непомітно;
+	щойно вона хибна — разом із noscript зникає весь наступний вивід компонента.
+	Саме через це GA4 не потрапляв у збірку: його блок стоїть нижче за цей рядок.
+*/}
+{showGtmBody && <noscript set:html={gtmBody}></noscript>}
+
+{showGa && (
+	<Fragment>
+		<script is:inline async src={gaSrc}></script>
+		<script is:inline set:html={gaInit} />
+	</Fragment>
+)}

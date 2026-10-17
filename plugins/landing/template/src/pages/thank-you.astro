@@ -1,0 +1,87 @@
+---
+/**
+ * Сторінка подяки. Автономний екран без хедера й футера — layout `Bare`.
+ * noindex: сторінка має сенс лише одразу після надсилання заявки.
+ */
+import Bare from '../layouts/Bare.astro';
+import Logo from '../components/Logo.astro';
+import { SITE } from '../site.config.js';
+
+import '../styles/pages/thank-you.css';
+
+const year = new Date().getFullYear();
+const phone = SITE.contacts.phones[0];
+---
+
+<Bare title="Request received" description="Your request has been received. We will reply the same working day." noindex={true}>
+	<main class="thanks" id="main">
+		<div class="container">
+			<div class="thanks__card">
+				<a class="thanks__brand" href="/" aria-label={`${SITE.name} — ${SITE.ui.home}`}>
+					<Logo />
+					{SITE.shortName}
+				</a>
+
+				<div class="thanks__mark" aria-hidden="true">
+					<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M14 25.5 21 32l13-15" />
+					</svg>
+				</div>
+
+				<h1>Request received</h1>
+				<p class="thanks__lead">Thank you! We will call you back the same working day.</p>
+
+				<div class="thanks__next">
+					<h2>While you wait</h2>
+					<ul role="list">
+						<li>Need an answer now? Call <a href={`tel:${phone.href}`}>{phone.display}</a>.</li>
+						{SITE.messengers.length > 0 && <li>Prefer chat? We are on {SITE.messengers.map((m) => m.name).join(', ')}.</li>}
+					</ul>
+				</div>
+
+				{SITE.messengers.length > 0 && (
+					<div class="thanks__messengers">
+						{SITE.messengers.map((messenger) => (
+							<a
+								class="icon-btn"
+								href={messenger.href}
+								target={messenger.href.startsWith('http') ? '_blank' : undefined}
+								rel={messenger.href.startsWith('http') ? 'noopener nofollow' : undefined}
+								aria-label={`${SITE.ui.messageOn} ${messenger.name}`}
+							>
+								<img src={messenger.icon} alt="" width="22" height="22" aria-hidden="true" />
+							</a>
+						))}
+					</div>
+				)}
+
+				<div class="thanks__actions">
+					<a class="btn btn--primary" href="/">Back to the homepage</a>
+				</div>
+			</div>
+
+			<p class="thanks__footnote">&copy; {year} {SITE.name}</p>
+		</div>
+	</main>
+
+	<script>
+		/**
+		 * Сторінка має сенс лише одразу після надсилання заявки, тож вона
+		 * перевіряє мітку, яку form.js кладе в адресу, а решту відправляє на
+		 * головну.
+		 */
+		const MAX_AGE_MINUTES = 10;
+		const params = new URLSearchParams(window.location.search);
+		const timestamp = Number(params.get('timestamp'));
+		const age = Date.now() - timestamp;
+
+		const valid =
+			params.get('formStatus') === 'sent' &&
+			Number.isFinite(timestamp) &&
+			timestamp > 0 &&
+			age >= 0 &&
+			age <= MAX_AGE_MINUTES * 60 * 1000;
+
+		if (!valid) window.location.replace('/');
+	</script>
+</Bare>

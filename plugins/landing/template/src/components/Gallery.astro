@@ -1,0 +1,23 @@
+---
+/**
+ * Галерея на scroll-snap. Без JavaScript і без слайдер-бібліотек — інерцію,
+ * клавіатуру й дотик бере на себе власна прокрутка браузера.
+ *
+ * Несе мікророзмітку ImageGallery. Пари в JSON-LD у неї немає навмисно: галерея
+ * не дає rich results, тож другий опис був би шумом без сигналу.
+ *
+ * `items`: { src, alt, caption?, width, height }. Розміри — справжні розміри
+ * файла: від них залежить, чи не стрибатиме сторінка під час завантаження.
+ */
+const { items, label = 'Gallery', hint } = Astro.props;
+---
+
+<div class="gallery" role="region" aria-label={label} tabindex="0" itemscope itemtype="https://schema.org/ImageGallery">
+	{items.map((item) => (
+		<figure class="gallery__item" itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject">
+			<img itemprop="contentUrl" src={item.src} alt={item.alt} width={item.width ?? 640} height={item.height ?? 440} loading="lazy" decoding="async" />
+			{item.caption && <figcaption class="gallery__caption" itemprop="caption">{item.caption}</figcaption>}
+		</figure>
+	))}
+</div>
+{hint && <p class="gallery__hint">{hint}</p>}

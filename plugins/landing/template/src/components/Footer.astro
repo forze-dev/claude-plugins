@@ -1,0 +1,136 @@
+---
+/**
+ * Футер сайту — єдине місце із залитим акцентним тлом.
+ *
+ * Це ЄДИНИЙ вузол мікророзмітки бізнесу на сторінці. Секція контактів на
+ * лендингу показує ті самі дані, але без itemprop: два часткові описи однієї
+ * сутності на одній сторінці — зайвий ризик розбіжності, а один повний — ні.
+ *
+ * Кожна властивість тут має пару в `business()` з src/lib/schema.js, і навпаки.
+ * `itemid` — той самий URI, що й `@id` у JSON-LD. Значення — лише з конфіга.
+ */
+import { SITE, isPlace } from '../site.config.js';
+import { ids } from '../lib/schema.js';
+import Logo from './Logo.astro';
+
+const { ui, contacts } = SITE;
+const year = new Date().getFullYear();
+const logoUrl = new URL('/android-chrome-512x512.png', SITE.url).href;
+const siteUrl = new URL('/', SITE.url).href;
+const { address, geo } = contacts;
+const addressText = address
+	? `${address.street}, ${address.locality}${address.region ? `, ${address.region}` : ''} ${address.postalCode}`.trim()
+	: null;
+---
+
+<footer class="footer" itemscope itemtype={`https://schema.org/${SITE.businessType}`} itemid={ids.organization}>
+	<link itemprop="url" href={siteUrl} />
+	<link itemprop="logo" href={logoUrl} />
+	{SITE.social.map((profile) => <link itemprop="sameAs" href={profile} />)}
+	{SITE.priceRange && isPlace && <meta itemprop="priceRange" content={SITE.priceRange} />}
+	{isPlace && geo && (
+		<span itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates" hidden>
+			<meta itemprop="latitude" content={String(geo.latitude)} />
+			<meta itemprop="longitude" content={String(geo.longitude)} />
+		</span>
+	)}
+
+	<div class="container">
+		<div class="footer__top">
+			<div>
+				<a class="footer__brand" href="/">
+					<Logo />
+					<span itemprop="name">{SITE.name}</span>
+				</a>
+				<p class="footer__description" itemprop="description">{SITE.description}</p>
+			</div>
+
+			<nav aria-label={ui.footerMenu}>
+				<h2 class="footer__title">{ui.footerMenu}</h2>
+				<ul class="footer__list" role="list">
+					{SITE.nav.map((item) => (
+						<li><a href={item.href}>{item.label}</a></li>
+					))}
+				</ul>
+			</nav>
+
+			<div>
+				{contacts.hours.length > 0 && (
+					<>
+						<h2 class="footer__title">{ui.footerHours}</h2>
+						<ul class="footer__list" role="list">
+							{contacts.hours.map((entry) =>
+								isPlace ? (
+									<li itemprop="openingHoursSpecification" itemscope itemtype="https://schema.org/OpeningHoursSpecification">
+										{entry.days.map((day) => <meta itemprop="dayOfWeek" content={day} />)}
+										<meta itemprop="opens" content={entry.opens} />
+										<meta itemprop="closes" content={entry.closes} />
+										{entry.label}
+									</li>
+								) : (
+									<li>{entry.label}</li>
+								)
+							)}
+						</ul>
+					</>
+				)}
+				<div class="footer__social">
+					{SITE.messengers.map((messenger) => (
+						<a
+							class="icon-btn icon-btn--on-accent"
+							href={messenger.href}
+							target={messenger.href.startsWith('http') ? '_blank' : undefined}
+							rel={messenger.href.startsWith('http') ? 'noopener nofollow' : undefined}
+							aria-label={`${ui.messageOn} ${messenger.name}`}
+						>
+							<img src={messenger.icon} alt="" width="22" height="22" aria-hidden="true" />
+						</a>
+					))}
+				</div>
+			</div>
+
+			<div>
+				<h2 class="footer__title">{ui.footerContacts}</h2>
+				<ul class="footer__contact" role="list">
+					<li class="footer__contact-item">
+						<img src="/assets/icons/email.svg" alt="" width="20" height="20" aria-hidden="true" />
+						<a itemprop="email" href={`mailto:${contacts.email}`}>{contacts.email}</a>
+					</li>
+					{contacts.phones.map((phone) => (
+						<li class="footer__contact-item">
+							<img src="/assets/icons/phone.svg" alt="" width="20" height="20" aria-hidden="true" />
+							{/* E.164 у meta, а не видимий текст: так значення збігається з JSON-LD. */}
+							<meta itemprop="telephone" content={phone.href} />
+							<a href={`tel:${phone.href}`}>{phone.display}</a>
+						</li>
+					))}
+					{address && (
+						<li class="footer__contact-item">
+							<img src="/assets/icons/pin.svg" alt="" width="20" height="20" aria-hidden="true" />
+							<span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+								<meta itemprop="streetAddress" content={address.street} />
+								<meta itemprop="addressLocality" content={address.locality} />
+								{address.region && <meta itemprop="addressRegion" content={address.region} />}
+								<meta itemprop="postalCode" content={address.postalCode} />
+								<meta itemprop="addressCountry" content={address.country} />
+								{addressText}
+							</span>
+						</li>
+					)}
+				</ul>
+			</div>
+		</div>
+
+		<div class="footer__bottom">
+			<p>&copy; {year} {SITE.name}. {ui.rights}</p>
+			<ul class="footer__legal" role="list">
+				<li><a href="/privacy-policy">{ui.privacy}</a></li>
+			</ul>
+			{SITE.authorUrl && (
+				<p class="footer__credit">
+					{ui.madeBy} <a href={SITE.authorUrl} rel="nofollow noopener">{SITE.author}</a>
+				</p>
+			)}
+		</div>
+	</div>
+</footer>

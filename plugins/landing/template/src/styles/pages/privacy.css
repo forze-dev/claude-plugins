@@ -1,0 +1,46 @@
+/**
+ * Політика конфіденційності — сторінка для довгого читання.
+ *
+ * Вузька міра рядка, нумеровані розділи з волосяними лініями. Нічого більше.
+ */
+
+.privacy {
+	max-width: 760px;
+}
+
+.privacy__head {
+	padding-top: var(--space-5);
+	padding-bottom: var(--space-7);
+	border-bottom: 1px solid var(--border);
+}
+
+.privacy__head h1 {
+	margin-bottom: var(--space-3);
+}
+
+.privacy__updated {
+	margin-bottom: var(--space-5);
+	font-size: var(--fz-sm);
+	color: var(--ink-subtle);
+}
+
+.privacy__section {
+	padding-block: var(--space-7);
+	border-bottom: 1px solid var(--border);
+}
+
+.privacy__section:last-child {
+	border-bottom: none;
+}
+
+.privacy__section h2 {
+	max-width: 30ch;
+}
+
+/**
+ * Колонка тексту вужча за контейнер сайту, тож хлібні крихти над нею мають
+ * збігатися — інакше сторінка матиме два різні ліві краї.
+ */
+.breadcrumbs {
+	max-width: 760px;
+}

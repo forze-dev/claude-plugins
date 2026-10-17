@@ -1,0 +1,15 @@
+.env
+node_modules/
+dist/
+release/
+.astro/
+.DS_Store
+Thumbs.db
+
+# Генерується dev-сервером поруч із server/form.php з SITE.form.
+server/form.limits.json
+
+# Робоча тека: матеріали клієнта, оригінали зображень, знімки стану.
+# Вміст у git не потрапляє, але сама тека й інструкція в ній — так.
+temp/*
+!temp/README.md

@@ -1,0 +1,82 @@
+/**
+ * Сторінка 404.
+ *
+ * Автономний тупиковий екран: без хедера й футера, з єдиним виходом — назад на
+ * головну. Свідомо простіша за сторінку подяки: там людина щойно зробила дію і
+ * їй є що розповісти, тут вона просто помилилася адресою.
+ */
+
+.notfound {
+	display: flex;
+	align-items: center;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding-block: var(--space-8);
+	background: var(--surface);
+}
+
+.notfound__card {
+	max-width: 520px;
+	margin-inline: auto;
+	padding: var(--space-9) var(--space-8);
+	background: var(--bg);
+	border-radius: var(--radius-lg);
+	text-align: center;
+}
+
+.notfound__brand {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin-bottom: var(--space-7);
+	font-family: var(--font-display);
+	font-size: var(--fz-base);
+	font-weight: 700;
+	letter-spacing: var(--tracking-display);
+	color: var(--accent);
+	text-decoration: none;
+}
+
+.notfound__brand svg {
+	width: 26px;
+	height: 26px;
+}
+
+/**
+ * Єдиний сміливий елемент сторінки. Aria-hidden: «404» — це графіка, а зчитувач
+ * екрана має почути заголовок, а не три цифри.
+ */
+.notfound__code {
+	margin-bottom: var(--space-4);
+	font-family: var(--font-display);
+	font-size: clamp(4.5rem, 18vw, 7rem);
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: -0.04em;
+	color: var(--accent);
+}
+
+.notfound h1 {
+	margin-bottom: var(--space-4);
+	font-size: var(--fz-3xl);
+}
+
+.notfound__lead {
+	max-width: 38ch;
+	margin-inline: auto;
+	margin-bottom: var(--space-7);
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+@media (max-width: 600px) {
+	.notfound__card {
+		padding: var(--space-7) var(--space-5);
+		border-radius: var(--radius-md);
+	}
+
+	.notfound .btn {
+		width: 100%;
+	}
+}

@@ -1,0 +1,36 @@
+---
+/**
+ * Відгуки клієнтів.
+ *
+ * ЛИШЕ справжні відгуки з матеріалів клієнта, з іменем, яке клієнт дозволив
+ * показати. Вигаданий відгук — це вигаданий факт (правило 4), а для бізнесу ще
+ * й юридичний ризик. Немає відгуків — секцію просто не підключають.
+ *
+ * Структурованих даних тут немає свідомо: відгуки, які бізнес публікує про
+ * себе на власному сайті, Google не показує як rich results, а Review без
+ * ознак незалежності — це сигнал спаму, а не довіри.
+ *
+ * `items`: { quote, author, role? }
+ */
+import Section from './Section.astro';
+
+import '../../styles/sections/testimonials.css';
+
+const { id, title, lead, items, surface = false } = Astro.props;
+---
+
+<Section id={id} title={title} lead={lead} surface={surface}>
+	<ul class="grid grid--3 testimonials" role="list">
+		{items.map((item) => (
+			<li class="panel testimonial">
+				<blockquote>
+					<p>{item.quote}</p>
+				</blockquote>
+				<p class="testimonial__author">
+					<strong>{item.author}</strong>
+					{item.role && <span>{item.role}</span>}
+				</p>
+			</li>
+		))}
+	</ul>
+</Section>

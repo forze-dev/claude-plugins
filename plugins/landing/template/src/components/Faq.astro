@@ -1,0 +1,24 @@
+---
+/**
+ * Список питань на <details> — працює без JavaScript.
+ *
+ * Той самий масив `entries` сторінка передає у `faqPage()` для JSON-LD, а тут
+ * він рендериться як мікророзмітка FAQPage. Відповідь може містити простий
+ * HTML (<a>, <strong>); у JSON-LD хелпер прибирає теги сам.
+ */
+const { entries } = Astro.props;
+---
+
+<div class="faq" itemscope itemtype="https://schema.org/FAQPage">
+	{entries.map((entry) => (
+		<details class="faq__item" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+			<summary class="faq__question">
+				<span itemprop="name">{entry.question}</span>
+				<span class="faq__marker" aria-hidden="true"></span>
+			</summary>
+			<div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+				<p class="faq__answer" itemprop="text" set:html={entry.answer}></p>
+			</div>
+		</details>
+	))}
+</div>

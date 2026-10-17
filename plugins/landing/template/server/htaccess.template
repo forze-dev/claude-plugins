@@ -1,0 +1,117 @@
+# Конфігурація Apache для зібраного сайту.
+#
+# Цей файл генерує `npm run build` із server/htaccess.template — правити треба
+# шаблон, а не dist/.htaccess. Ліміти завантаження підставляються з
+# SITE.form.maxFileMb у src/site.config.js.
+#
+# Заливай ВМІСТ теки dist/ у public_html; цей файл їде разом із ним.
+
+RewriteEngine On
+
+# --- HTTPS і канонічний хост --------------------------------------------------
+# Один редірект на https://домен-без-www для обох випадків: запит по HTTP і
+# запит на www. Домен захоплюється, а не вписується.
+#
+# ПОТРІБЕН SSL-сертифікат на домені (на cPanel — AutoSSL, зазвичай увімкнений).
+# Без нього сайт почне переадресовувати на https, якого немає. Якщо сайт стоїть
+# за Cloudflare у режимі «Flexible», заміни умову HTTPS на
+# `RewriteCond %{HTTP:X-Forwarded-Proto} !https`, інакше буде нескінченний редірект.
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+# --- Канонічні адреси --------------------------------------------------------
+# /index.html -> /   і   /privacy-policy.html -> /privacy-policy
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+([^.\s?]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# --- Чиста адреса -> файл за нею ---------------------------------------------
+# Генеричне правило для будь-якої сторінки, яку колись додадуть. Умова -f
+# гарантує, що неіснуюча адреса чесно віддасть 404.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# --- Захист доступів ---------------------------------------------------------
+# Синтаксис `Require` — Apache 2.4. Хостингів на 2.2 у 2026 році практично не
+# лишилося; якщо трапиться — заміни на `Order allow,deny` + `Deny from all`.
+#
+# .env має лежати на рівень ВИЩЕ за public_html. Це страховка на випадок, якщо
+# він усе ж опиниться всередині.
+<FilesMatch "^\.(env|env\..*)$">
+	Require all denied
+</FilesMatch>
+
+# Ліміти PHP-бекенда читаються з диска, а не по HTTP.
+<Files "form.limits.json">
+	Require all denied
+</Files>
+
+# --- Розміри завантаження для PHP-бекенда -------------------------------------
+# Типові значення на шаред-хостингу — 2M або 8M. Без цього великий файл
+# відкидає сам PHP, ще до form.php.
+#
+# На частині хостингів php_value в .htaccess ІГНОРУЄТЬСЯ (PHP-FPM, CGI) — там це
+# міняється лише в панелі: cPanel → MultiPHP INI Editor. Блоки обгорнуті в
+# IfModule, бо на PHP-FPM невідома директива поклала б увесь сайт у 500.
+<IfModule mod_php.c>
+	php_value upload_max_filesize __UPLOAD_MAX__
+	php_value post_max_size __POST_MAX__
+</IfModule>
+<IfModule mod_php7.c>
+	php_value upload_max_filesize __UPLOAD_MAX__
+	php_value post_max_size __POST_MAX__
+</IfModule>
+<IfModule mod_php8.c>
+	php_value upload_max_filesize __UPLOAD_MAX__
+	php_value post_max_size __POST_MAX__
+</IfModule>
+
+<IfModule mod_headers.c>
+	# Покриває і /thank-you, і /thank-you.html — збіг іде по файлу, який віддається.
+	<FilesMatch "^thank-you\.html$">
+		Header set X-Robots-Tag "noindex, nofollow"
+	</FilesMatch>
+
+	Header set X-Content-Type-Options "nosniff"
+	Header set Referrer-Policy "strict-origin-when-cross-origin"
+	Header set X-Frame-Options "SAMEORIGIN"
+
+	# HSTS: рік. `includeSubDomains` СВІДОМО немає: на шаред-хостингу часто є
+	# піддомен без сертифіката (cpanel., webmail., mail.), і директива поклала б
+	# його намертво в усіх браузерах. `preload` — тим більше: він практично
+	# невідкатний.
+	Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+
+	Header set Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=()"
+</IfModule>
+
+# --- Нічого не листувати -----------------------------------------------------
+Options -Indexes
+
+# --- Кешування ---------------------------------------------------------------
+# Astro додає хеш до всього в /_astro/, тож це можна кешувати надовго.
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType text/css "access plus 1 year"
+	ExpiresByType text/javascript "access plus 1 year"
+	ExpiresByType image/svg+xml "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType image/jpeg "access plus 1 month"
+	ExpiresByType image/webp "access plus 1 month"
+	# Шрифти самохостені. Імена БЕЗ хеша, тож при заміні файлу міняй і імʼя.
+	ExpiresByType font/woff2 "access plus 1 year"
+	ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript image/svg+xml application/json application/manifest+json
+</IfModule>
+
+# Справжня сторінка 404 зі статусом 404.
+ErrorDocument 404 /404.html

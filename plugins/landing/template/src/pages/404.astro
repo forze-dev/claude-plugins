@@ -1,0 +1,35 @@
+---
+/**
+ * Сторінка 404.
+ *
+ * Astro збирає її в `dist/404.html`, а Apache віддає зі статусом 404 через
+ * `ErrorDocument 404 /404.html` у .htaccess. Без хедера й футера — тупикова
+ * сторінка має вести лише назад, тому layout `Bare`. Структурованих даних
+ * немає: сторінка noindex і не описує жодної сутності.
+ */
+import Bare from '../layouts/Bare.astro';
+import Logo from '../components/Logo.astro';
+import { SITE } from '../site.config.js';
+
+import '../styles/pages/404.css';
+---
+
+<Bare title="Page not found" description="The page you are looking for does not exist." noindex={true}>
+	<main class="notfound" id="main">
+		<div class="container">
+			<div class="notfound__card">
+				<a class="notfound__brand" href="/" aria-label={`${SITE.name} — ${SITE.ui.home}`}>
+					<Logo />
+					{SITE.shortName}
+				</a>
+
+				<p class="notfound__code" aria-hidden="true">404</p>
+
+				<h1>Page not found</h1>
+				<p class="notfound__lead">The link may be broken, or the page may have been moved or deleted.</p>
+
+				<a class="btn btn--primary" href="/">Back to the homepage</a>
+			</div>
+		</div>
+	</main>
+</Bare>

@@ -1,0 +1,171 @@
+/**
+ * Сторінка подяки.
+ *
+ * Автономний екран підтвердження: без хедера, без футера, без нічого, крім
+ * шляхів далі. Тінтоване тло задає сам `.thanks` — так само, як `.notfound` на
+ * 404, — інакше біла картка зливається з білою сторінкою.
+ */
+
+.thanks {
+	display: flex;
+	align-items: center;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding-block: var(--space-8);
+	background: var(--surface);
+}
+
+.thanks__card {
+	max-width: 620px;
+	margin-inline: auto;
+	padding: var(--space-9) var(--space-8);
+	background: var(--bg);
+	border-radius: var(--radius-lg);
+	text-align: center;
+}
+
+.thanks__brand {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin-bottom: var(--space-8);
+	font-family: var(--font-display);
+	font-size: var(--fz-base);
+	font-weight: 700;
+	letter-spacing: var(--tracking-display);
+	color: var(--accent);
+	text-decoration: none;
+}
+
+.thanks__brand svg {
+	width: 26px;
+	height: 26px;
+}
+
+/**
+ * Галочка — єдиний рух на сторінці: вона малює себе один раз, при відкритті,
+ * щоб підтвердити, що дія справді сталася.
+ */
+.thanks__mark {
+	display: grid;
+	place-items: center;
+	width: 84px;
+	height: 84px;
+	margin-inline: auto;
+	margin-bottom: var(--space-6);
+	border-radius: 50%;
+	background: var(--accent-tint);
+	color: var(--accent);
+}
+
+.thanks__mark svg {
+	width: 48px;
+	height: 48px;
+	stroke-dasharray: 32;
+	stroke-dashoffset: 32;
+	animation: thanks-draw 500ms var(--ease) 120ms forwards;
+}
+
+@keyframes thanks-draw {
+	to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.thanks__mark svg {
+		animation: none;
+		stroke-dashoffset: 0;
+	}
+}
+
+.thanks h1 {
+	margin-bottom: var(--space-4);
+	font-size: var(--fz-3xl);
+}
+
+.thanks__lead {
+	max-width: 46ch;
+	margin-inline: auto;
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+/* --- Що далі ------------------------------------------------------------ */
+
+.thanks__next {
+	margin-top: var(--space-8);
+	padding: var(--space-6);
+	background: var(--surface);
+	border-radius: var(--radius-md);
+	text-align: left;
+}
+
+.thanks__next h2 {
+	margin-bottom: var(--space-4);
+	font-size: var(--fz-md);
+}
+
+.thanks__next ul {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	list-style: none;
+}
+
+.thanks__next li {
+	position: relative;
+	padding-left: var(--space-5);
+	font-size: var(--fz-sm);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+.thanks__next li::before {
+	content: '';
+	position: absolute;
+	top: 0.6em;
+	left: 0;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--accent);
+}
+
+.thanks__next a {
+	color: var(--accent);
+	font-weight: 600;
+}
+
+.thanks__messengers {
+	display: flex;
+	justify-content: center;
+	gap: var(--space-2);
+	margin-top: var(--space-6);
+}
+
+.thanks__actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: var(--space-3);
+	margin-top: var(--space-7);
+}
+
+.thanks__footnote {
+	max-width: none;
+	margin-top: var(--space-6);
+	text-align: center;
+	font-size: var(--fz-xs);
+	color: var(--ink-subtle);
+}
+
+@media (max-width: 600px) {
+	.thanks__card {
+		padding: var(--space-7) var(--space-5);
+		border-radius: var(--radius-md);
+	}
+
+	.thanks__actions .btn {
+		width: 100%;
+	}
+}

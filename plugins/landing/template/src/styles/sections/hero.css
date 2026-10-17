@@ -1,0 +1,111 @@
+/**
+ * Перший екран лендингу. Світлий: єдина велика площа брендового кольору на
+ * сайті — футер.
+ */
+
+.hero {
+	padding-top: calc(var(--header-height) + var(--space-9));
+	padding-bottom: var(--space-10);
+}
+
+.hero__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+	align-items: center;
+	gap: var(--space-9);
+}
+
+.hero__inner--text {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.hero h1 {
+	max-width: 16ch;
+}
+
+.hero__lead {
+	margin-top: var(--space-5);
+	max-width: 46ch;
+	font-size: var(--fz-md);
+	line-height: var(--lh-relaxed);
+	color: var(--ink-muted);
+}
+
+/**
+ * Факти, а не плитки зі статистикою: короткі твердження в один ряд, відділені
+ * волосяною лінією. Лише перевірювані факти — без вигаданих чисел.
+ */
+.hero__facts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3) var(--space-5);
+	margin-top: var(--space-6);
+	padding-top: var(--space-5);
+	border-top: 1px solid var(--border);
+	list-style: none;
+	font-size: var(--fz-sm);
+	font-weight: 500;
+	color: var(--ink);
+}
+
+.hero__facts li {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.hero__facts li::before {
+	content: '';
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--accent);
+}
+
+.hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-3);
+	margin-top: var(--space-7);
+}
+
+.hero__messengers {
+	display: flex;
+	gap: var(--space-2);
+	margin-top: var(--space-7);
+	list-style: none;
+}
+
+.hero__media img {
+	width: 100%;
+	height: auto;
+	border-radius: var(--radius-lg);
+}
+
+@media (max-width: 1024px) {
+	.hero__inner {
+		grid-template-columns: minmax(0, 1fr);
+		gap: var(--space-7);
+	}
+
+	.hero__media {
+		order: -1;
+		max-width: 480px;
+	}
+}
+
+@media (max-width: 600px) {
+	.hero {
+		padding-top: calc(var(--header-height) + var(--space-6));
+		padding-bottom: var(--space-8);
+	}
+
+	.hero__actions .btn {
+		width: 100%;
+	}
+
+	/* На малих екранах цей ряд дублює плаваюча панель месенджерів. */
+	.hero__messengers {
+		display: none;
+	}
+}
